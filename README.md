@@ -66,11 +66,11 @@
   <li><a name="ENV-WIN95" id="ENV-WIN95"><strong>Windows 95</strong></a>
   <ul>
     <li>VirtualBox 7.0上で動作確認
-    <li><a href="#VC6RUNTIME">Visual C++ 6.0 SP6ランタイム</a>のインストールが必要です。
+    <li><a href="runtime/ReadMe.md#VC6RUNTIME">Visual C++ 6.0 SP6ランタイム</a>のインストールが必要です。
     <ul>
       <li class="information">プログラム開始エラーになり実行できません。
     </ul>
-    <li><a href="#MSGOTUPD">MS UI Gothic パッチ</a>の適用が必要です。
+    <li><a href="runtime/ReadMe.md#MSGOTUPD">MS UI Gothic パッチ</a>の適用が必要です。
     <ul>
       <li class="information">適用しなくても実行可能ですが、ウィンドウが大きくなって見づらくなります。
       <li class="information">Office 2000など「MS UI Gothic」フォントがインストールされていれば適用する必要ありません。
@@ -86,7 +86,7 @@
   <li><strong>Windows ME</strong>
   <ul>
     <li>VirtualBox 7.0上で動作確認
-    <li><a href="#VC6RUNTIME">Visual C++ 6.0 SP6ランタイム</a>のインストール推奨です。
+    <li><a href="runtime/ReadMe.me#VC6RUNTIME">Visual C++ 6.0 SP6ランタイム</a>のインストール推奨です。
     <li class="warning"><s>ファイルの読み込みが遅くなる場合があります。 (特にWindows MEは影響が大きいです)</s>
     <ul>
       <li class="information">ネステッドページング無効化によるオーバーヘッドが原因で、patcher9xの適用で解決 (追記: 2023年7月10日)
