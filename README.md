@@ -9,6 +9,7 @@
 </ul>
 <h3>CPU拡張命令で高速計算</h3>
 <p>SHA-1・SHA-224・SHA-256の計算は、CPUの拡張命令(SHAEXT) ※ でSATAのSSDは容易に超えられる速さで計算できます。</p>
+<p><img src="img/md5checktool_sha-256_image1.png" width="407" height="304" border="0" alt="[ ]"></p>
 <p>※SHAEXT命令が使えないPCでも、そのほかの拡張命令で可能な限り高速計算できます。<br>
 環境にもよりますが200MB/秒超えるケースが多いです。</p>
 <h3>効率モード (EcoQOS) に対応</h3>
@@ -20,8 +21,10 @@
     <li>特に高速計算できるSHA-256、crc32c、xxHashなどファイルの読み込み待ちが起こりやすい場合に有効です。
   </ul>
 </ul>
+<p><img src="img/md5checktool_ecoqos_image1.png" width="376" height="385" border="0" alt="[ ]"></p>
 <h3>幅広い動作環境</h3>
 <p>最新のWindowsはもちろん、Windows 95をはじめとしたレガシーな環境に対応しています。</p>
+<p><img src="img/md5checktool_xp_image2.png" width="438" height="307" border="0" alt="[ ]"></p>
 <h2>動作環境</h2>
 <h3>通常版 (Unicodeビルド)</h3>
 <ul>
