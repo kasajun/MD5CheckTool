@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MD5チェックツールVC2010", "MD5チェックツール\MD5チェックツールVC2010.vcxproj", "{8DA59541-E0DF-4564-B4E5-4813B29F69E9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MD5チェックツールIconResVC2010", "MD5チェックツールIconRes\MD5チェックツールIconResVC2010.vcxproj", "{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|Win32.Build.0 = Debug|Win32
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|x64.ActiveCfg = Debug|x64
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|x64.Build.0 = Debug|x64
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|Win32.ActiveCfg = Release|Win32
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|Win32.Build.0 = Release|Win32
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|x64.ActiveCfg = Release|x64
+		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|x64.Build.0 = Release|x64
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Debug|Win32.Build.0 = Debug|Win32
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Debug|x64.ActiveCfg = Debug|x64
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Debug|x64.Build.0 = Debug|x64
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Release|Win32.ActiveCfg = Release|Win32
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Release|Win32.Build.0 = Release|Win32
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Release|x64.ActiveCfg = Release|x64
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

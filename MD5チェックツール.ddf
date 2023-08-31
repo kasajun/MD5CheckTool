@@ -1,0 +1,10 @@
+.Set CabinetNameTemplate=..\..\html\MD5checktool.cab
+.Set DiskDirectoryTemplate=
+.Set RptFileName=NUL
+.Set InfFileName=NUL
+MD5チェックツール.exe
+MD5チェックツール.exe.sha256
+MD5チェックツールIconRes.dll
+MD5チェックツールIconRes.dll.sha256
+MD5チェックツールIconRes.icl
+MD5チェックツールIconRes.icl.sha256

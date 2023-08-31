@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+MD5チェックツール/Debug/*
+MD5チェックツール/Release/*
+MD5チェックツール/x64/*
+MD5チェックツールIconRes/Debug/*
+MD5チェックツールIconRes/Release/*
+MD5チェックツールIconRes/x64/*

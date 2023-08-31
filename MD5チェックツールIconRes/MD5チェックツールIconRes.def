@@ -1,0 +1,4 @@
+EXPORTS
+	IconRes_Load
+	IconRes_FileAssocA
+	IconRes_FileAssocW
