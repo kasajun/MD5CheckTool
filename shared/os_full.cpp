@@ -635,10 +635,10 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 					const size_t nVersionSize = sizeof(_T(" バージョン ")) - sizeof(TCHAR);
 
 					nRet = RegQueryValueEx(hKey, _T("DisplayVersion"), 0, &dwType, (LPBYTE)szRegBuf, &dwByte);
-					if (nRet == ERROR_SUCCESS)
+					IF_LIKELY(nRet == ERROR_SUCCESS)
 					{
 						memcpy(pSubPtr, _T(" バージョン "), nVersionSize);
-						pSubPtr += nVersionSize;
+						pSubPtr += nVersionSize / sizeof(TCHAR);
 						qtcscpy(pSubPtr, szRegBuf);
 					}
 					else
@@ -647,7 +647,7 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 						if (nRet == ERROR_SUCCESS)
 						{
 							memcpy(pSubPtr, _T(" バージョン "), nVersionSize);
-							pSubPtr += nVersionSize;
+							pSubPtr += nVersionSize / sizeof(TCHAR);
 							qtcscpy(pSubPtr, szRegBuf);
 						}
 					}

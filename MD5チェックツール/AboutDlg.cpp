@@ -17,8 +17,8 @@ extern int nEditMarginY[3];
 extern int nStringX[3];
 extern int nStringY[3];
 
-#define ABOUTDLG_X 138
-#define ABOUTDLG_Y 100
+#define ABOUTDLG_X 220
+#define ABOUTDLG_Y 205
 
 // バージョン情報ボックスのメッセージ ハンドラです。
 LRESULT CALLBACK AboutDlg_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -73,6 +73,7 @@ LRESULT AboutDlg_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	}
 
 	tagAboutWindow1.nWindowMessage = RegisterWindowMessage(_T("AboutDlg"));
+	tagAboutWindow1.hGroup[0] = GetDlgItem(hWnd, IDC_ABOUT_GROUP1);
 	for (i = 0; i < SIZEOF_NUM(tagAboutWindow1.hStatic); i++) {
 		tagAboutWindow1.hStatic[i] = GetDlgItem(hWnd, IDC_ABOUT_STATIC1 + i);
 	}
@@ -159,47 +160,45 @@ LRESULT AboutDlg_OnSize(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 	int nArg[4] = { 0 };
-	//const int cx = LOWORD(lParam);
-	//const int cy = HIWORD(lParam);
 
-	nArg[0] = MDIVX(30);
-	nArg[1] = MDIVY(6);
-	nArg[2] = MDIVX(102);
+	nArg[0] = MDIVX(32);
+	nArg[1] = MDIVY(11);
+	nArg[2] = MDIVX(170);
 	nArg[3] = nStringY[0] + nEditMarginY[0];
 	MoveWindow(tagAboutWindow1.hStatic[0], nArg[0], nArg[1], nArg[2], nArg[3], FALSE);//	30, 6, 102, 12
 
-	nArg[0] = MDIVX(30);
-	nArg[1] = MDIVY(18);
-	nArg[2] = MDIVX(102);
+	nArg[0] = MDIVX(32);
+	nArg[1] = MDIVY(30);
+	nArg[2] = MDIVX(170);
 	nArg[3] = nStringY[0] + nEditMarginY[0];
 	MoveWindow(tagAboutWindow1.hStatic[1], nArg[0], nArg[1], nArg[2], nArg[3], FALSE);//	30, 18, 102, 12
 
-	nArg[0] = MDIVX(12);
-	nArg[1] = MDIVY(30);
-	nArg[2] = MDIVX(120);
+	nArg[0] = MDIVX(32);
+	nArg[1] = MDIVY(42);
+	nArg[2] = MDIVX(170);
 	nArg[3] = nStringY[0] + nEditMarginY[0];
 	MoveWindow(tagAboutWindow1.hStatic[2], nArg[0], nArg[1], nArg[2], nArg[3], FALSE);//	12, 30, 120, 12
 
-	nArg[0] = MDIVX(6);
-	nArg[1] = MDIVY(42);
-	nArg[2] = MDIVX(45);
+	nArg[0] = MDIVX(12);
+	nArg[1] = MDIVY(54);
+	nArg[2] = MDIVX(170);
 	nArg[3] = nStringY[0] + nEditMarginY[0];
 	MoveWindow(tagAboutWindow1.hStatic[3], nArg[0], nArg[1], nArg[2], nArg[3], FALSE);//		6, 42, 45, 12
 
-	nArg[0] = MDIVX(12);
-	nArg[1] = MDIVY(54);
-	nArg[2] = MDIVX(120);
+	nArg[0] = MDIVX(18);
+	nArg[1] = MDIVY(66);
+	nArg[2] = MDIVX(170);
 	nArg[3] = nStringY[0] + nEditMarginY[0];
 	MoveWindow(tagAboutWindow1.hStatic[4], nArg[0], nArg[1], nArg[2], nArg[3], FALSE);//	12, 54, 120, 24
 
-	nArg[0] = MDIVX(12);
-	nArg[1] = MDIVY(63);
-	nArg[2] = MDIVX(120);
+	nArg[0] = MDIVX(18);
+	nArg[1] = MDIVY(78);
+	nArg[2] = MDIVX(170);
 	nArg[3] = nStringY[0] + nEditMarginY[0];
 	MoveWindow(tagAboutWindow1.hStatic[5], nArg[0], nArg[1], nArg[2], nArg[3], FALSE);//	12, 63, 120, 18
 
-	nArg[0] = MDIVX(48);
-	nArg[1] = MDIVY(75);
+	nArg[0] = MDIVX(90);
+	nArg[1] = MDIVY(182);
 	nArg[2] = MDIVX(42);
 	nArg[3] = nStringY[2] + nEditMarginY[0];
 	MoveWindow(tagAboutWindow1.hIDOK, nArg[0], nArg[1], nArg[2], nArg[3], FALSE);//			48, 75, 42, 16
@@ -260,7 +259,9 @@ VOID AboutDlg_GetDpi(VOID)
 {
 	int i = 0;
 
-	for (i = 0; i < SIZEOF_NUM(tagAboutWindow1.hStatic); i++) {
+	SendMessage(tagAboutWindow1.hGroup[0], WM_SETFONT, (WPARAM)tagMainWindow1.hFont[0], 0);
+	SendMessage(tagAboutWindow1.hStatic[0], WM_SETFONT, (WPARAM)tagMainWindow1.hFont[1], 0);
+	for (i = 1; i < SIZEOF_NUM(tagAboutWindow1.hStatic); i++) {
 		SendMessage(tagAboutWindow1.hStatic[i], WM_SETFONT, (WPARAM)tagMainWindow1.hFont[0], 0);
 	}
 	SendMessage(tagAboutWindow1.hIDOK, WM_SETFONT, (WPARAM)tagMainWindow1.hFont[0], 0);

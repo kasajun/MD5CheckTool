@@ -12,7 +12,8 @@ typedef struct tagAboutWindow {
 	DWORD dwStructSize;
 	HWND hWnd;
 	HWND hIcon;
-	HWND hStatic[6];
+	HWND hStatic[11];
+	HWND hGroup[1];
 	HWND hIDOK;
 	UINT nWindowMessage;
 } AboutWindow, *lpAboutWindow;
