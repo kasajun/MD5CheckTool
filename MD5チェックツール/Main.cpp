@@ -3258,10 +3258,10 @@ VOID Hash_GetDpi(DWORD dwDpiX, DWORD dwDpiY)
 		Hash_SetWindowMove(FALSE);
 	}
 
-	PostMessage(tagFileListWindow1.hWnd, tagFileListWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
-	PostMessage(tagAboutWindow1.hWnd, tagAboutWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
-	PostMessage(tagOptionWindow1.hWnd, tagOptionWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
-	PostMessage(tagDebugWindow1.hWnd, tagDebugWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
+	SendMessage(tagFileListWindow1.hWnd, tagFileListWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
+	SendMessage(tagAboutWindow1.hWnd, tagAboutWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
+	SendMessage(tagOptionWindow1.hWnd, tagOptionWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
+	SendMessage(tagDebugWindow1.hWnd, tagDebugWindow1.nWindowMessage, APP_MASSAGE_DPICHANGE, (WPARAM)dwDpiX);
 
 	Hash_FileView(tagMainWindow1.dwOpenItem);
 	ReleaseDC(tagFileListWindow1.hWnd, hDC);
