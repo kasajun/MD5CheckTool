@@ -670,12 +670,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		goto APPEXIT;
 	}
 
-	GetModuleFileName(NULL, tagMainWindow1.pTempBuf, MAX_PATH_SIZE - 1);
+	i = (int)GetModuleFileName(NULL, tagMainWindow1.pTempBuf, MAX_PATH_SIZE - 1);
+	IF_UNLIKELY(!i)
+	{
+		pMsg = _T("WinMain: GetModuleFileName()");
+		dwErr = DEBUG_MISSING;
+		dwLastErr = GetLastError();
+		goto APPEXIT;
+	}
 
 	// バージョンの更新
-	LoadString(tagMainWindow1.hInst, IDS_VERSION, tagMainWindow1.pStBuf, MAX_STRINGTABLE - 1);
 	ptr = GetFileVersion(tagMainWindow1.pBuf, tagMainWindow1.pTempBuf);
-	IF_LIKELY(ptr != NULL) {
+	IF_LIKELY(ptr != NULL)
+	{
+		LoadString(tagMainWindow1.hInst, IDS_VERSION, tagMainWindow1.pStBuf, MAX_STRINGTABLE - 1);
 		MessageFormat(tagMainWindow1.pVersion, 2048, tagMainWindow1.pStBuf, tagMainWindow1.pBuf);
 	}
 
@@ -713,14 +721,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	ptr = GetTCharToExtension(tagMainWindow1.pTempBuf);
 	qtcscpy(ptr, _T("IconRes.dll"));
 	tagMainWindow1.hDllInst = LoadLibrary(tagMainWindow1.pTempBuf);
-	IF_UNLIKELY(tagMainWindow1.hDllInst == NULL)
-	{
-		pMsg = _T("WinMain: LoadLibrary()");
-		dwErr = DEBUG_MISSING;
-		dwLastErr = GetLastError();
-		goto APPEXIT;
-	}
-	else
+	IF_LIKELY(tagMainWindow1.hDllInst != NULL)
 	{
 		static const unsigned char szString[] =
 		{
@@ -797,6 +798,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			dwErr = DEBUG_MISSING;
 			goto APPEXIT;
 		}
+	}
+	else
+	{
+		pMsg = _T("WinMain: LoadLibrary()");
+		dwErr = DEBUG_MISSING;
+		dwLastErr = GetLastError();
+		goto APPEXIT;
 	}
 
 	SetChackSumFile();
@@ -4489,9 +4497,9 @@ VOID Hash_SetFileInfo(DWORD dwItem)
 	{
 		TCHAR szMemName[sizeof(size_t) * 2 + 5] = { 0 };
 
-		SetWindowText(tagMainWindow1.hEdit[2], _T("メモリー: tagHashThread1.pFileBuffer"));
+		SetWindowText(tagMainWindow1.hEdit[2], _T("tagHashThread1.pFileBuffer"));
 		VariableView(szMemName, (size_t)tagMainWindow1.tagHashThread1.pFileBuffer, sizeof(tagMainWindow1.tagHashThread1.pFileBuffer), TRUE, FALSE);
-		szMemName[sizeof(size_t) * 2 + 3] = '\0';
+		szMemName[sizeof(size_t) * 2 + 2] = '\0';
 		SetWindowText(tagMainWindow1.hStatic[3], szMemName);
 	}
 
@@ -5608,43 +5616,69 @@ BOOL GetHash(VOID)
 // 引数2の文字列は 100文字以内 にする。
 VOID DebugText(DWORD dwType, const TCHAR* cpInString, DWORD dwLastError)
 {
-	static TCHAR szOutputText[1024] = _T("");
+	static TCHAR szOutputBuf[1024] = _T("");
+	static TCHAR szLastErrorBuf[256] = _T("");
 	DWORD dwRet = 0;
 
 	switch (dwType)
 	{
-	case DEBUG_PLAIN_TEXT:
-		dwRet = (DWORD)(qtcscpy(szOutputText, cpInString) - szOutputText);
-		break;
 	case DEBUG_ALLOC_ERROR:
-		dwRet = MessageFormat(szOutputText, 1024, _T("メモリの動的確保に失敗しました。 - %1"), cpInString);
+#if _MSC_VER > 1300
+		dwRet = (DWORD)_stprintf_s(szOutputBuf, _T("%sに失敗しました。\r\n%s"), _T("メモリの動的確保"), cpInString);
+#else
+		dwRet = (DWORD)_stprintf(szOutputBuf, _T("%sに失敗しました。\r\n%s"), _T("メモリの動的確保"), cpInString);
+#endif
 		break;
 	case DEBUG_MISSING:
-		IF_LIKELY(dwLastError != 0 && tagMainWindow1.pBuf != NULL)
+		IF_LIKELY(dwLastError != 0)
 		{
-			GetLastError_String(tagMainWindow1.pBuf, dwLastError);
-			dwRet = MessageFormat(szOutputText, 1024, _T("%1に失敗しました。%nエラーの詳細(#%2!u!): %3"), cpInString, dwLastError, tagMainWindow1.pBuf);
+			GetLastError_String(szLastErrorBuf, dwLastError);
+			IF_UNLIKELY(szLastErrorBuf[0] == '\0') {
+				qtcscpy(szLastErrorBuf, _T("内容が取得できませんでした。"));
+			}
+
+#if _MSC_VER > 1300
+			dwRet = (DWORD)_stprintf_s(szOutputBuf, _T("%sに失敗しました。\r\nエラーの詳細(#%d): %s"), cpInString, dwLastError, szLastErrorBuf);
+#else
+			dwRet = (DWORD)_stprintf(szOutputBuf, _T("%sに失敗しました。\r\nエラーの詳細(#%d): %s"), cpInString, dwLastError, szLastErrorBuf);
+#endif
 		}
-		else {
-			dwRet = MessageFormat(szOutputText, 1024, _T("%1に失敗しました。"), cpInString);
+		else
+		{
+#if _MSC_VER > 1300
+			dwRet = (DWORD)_stprintf_s(szOutputBuf, _T("%sに失敗しました。"), cpInString);
+#else
+			dwRet = (DWORD)_stprintf(szOutputBuf, _T("%sに失敗しました。"), cpInString);
+#endif
 		}
 
 		IF_UNLIKELY(!dwRet) {
-			dwRet = (DWORD)(qtcscpy(szOutputText, _T("デバッグ文字が長すぎて表示できません。")) - szOutputText);
+			dwRet = (DWORD)(qtcscpy(szOutputBuf, _T("デバッグ文字が表示できません。")) - szOutputBuf);
 		}
 		break;
 	case DEBUG_FALSE_RETURN:
-		dwRet = MessageFormat(szOutputText, 1024, _T("%1 が FALSE 返しました。"), cpInString);
+#if _MSC_VER > 1300
+		dwRet = (DWORD)_stprintf_s(szOutputBuf, _T("%sが「FALSE」を返しました。"), cpInString);
+#else
+		dwRet = (DWORD)_stprintf(szOutputBuf, _T("%sが「FALSE」を返しました。"), cpInString);
+#endif
+		break;
+	default:
+		dwRet = (DWORD)(qtcscpy(szOutputBuf, cpInString) - szOutputBuf);
 		break;
 	}
 
+	IF_UNLIKELY(szOutputBuf[0] == '\0') {
+		dwRet = (DWORD)(qtcscpy(szOutputBuf, _T("メッセージはありません。")) - szOutputBuf);
+	}
+
 #ifdef _DEBUG
-	qtcscpy(szOutputText + dwRet, _T("\r\n"));
-	OutputDebugString(szOutputText);
+	qtcscpy(szOutputBuf + dwRet, _T("\r\n"));
+	OutputDebugString(szOutputBuf);
 #endif
 	dwAppFrag |= APP_WINDOW_NOALPHA;
 
-	MainWindow_MessageBox(tagMainWindow1.hWnd, szOutputText, tagMainWindow1.pTitle, MB_OK | MB_ICONERROR);
+	MainWindow_MessageBox(tagMainWindow1.hWnd, szOutputBuf, tagMainWindow1.pTitle, MB_OK | MB_ICONERROR);
 	
 	dwAppFrag &= ~APP_WINDOW_NOALPHA;
 }
