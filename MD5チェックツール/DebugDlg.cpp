@@ -516,8 +516,8 @@ LRESULT DebugDlg_OnButton1(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	VariableView(szFuncBuf, (size_t)tagMainWindow1.hDllInst, sizeof(tagMainWindow1.hDllInst), TRUE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
 
-	ptr = VariableAddArrayCopy((TCHAR*)ptr, _T("szIconRes_Load"), sizeof(tagMainWindow1.szIconRes_Load));
-	BinaryView(szFuncBuf, tagMainWindow1.szIconRes_Load, sizeof(tagMainWindow1.szIconRes_Load));
+	ptr = VariableAddArrayCopy((TCHAR*)ptr, _T("szIconRes_Load"), ICONRES_SIZE);
+	BinaryView(szFuncBuf, tagMainWindow1.szIconRes_Load, ICONRES_SIZE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
 
 	ptr = qtcscpy(ptr, _T("tagHashThread1"));

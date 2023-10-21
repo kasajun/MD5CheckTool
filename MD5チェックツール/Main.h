@@ -96,6 +96,10 @@
 #define DEBUG_MISSING     					2				// ››‚ÉŽ¸”s‚µ‚Ü‚µ‚½‚Ì•¶Žš—ñ‚ðo—Í‚·‚éB
 #define DEBUG_FALSE_RETURN					3				// ŠÖ”‚ª FALSE •Ô‚µ‚Ü‚µ‚½B
 
+#ifndef ICONRES_SIZE
+#define ICONRES_SIZE						32
+#endif
+
 enum
 {
 	STATUS_ICON0 = 0,
