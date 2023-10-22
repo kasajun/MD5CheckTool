@@ -18,7 +18,7 @@
 <ul>
   <li>Windows 10、11が対象でオプションから設定できます。
   <ul>
-    <li>特に高速計算できるSHA-256、crc32c、xxHashなどファイルの読み込み待ちが起こりやすい場合に有効です。
+    <li>特に高速計算できるSHA-256、crc32c、xxHashなどファイルの読み込み速度が上限になりやすい場合に有効です。
   </ul>
 </ul>
 <p><img src="img/md5checktool_ecoqos_image1.png" width="376" height="385" border="0" alt="[ ]"></p>

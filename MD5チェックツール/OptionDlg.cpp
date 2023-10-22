@@ -211,12 +211,14 @@ LRESULT OptionDlg_OnIdOk(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	if (IsWin10OrGreater())
 	{
 		nRet = (int)SendMessage(tagOptionWindow1.hTab1Checkbox[2], BM_GETCHECK, 0, 0);
-		nRet = SetEcoQos(nRet);
-		if (nRet) {
-			dwAppFrag |= APP_ECOQOS;
-		}
-		else {
-			dwAppFrag &= ~APP_ECOQOS;
+		if (SetEcoQos(nRet))
+		{
+			if (nRet) {
+				dwAppFrag |= APP_ECOQOS;
+			}
+			else {
+				dwAppFrag &= ~APP_ECOQOS;
+			}
 		}
 	}
 
