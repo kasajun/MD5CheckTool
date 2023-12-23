@@ -433,6 +433,96 @@ char* GetUtf8CharToRoot(char* pInFileName)
 	return pInFileName;
 }
 
+size_t GetCharToFileNameLen(const char* cpInFileName)
+{
+	char* pCharFileName;
+	size_t nRet;
+
+	pCharFileName = GetCharToFileName(cpInFileName);
+	nRet = strlen(pCharFileName);
+	return nRet;
+}
+
+size_t GetWCharToFileNameLen(const WCHAR* cpInFileName)
+{
+	WCHAR* pWCharFileName;
+	size_t nRet;
+
+	pWCharFileName = GetWCharToFileName(cpInFileName);
+	nRet = wcslen(pWCharFileName);
+	return nRet;
+}
+
+size_t GetUtf8CharToFileNameLen(const char* cpInFileName)
+{
+	char* pUtf8CharFileName;
+	size_t nRet;
+
+	pUtf8CharFileName = GetUtf8CharToFileName(cpInFileName);
+	nRet = strlen(pUtf8CharFileName);
+	return nRet;
+}
+
+size_t GetCharToFileNameNoExtensionLen(const char* cpInFileName)
+{
+	char* pCharFileName;
+	char* pTmp;
+	size_t nRet;
+
+	pCharFileName = GetCharToFileName(cpInFileName);
+	pTmp = (char*)_mbsrchr((unsigned char*)pCharFileName, '.');
+	if (pTmp != NULL)
+	{
+		*pTmp = '\0';
+		nRet = strlen(pCharFileName);
+		*pTmp = '.';
+	}
+	else {
+		nRet = strlen(pCharFileName);
+	}
+	return nRet;
+}
+
+size_t GetWCharToFileNameNoExtensionLen(const WCHAR* cpInFileName)
+{
+	WCHAR* pWCharFileName;
+	WCHAR* pTmp;
+	size_t nRet;
+
+	pWCharFileName = GetWCharToFileName(cpInFileName);
+	pTmp = (WCHAR*)wcsrchr(pWCharFileName, '.');
+	if (pTmp != NULL)
+	{
+		*pTmp = '\0';
+		nRet = wcslen(pWCharFileName);
+		*pTmp = '.';
+	}
+	else {
+		nRet = wcslen(pWCharFileName);
+	}
+	return nRet;
+}
+
+size_t GetUtf8CharToFileNameNoExtensionLen(const char* cpInFileName)
+{
+	char* pUtf8CharFileName;
+	char* pTmp;
+	size_t nRet;
+
+	pUtf8CharFileName = GetUtf8CharToFileName(cpInFileName);
+	pTmp = (char*)strrchr(pUtf8CharFileName, '.');
+	if (pTmp != NULL)
+	{
+		*pTmp = '\0';
+		nRet = strlen(pUtf8CharFileName);
+		*pTmp = '.';
+	}
+	else {
+		nRet = strlen(pUtf8CharFileName);
+	}
+	return nRet;
+}
+
 char* GetCharToFileName(const char* cpInFileName)
 {
 	char* pTmp;

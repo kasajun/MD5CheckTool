@@ -1949,7 +1949,7 @@ size_t BitView_CoreW(WCHAR* pOutWChar, size_t nBitNum, size_t nSize)
 size_t BitView_Length(size_t nBitNum)
 {
 	nBitNum = nBitNum & (sizeof(size_t) * 2 - 1);
-	return (nBitNum * 31) + (27 * 3) + 30 + 14;
+	return (nBitNum * 31) + ((size_t)27 * 3) + 30 + 14;
 }
 
 size_t BitViewA(char* pOutChar, size_t nBitNum, size_t nSize)
@@ -2324,7 +2324,7 @@ size_t BinaryView_Length(size_t nLen)
 	if (nLen == 0) {
 		return 4;
 	}
-	return nLen * 4 + INT_CEIL(nLen, 16) * 14 + INT_CEIL(nLen, 8) + 79 * 3 + 77 + 12;
+	return nLen * 4 + INT_CEIL(nLen, 16) * 14 + INT_CEIL(nLen, 8) + (size_t)79 * 3 + 77 + 12;
 }
 
 char* CharToBinaryViewToCharA(const char* cpInChar, size_t nLen, size_t nStart)

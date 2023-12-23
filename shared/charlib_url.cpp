@@ -70,7 +70,7 @@ char* CharToUrlEncode(const char* cpInChar)
 			pDst++;
 		}
 		else
-		{		
+		{
 			*pDst++ = '%';
 			*pDst++ = cpHexCharLower[(szByte & 0xF0) >> 4];
 			*pDst++ = cpHexCharLower[(szByte & 0x0F)];

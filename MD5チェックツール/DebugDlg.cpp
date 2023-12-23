@@ -2,7 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "DebugDlg.h"
+#include "..\shared\WindowSize.h"
+
 
 // グローバル変数の定義します:
 DebugWindow tagDebugWindow1;
@@ -444,7 +445,6 @@ LRESULT DebugDlg_OnButton1(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	ptr = qtcscpy(ptr, _T("dwAppFrag"));
 	BitView(szFuncBuf, dwAppFrag, sizeof(dwAppFrag));
 	ptr = IndentAddCopy(ptr, szFuncBuf, 0);
-
 	ptr = qtcscpy(ptr, _T("\r\n"));
 
 #if _MSC_VER > 1900
@@ -1031,6 +1031,7 @@ LRESULT DebugDlg_OnButton1(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	ptr = qtcscpy(ptr, _T("hListViewIcon"));
 	ArrayView(szFuncBuf, tagFileListWindow1.hListViewIcon, sizeof(size_t), SIZEOF_NUM(tagFileListWindow1.hListViewIcon), TRUE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
+	ptr--;
 	ptr = qtcscpy(ptr, _T("};\r\n\r\n"));
 
 	ptr = qtcscpy(ptr, _T("tagAboutWindow"));
@@ -1080,7 +1081,7 @@ LRESULT DebugDlg_OnButton1(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	ptr = qtcscpy(ptr, _T("hWnd"));
 	VariableView(szFuncBuf, (size_t)tagOptionWindow1.hWnd, sizeof(tagOptionWindow1.hWnd), TRUE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
-	
+
 	ptr = qtcscpy(ptr, _T("hTab"));
 	VariableView(szFuncBuf, (size_t)tagOptionWindow1.hTab, sizeof(tagOptionWindow1.hTab), TRUE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
@@ -1442,6 +1443,9 @@ LRESULT DebugDlg_OnButton3(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	VariableView(szFuncBuf, q, sizeof(q), TRUE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
 	*ptr++ = '\t';
+	*ptr++ = '/';
+	*ptr++ = '/';
+	*ptr++ = ' ';
 	FileTimeToTChar(szFuncBuf, &cptagHashFile_Recode->ftFileLastWriteTime);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
 

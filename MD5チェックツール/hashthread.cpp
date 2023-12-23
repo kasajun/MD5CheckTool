@@ -1717,7 +1717,7 @@ unsigned __stdcall HashThread_MultiFile_Thread(void* lpThread)
 			OutputDebugString(szDebugText);
 		}
 #endif
-	
+
 		hFile = CreateFile(ptagHashFile_Recode->szFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwCreateFileAttributes, NULL);
 		IF_UNLIKELY(hFile == INVALID_HANDLE_VALUE)
 		{
@@ -1813,16 +1813,6 @@ FILE_EXIT:
 	ptagHashThread->llFileReadSize = 0;
 	ptagHashThread->llFileSize = 0;
 	memcpy(ptagHashThread->bHashByte, ptagHashFile_Recode->pFileHashByte, HASH_LEN);
-
-	IF_UNLIKELY(ptagHashThread->nSuspendMessage & APP_PRGRESS_EXIT)
-	{
-		HashThread_ClearBuffer(ptagHashThread);
-
-#ifdef _DEBUG
-		OutputDebugString(_T("HashThread: HashThread_MultiFile_Thread(): ‹Ù‹}I—¹\r\n"));
-#endif
-
-	}
 
 	IF_LIKELY(nRet != FALSE)
 	{

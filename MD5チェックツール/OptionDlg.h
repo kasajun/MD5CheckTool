@@ -5,12 +5,6 @@
 #ifndef __OPTIONDLG_H_BE50A9D5_D6B5_4c8b_AD33_26407F1618C0__
 #define __OPTIONDLG_H_BE50A9D5_D6B5_4c8b_AD33_26407F1618C0__
 
-#include "FileListDlg.h"
-#include "AboutDlg.h"
-#include "hashthread.h"
-#include "Main.h"
-#include "resource.h"
-
 typedef struct tagOptionWindow {
 	DWORD dwStructSize; // バージョンアップ用に予約
 	HWND hWnd;

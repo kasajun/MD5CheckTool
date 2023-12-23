@@ -338,7 +338,7 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 #else
 					pEdition = _T("å›ä∑ÉÇÅ[Éh");
 					dwOSFrag |= _OS_IS_GOKANMODE;
-#endif	
+#endif
 				}
 				break;
 			case 2:

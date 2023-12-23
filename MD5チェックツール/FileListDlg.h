@@ -5,12 +5,6 @@
 #ifndef __FILELISTDLG_H_B496E73F_D09C_4c6b_8D82_BC24C3691B1E__
 #define __FILELISTDLG_H_B496E73F_D09C_4c6b_8D82_BC24C3691B1E__
 
-#include "Main.h"
-#include "AboutDlg.h"
-#include "hashthread.h"
-#include "..\shared\WindowSize.h"
-#include "resource.h"
-
 #define APP_FILEDLG_FOLDER_OPEN		0x00000001
 #define APP_FILEDLG_FOLDER_EXIT		0x00000002
 

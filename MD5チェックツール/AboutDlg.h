@@ -5,9 +5,6 @@
 #ifndef __ABOUTDLG_H_CD3DE2B1_512E_4fea_B75B_6767B924B0EE__
 #define __ABOUTDLG_H_CD3DE2B1_512E_4fea_B75B_6767B924B0EE__
 
-#include "Main.h"
-#include "resource.h"
-
 typedef struct tagAboutWindow {
 	DWORD dwStructSize;
 	HWND hWnd;

@@ -2,7 +2,7 @@
 //
 #include "stdafx.h"
 #include <winioctl.h>
-
+#include "..\shared\WindowSize.h"
 
 // グローバル変数の定義します:
 INITCOMMONCONTROLSEX InitCtrls;
@@ -1119,6 +1119,7 @@ LRESULT MainWindow_OnMessageInit(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 	dwAppFrag &= ~(APP_HASH_INPUT_EDIT | APP_LASTERROR | APP_CALCEL | APP_HASHFILE_ADDMODE);
 
+	SetTimer(hWnd, TIMER, 250, NULL);
 	DragAcceptFiles(hWnd, FALSE);
 	SendMessage(tagMainWindow1.hProgress[0], PBM_SETPOS, 0, 0);
 	SendMessage(tagMainWindow1.hBmp[0], STM_SETIMAGE, IMAGE_ICON, (LPARAM)tagMainWindow1.hStatusIcon[STATUS_ICON_PLAY]);
@@ -1156,7 +1157,6 @@ LRESULT MainWindow_OnMessageInit(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	tagMainWindow1.dwTimeViewFileCount = 0;
 	tagMainWindow1.nCmpCount = 0;
 	tagMainWindow1.nCmpErrorCount = 0;
-	SetTimer(hWnd, TIMER, 500, NULL);
 	tagMainWindow1.dwStartTime = tagMainWindow1.tagHashThread1.dwStartTime;
 	iTaskbarList3_SetProgressState(tagMainWindow1.pTaskbarList3, hWnd, TBPF_INDETERMINATE);
 	iTaskbarList3_DeleteOverlayIcon(tagMainWindow1.pTaskbarList3, hWnd);
@@ -2364,7 +2364,7 @@ LRESULT MainWindow_OnMessageClipboardPaste(HWND hWnd, WPARAM wParam, LPARAM lPar
 	}
 
 	dwItem = HashThread_GetCountItem(&tagMainWindow1.tagHashThread1);
-				
+
 	if (dwItem > 0 && HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, tagMainWindow1.dwOpenItem)->dwFileHashType == tagMainWindow1.tagHashThread1.dwHashType) {
 		ClipboardPaste();
 	}
@@ -2609,7 +2609,7 @@ LRESULT MainWindow_Edit2_OnChange(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(lParam);
 	int nRet = 0;
 	const tagHashThread_FileRecode* cptagHashFile_Recode = HashThread_GetFileRecode(&tagMainWindow1.tagHashThread1, tagMainWindow1.dwOpenItem);
-					
+
 	IF_UNLIKELY(cptagHashFile_Recode->dwFileAttributes == (DWORD)-1) {
 		return FALSE;
 	}
@@ -4640,7 +4640,7 @@ BOOL OpenFile(VOID)
 		if (dwErrCount == 0)
 		{
 			tagHashThread_FileRecode* ptagHashFile_Recode = HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, HashThread_GetCountItem_Core(&tagMainWindow1.tagHashThread1) - 1);
-			
+
 #ifndef _NODLL
 			// 複数選択時に次回のフォルダー表示がおかしくならないように最後のファイルにしておきます。
 			_tcscpy_s(tagMainWindow1.pOfn1Buf, MAX_PATH_SIZE - 1, ptagHashFile_Recode->szFileName);
@@ -4794,7 +4794,7 @@ CREATE_FILENAME:
 		if (pExt != NULL) {
 			nRet += tagMainWindow1.tagHashThread1.nHashExtLen - _tcslen(pExt);
 		}
-}
+	}
 	else
 	{
 		*(tagMainWindow1.pStBuf) = '\\';
@@ -4814,7 +4814,7 @@ CREATE_FILENAME:
 		return FALSE;
 	}
 
-#ifdef _UNICODE	
+#ifdef _UNICODE
 	qwcscpy(tagMainWindow1.pHashFile + nCount, tagMainWindow1.pStBuf);
 #else
 	nCount = strlen(tagMainWindow1.pHashFile);
@@ -5190,7 +5190,7 @@ VOID Hash_TimeView(BOOL nIsView)
 				llVal = (DWORD)ceil((double)llVal / (double)tagMainWindow1.llTimeView1_TransPerSec);
 			}
 			tagMainWindow1.dwTimeView1_Time = (DWORD)llVal;
-			
+
 			StrFromTimeInterval(tagMainWindow1.pTimeView1_Time, NUMBER_LOADSTRING, tagMainWindow1.dwTimeView1_Time * 1000, 3);
 			MessageFormat(tagMainWindow1.pTimeText, MAX_LOADSTRING, tagMainWindow1.pTimeText1[0], tagMainWindow1.pTimeView1_Time, tagMainWindow1.pTimeView1_Size[0], tagMainWindow1.pTimeView1_Size[1], tagMainWindow1.pTimeView1_TransPerSec);
 			SetWindowText(tagMainWindow1.hStatic[1], tagMainWindow1.pTimeText);
@@ -5679,7 +5679,7 @@ VOID DebugText(DWORD dwType, const TCHAR* cpInString, DWORD dwLastError)
 	dwAppFrag |= APP_WINDOW_NOALPHA;
 
 	MainWindow_MessageBox(tagMainWindow1.hWnd, szOutputBuf, tagMainWindow1.pTitle, MB_OK | MB_ICONERROR);
-	
+
 	dwAppFrag &= ~APP_WINDOW_NOALPHA;
 }
 

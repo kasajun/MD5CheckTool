@@ -5,9 +5,6 @@
 #ifndef __DEBUGDLG_H_B032692C_5D22_4c53_93B0_C0A8B373CA51__
 #define __DEBUGDLG_H_B032692C_5D22_4c53_93B0_C0A8B373CA51__
 
-#include "Main.h"
-#include "resource.h"
-
 typedef struct tagDebugWindow {
 	DWORD dwStructSize;
 	HWND hWnd;

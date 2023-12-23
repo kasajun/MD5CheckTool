@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "FileListDlg.h"
+#include "..\shared\WindowSize.h"
 
 
 // グローバル変数の定義します:
@@ -58,7 +58,7 @@ static int ListView_HashStringWidth(HWND hList, DWORD dwHashType)
 	const DWORD dwHashLen = HashThread_GetHashLen(dwHashType);
 	TCHAR* ptr = NULL;
 	size_t* aligned_dst = (size_t*)szHash;
-	
+
 	ptr = qtcscpy(szHash, HashThread_GetHashName(dwHashType));
 	*ptr++ = ':';
 	*ptr++ = ' ';
@@ -800,11 +800,7 @@ LRESULT FileListDlg_OnItemChanged(HWND hWnd, WPARAM wParam, LPARAM lParam)
 			p = qtcscpy(tagFileListWindow1.pStBuf, _T("選択された項目: "));
 			for (DWORD dwI = 0; dwI < tagFileListWindow1.tagFileListItem1.dwListSelectCount; dwI++)
 			{
-#ifndef _NODLL
-				_itot_s(*(tagFileListWindow1.tagFileListItem1.dwListSelectItem + dwI), szNum, 10);
-#else
-				_itot(*(tagFileListWindow1.tagFileListItem1.dwListSelectItem + dwI), szNum, 10);
-#endif
+				ITOT_FUNC(*(tagFileListWindow1.tagFileListItem1.dwListSelectItem + dwI), szNum, 10);
 				p = qtcscpy(qtcscpy(p, szNum), _T(", "));
 			}
 			p -= 2;
@@ -1862,7 +1858,7 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 	pRtf = qstrcpy(pRtf, HASH_RTF_FOOTER);
 
 	pHtml = qstrcpy(pHtml, HASH_HTML_FOOTER);
-	
+
 	SetClipboardText(hWnd, pBuf, pRtfBuf, pHtmlBuf);
 	free(pBuf);
 	free(pRtfBuf);

@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 
-#define MAX_STACK_DATA 16000
+#define MAX_STACK_DATA 0x8000
 typedef struct stack_st
 {
 	size_t arr[MAX_STACK_DATA];

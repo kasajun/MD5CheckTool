@@ -286,7 +286,7 @@ CF_UNICODETEXT_END:
 		pMem = (char*)GlobalLock(hg3);
 		IF_UNLIKELY(pMem == NULL) {
 			goto CF_RTFTEXT_END;
-		}	
+		}
 		qstrcpy(pMem, pRtfText);
 		GlobalUnlock(hg3);
 		uFormat = RegisterClipboardFormatW(L"Rich Text Format");

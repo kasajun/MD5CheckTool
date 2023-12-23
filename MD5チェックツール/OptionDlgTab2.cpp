@@ -111,7 +111,7 @@ LRESULT OptionDlgTab2_OnButton1(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 	int i = 0;
-	
+
 	i = LoadString(tagMainWindow1.hInst, IDS_CHACKSUM_FILENAME, tagOptionWindow1.pBuf, MAX_STRINGTABLE);
 	if (i > 0)
 	{

@@ -216,7 +216,7 @@ LRESULT OptionDlgTab3_OnCheck1(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 	int nRet = 0;
-	
+
 	nRet = SendMessage(tagOptionWindow1.hTab3Checkbox[0], BM_GETCHECK, 0, 0) != 0;
 	if (nRet) {
 		tagOptionWindow1.dwRadioState[0] |= 0x00000001;
@@ -233,7 +233,7 @@ LRESULT OptionDlgTab3_OnCheck2(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 	int nRet = 0;
-	
+
 	nRet = SendMessage(tagOptionWindow1.hTab3Checkbox[1], BM_GETCHECK, 0, 0) != 0;
 	if (nRet) {
 		tagOptionWindow1.dwRadioState[0] |= 0x00000002;
@@ -250,7 +250,7 @@ LRESULT OptionDlgTab3_OnCheck3(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 	int nRet = 0;
-	
+
 	nRet = SendMessage(tagOptionWindow1.hTab3Checkbox[2], BM_GETCHECK, 0, 0) != 0;
 	if (nRet) {
 		tagOptionWindow1.dwRadioState[0] |= 0x00000004;

@@ -318,6 +318,15 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 char* GetCharToRoot(char* pInFileName);
 WCHAR* GetWCharToRoot(WCHAR* pInFileName);
 
+size_t GetCharToFileNameLen(const char* cpInFileName);
+size_t GetCharToFileNameNoExtensionLen(const char* cpInFileName);
+
+size_t GetWCharToFileNameLen(const WCHAR* cpInFileName);
+size_t GetWCharToFileNameNoExtensionLen(const WCHAR* cpInFileName);
+
+size_t GetUtf8CharToFileNameLen(const char* cpInFileName);
+size_t GetUtf8CharToFileNameNoExtensionLen(const char* cpInFileName);
+
 char* GetCharToFileName(const char* cpInFileName);
 WCHAR* GetWCharToFileName(const WCHAR* cpInFileName);
 
@@ -364,60 +373,6 @@ WCHAR* SetCharToHexWChar(const char cpInChar, WCHAR* outBuf);
 
 char* SetCharToHexLowerChar(const char cpInChar, char* outBuf);
 WCHAR* SetCharToHexLowerWChar(const char cpInChar, WCHAR* outBuf);
-
-char* BinaryToByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryToByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo2ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo2ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo4ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo4ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo8ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo8ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo12ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo12ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo16ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo16ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo20ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo20ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo24ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo24ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo28ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo28ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo32ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo32ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo36ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo36ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo40ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo40ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo44ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo44ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo48ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo48ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo52ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo52ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo56ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo56ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo60ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo60ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
-
-char* BinaryTo64ByteChar(char* pOutChar, const BYTE* cpInBinary, BOOL bIsUpper);
-WCHAR* BinaryTo64ByteWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, BOOL bIsUpper);
 
 char* BinaryToChar(char* pOutChar, const BYTE* cpBinary, const DWORD dwLength, BOOL bIsUpper = FALSE);
 WCHAR* BinaryToWChar(WCHAR* pWChar, const BYTE* cpBinary, const DWORD dwLength, BOOL bIsUpper = FALSE);
@@ -533,6 +488,8 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define WCharToTCharFile WCharToWCharFileW
 
 #define GetTCharToRoot GetWCharToRoot
+#define GetTCharToFileNameLen GetWCharToFileNameLen
+#define GetTCharToFileNameNoExtensionLen GetWCharToFileNameNoExtensionLen
 #define GetTCharToFileName GetWCharToFileName
 #define GetTCharToExtension GetWCharToExtension
 #define GetTCharToFolderName GetWCharToFolderName
@@ -606,6 +563,8 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define WCharToTCharFile WCharToCharFileA
 
 #define GetTCharToRoot GetCharToRoot
+#define GetTCharToFileNameLen GetCharToFileNameLen
+#define GetTCharToFileNameNoExtensionLen GetCharToFileNameNoExtensionLen
 #define GetTCharToFileName GetCharToFileName
 #define GetTCharToExtension GetCharToExtension
 #define GetTCharToFolderName GetCharToFolderName

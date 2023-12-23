@@ -2489,7 +2489,7 @@ static xxh_u32 XXH_swap32 (xxh_u32 x)
 		mov x, eax
 	}
 	return x;
-#else	
+#else
 	return  ((x << 24) & 0xff000000 ) |
 			((x <<  8) & 0x00ff0000 ) |
 			((x >>  8) & 0x0000ff00 ) |

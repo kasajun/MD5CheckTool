@@ -5,9 +5,6 @@
 #ifndef __OPTIONDLGTAB4_H_BE50A9D5_D6B5_4c8b_AD33_26407F1618C0__
 #define __OPTIONDLGTAB4_H_BE50A9D5_D6B5_4c8b_AD33_26407F1618C0__
 
-#include "OptionDlg.h"
-
-
 // このコード モジュールに含まれる関数の宣言を転送します:
 LRESULT CALLBACK OptionDlgTab4_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 

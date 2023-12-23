@@ -14,6 +14,7 @@
 #include <string.h>
 #include "md2.h"
 #include "cpuid.h"
+#include "c20.h"
 
 /*
  * The magic S table - I have converted it to hex since it is basically just
@@ -77,12 +78,10 @@ int MD2_Update(MD2_CTX* c, const unsigned char* data, size_t len)
 {
 	register unsigned char* p;
 
-	/*
-	if (len == 0)
+	IF_UNLIKELY(len == 0)
 	{
 		return 1;
 	}
-	*/
 
 	p = c->data;
 	if (c->num != 0)
@@ -194,10 +193,7 @@ unsigned char* MD2(const unsigned char* d, size_t n, unsigned char* md)
 	MD2_CTX c;
 	static unsigned char m[MD2_DIGEST_LENGTH];
 
-	if (md == NULL)
-#if _MSC_VER > 1925 && _MSVC_LANG >= 202002L
-		[[unlikely]]
-#endif		
+	IF_UNLIKELY(md == NULL)
 	{
 		md = m;
 	}
