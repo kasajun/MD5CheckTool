@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "..\shared\cpuid.h"
 #include "..\shared\ecoqos.h"
+#include "..\shared\WindowSize.h"
 
 // グローバル変数の定義します:
 OptionWindow tagOptionWindow1;
@@ -23,6 +24,9 @@ extern int nEditMarginX[4];
 extern int nEditMarginY[4];
 extern int nStringX[3];
 extern int nStringY[3];
+
+static DWORD gLoad_dwAppFrag = (DWORD)-1;
+
 
 #define OPTIONDLG_X 230
 #define OPTIONDLG_Y 237
@@ -925,6 +929,9 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 #endif
 
+	gLoad_dwAppFrag = dwAppFrag;
+
+
 	GetPrivateProfileString(_T("FileList"), _T("ListViewTextColorHashComp"), _T(""), szBuf, 11, cpInIniFile);
 	if (TCHAR_COMP_TO_INT_2CHAR(szBuf, _T('0'), _T('x'))) {
 		STSCANF_FUNC(szBuf + 2, _T("%x"), &tagFileListWindow1.clListTextColor[0]);
@@ -954,6 +961,10 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 VOID SetIniFileSetting(const TCHAR* cpInIniFile)
 {
 	TCHAR szBuf[MAX_STRINGTABLE] = _T("");
+
+	if (gLoad_dwAppFrag == dwAppFrag) {
+		return;
+	}
 
 	if (!SetRemoveReadOnly(cpInIniFile)) {
 		return;

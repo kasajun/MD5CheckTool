@@ -11,6 +11,9 @@ int nDpi;
 int nDeskTopX;
 int nDeskTopY;
 
+static int gLoad_nState = -1;
+static RECT gLoad_rc = { (LONG)-1 };
+
 
 int GetDpi(HWND hWnd)
 {
@@ -162,11 +165,18 @@ BOOL WindowSize_SaveState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 	}
 MONITOR_INFO_EXIT:
 
-	STPRINTF_FUNC(szNum, _T("%d,%d,%d,%d"), rc.left, rc.top, rc.right, rc.bottom);
-	WritePrivateProfileString(cpInWindowName, szWindowSizeBuf, szNum, cpInIniFile);
 
-	ITOT_FUNC(nState, szNum, 10);
-	WritePrivateProfileString(cpInWindowName, _T("WindowState"), szNum, cpInIniFile);
+	if (rc.left != gLoad_rc.left || rc.top != gLoad_rc.top || rc.right != gLoad_rc.right || rc.bottom != gLoad_rc.bottom)
+	{
+		STPRINTF_FUNC(szNum, _T("%d,%d,%d,%d"), rc.left, rc.top, rc.right, rc.bottom);
+		WritePrivateProfileString(cpInWindowName, szWindowSizeBuf, szNum, cpInIniFile);
+	}
+
+	if (gLoad_nState != nState)
+	{
+		ITOT_FUNC(nState, szNum, 10);
+		WritePrivateProfileString(cpInWindowName, _T("WindowState"), szNum, cpInIniFile);
+	}
 	return TRUE;
 }
 
@@ -299,14 +309,14 @@ BOOL WindowSize_LoadState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 	}
 MONITOR_INFO_EXIT:
 
-	//デフォルトのウィンドウ位置取得
+	// デフォルトのウィンドウ位置取得
 	nRet = GetWindowRect(hWnd, &rc);//GetClientRect
 	IF_UNLIKELY(nRet == FALSE) {
 		return FALSE;
 	}
 
-	//ウィンドウ位置読み込み
-	//無ければデフォルトを返す
+	// ウィンドウ位置読み込み
+	// 無ければデフォルトを返す
 	nState = (int)GetPrivateProfileString(cpInWindowName, szWindowSizeBuf, _T(""), szNum, SIZEOF_NUM(szNum), cpInIniFile);
 	if (nState == 0) {
 		return FALSE;
@@ -317,9 +327,16 @@ MONITOR_INFO_EXIT:
 		OutputDebugString(_T("WindowSize: WindowSize_LoadState()\r\nState: 0\r\n"));
 #endif
 		STSCANF_FUNC(szNum, _T("%ld,%ld,%ld,%ld"), &(rc.left), &(rc.top), &(rc.right), &(rc.bottom));
+
+		gLoad_rc.left = rc.left;
+		gLoad_rc.top = rc.top;
+		gLoad_rc.right = rc.right;
+		gLoad_rc.bottom = rc.bottom;
 	}
 
 	nState = GetPrivateProfileInt(cpInWindowName, _T("WindowState"), -1, cpInIniFile);
+	gLoad_nState = nState;
+
 	n = rc.left - rcWnd.left;
 	rcWnd.left += n;
 	rcWnd.right += n;
