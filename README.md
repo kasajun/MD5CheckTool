@@ -57,7 +57,7 @@
   </ul>
   <li><strong>Windows 11</strong>
   <ul>
-    <li>バージョン 22H2で動作確認
+    <li>バージョン 22H2～23H2で動作確認
     <li class="warning">上記より前のバージョンでも動作可能ですが不具合の対応はできません。
   </ul>
 </ul>
@@ -75,10 +75,10 @@
       <li class="information">適用しなくても実行可能ですが、ウィンドウが大きくなって見づらくなります。
       <li class="information">Office 2000など「MS UI Gothic」フォントがインストールされていれば適用する必要ありません。
     </ul>
-    <li class="warning"><s>SHA-1、SHA-2はCPU拡張命令で計算できません。</s>
+    <li class="warning">SHA-1、SHA-2はCPU拡張命令で計算できません。
     <ul>
-      <li class="warning"><s>Windows 95がSSEに対応していないことにより強制終了します。 (更新: 2023年7月10日)</s>
-      <li class="information">計算時にSSEを使わないようにすることで解決 (更新: 2023年7月17日)
+      <li class="warning"><s>Windows 95がSSEに対応していないことにより強制終了します。 (更新:2023年7月10日)</s>
+      <li class="information">計算時にSSEを使わないようにすることで強制終了は解決できました。 (更新:2023年7月17日)
     </ul>
   </ul>
   <li><strong>Windows 98 (初期版)</strong>
@@ -89,7 +89,7 @@
     <li><a href="runtime/ReadMe.me#VC6RUNTIME">Visual C++ 6.0 SP6ランタイム</a>のインストール推奨です。
     <li class="warning"><s>ファイルの読み込みが遅くなる場合があります。 (特にWindows MEは影響が大きいです)</s>
     <ul>
-      <li class="information">ネステッドページング無効化によるオーバーヘッドが原因で、patcher9xの適用で解決 (追記: 2023年7月10日)
+      <li class="information">ネステッドページングの無効化によるオーバーヘッドが原因で、<a href="https://github.com/JHRobotics/patcher9x">patcher9x</a>の適用で解決できました。 (追記:2023年7月10日)
     </ul>
   </ul>
 </ul>
@@ -116,7 +116,7 @@
   </ul>
   <li><strong>Windows 11</strong>
   <ul>
-    <li>バージョン 22H2で動作確認
+    <li>バージョン 22H2～23H2で動作確認
     <li class="warning">上記より前のバージョンでも動作可能ですが不具合の対応はできません。
   </ul>
 </ul>
