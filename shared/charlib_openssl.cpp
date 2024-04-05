@@ -272,10 +272,10 @@ unsigned __int64 FileToFileAes256DecryptCore(FILE* fpInFile, FILE* fpOutFile, un
 	EVP_CIPHER_CTX* cpCTX = NULL;
 	size_t deciv[(sizeof(iv) + 8) / sizeof(size_t)] = { 0 };
 	size_t byHash[32 / sizeof(size_t)] = { 0 };
-	__int64 nFileReading;
-	unsigned char* pFileWriteBuf;
+	__int64 nFileReading = 0;
+	unsigned char* pFileWriteBuf = NULL;
 	int nOutLength = 0;
-	unsigned char* key;
+	unsigned char* key = NULL;
 	size_t nRet = 0;
 	int nIsMalloc = 0;
 	int nPaddingSize = 0;
@@ -823,7 +823,7 @@ WCHAR* Base64ToAes256DecryptToWChar(const char* cpInEncrypt, WCHAR* pOut)
 unsigned char* FileToDigestCore(FILE* fpFile, const EVP_MD* cpDigestType, unsigned char* pOutHash, unsigned char* pFileReadBuf, size_t nFileReadBufSize, __int64 *nFileReadingSize)
 {
 	EVP_MD_CTX* mdCTX = NULL;
-	__int64 nFileReading;
+	__int64 nFileReading = 0;
 	int nIsMalloc = 0;
 	int nRet = 0;
 

@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <openssl/evp.h>
 
-#pragma comment(lib, "libcrypto.lib")
+//#pragma comment(lib, "libcrypto.lib")
 
 #define AES256_DATA_SIZE(n) ((n) + (16 - (n) % 16))
 
@@ -66,12 +66,12 @@ CHAR_TO_HASH_CHAR_EXPORT_FUNC(SHA3_512)
 #ifdef _UNICODE
 #define FileToFileAes256Encrypt FileToFileAes256EncryptW
 #define FileToFileAes256Decrypt FileToFileAes256DecryptW
-#define FileToFileAes256Encrypt FileToFileAes256EncryptW
-#define FileToFileAes256Decrypt FileToFileAes256DecryptW
+#define FileToDigest			FileToDigestW
+
 #else
 #define FileToFileAes256Encrypt FileToFileAes256EncryptA
 #define FileToFileAes256Decrypt FileToFileAes256DecryptA
-#define FileToFileAes256Encrypt FileToFileAes256EncryptA
-#define FileToFileAes256Decrypt FileToFileAes256DecryptA
+#define FileToDigest			FileToDigestA
+
 #endif
 #endif

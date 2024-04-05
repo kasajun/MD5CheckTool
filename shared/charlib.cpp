@@ -804,26 +804,26 @@ char* CharFileToCharW(const WCHAR* cpInFileName)
 		return NULL;
 	}
 
-	nRet = fread(szBuf, 4, 1, pInFilePointer);
+	nRet = fread(szBuf, 1, 4, pInFilePointer);
 	if (CHAR_COMP_TO_INT_2CHAR(szBuf, 0xFF, 0xFE))
 	{
 		memcpy(pBufChar, szBuf + 2, 2);
 		if (nRet >= 4) {
-			nRet = fread(pBufChar + 2, iBufferSize - 4, 1, pInFilePointer);
+			nRet = fread(pBufChar + 2, 1, iBufferSize - 4, pInFilePointer);
 		}
 	}
-	else if (CHAR_COMP_TO_INT_3CHAR(pBufChar, 0xEF, 0xBB, 0xBF))
+	else if (CHAR_COMP_TO_INT_3CHAR(szBuf, 0xEF, 0xBB, 0xBF))
 	{
 		memcpy(pBufChar, szBuf + 3, 1);
 		if (nRet >= 4) {
-			nRet = fread(pBufChar + 3, iBufferSize - 4, 1, pInFilePointer);
+			nRet = fread(pBufChar + 3, 1, iBufferSize - 4, pInFilePointer);
 		}
 	}
 	else
 	{
 		memcpy(pBufChar, szBuf, 4);
 		if (nRet >= 4) {
-			nRet = fread(pBufChar + 4, iBufferSize - 4, 1, pInFilePointer);
+			nRet = fread(pBufChar + 4, 1, iBufferSize - 4, pInFilePointer);
 		}
 	}
 	fclose(pInFilePointer);
@@ -858,26 +858,26 @@ char* CharFileToCharA(const char* cpInFileName)
 		return NULL;
 	}
 
-	nRet = fread(szBuf, 4, 1, pInFilePointer);
+	nRet = fread(szBuf, 1, 4, pInFilePointer);
 	if (CHAR_COMP_TO_INT_2CHAR(szBuf, 0xFF, 0xFE))
 	{
 		memcpy(pBufChar, szBuf + 2, 2);
 		if (nRet >= 4) {
-			nRet = fread(pBufChar + 2, iBufferSize - 4, 1, pInFilePointer);
+			nRet = fread(pBufChar + 2, 1, iBufferSize - 4, pInFilePointer);
 		}
 	}
 	else if (CHAR_COMP_TO_INT_3CHAR(pBufChar, 0xEF, 0xBB, 0xBF))
 	{
 		memcpy(pBufChar, szBuf + 3, 1);
 		if (nRet >= 4) {
-			nRet = fread(pBufChar + 3, iBufferSize - 4, 1, pInFilePointer);
+			nRet = fread(pBufChar + 3, 1, iBufferSize - 4, pInFilePointer);
 		}
 	}
 	else
 	{
 		memcpy(pBufChar, szBuf, 4);
 		if (nRet >= 4) {
-			nRet = fread(pBufChar + 4, iBufferSize - 4, 1, pInFilePointer);
+			nRet = fread(pBufChar + 4, 1, iBufferSize - 4, pInFilePointer);
 		}
 	}
 	fclose(pInFilePointer);
