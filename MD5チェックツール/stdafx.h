@@ -61,7 +61,6 @@
 #include "..\shared\getopt.h"
 #include "..\shared\os.h"
 #include "..\shared\os_full.h"
-#include "..\shared\darkmode.h"
 #include "..\shared\IniFilePath.h"
 #include "..\shared\clipboard.h"
 #include "..\shared\iTaskbarList3.h"
@@ -90,16 +89,20 @@
 
 
 // <CommCtrl.h>
-// #if(_WIN32_WINNT >= 0x0501)
 #ifndef PBS_MARQUEE
-# define PBS_MARQUEE				0x08
-#endif
+# define PBS_MARQUEE			0x08
+#endif // _WIN32_WINNT >= 0x0501
+
 #ifndef PBM_SETMARQUEE
 # define PBM_SETMARQUEE			(WM_USER+10)
-#endif
-//#endif      // _WIN32_WINNT >= 0x0501
+#endif // _WIN32_WINNT >= 0x0501
+
+#ifndef WM_THEMECHANGED
+# define WM_THEMECHANGED		0x031A
+#endif /* _WIN32_WINNT >= 0x0501 */
 
 #ifndef WM_DPICHANGED
 # define WM_DPICHANGED			0x02E0
-#endif
+#endif /* WINVER >= 0x0601 */
+
 #endif

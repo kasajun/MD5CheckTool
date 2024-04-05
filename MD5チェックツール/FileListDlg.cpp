@@ -14,8 +14,6 @@ extern AboutWindow tagAboutWindow1;
 extern DWORD dwAppFrag;
 extern DWORD dwAppState;
 extern DWORD dwHashFileOutToCopyFolderMode;
-extern BOOL g_darkModeSupported;
-extern BOOL g_darkModeEnabled;
 extern int nEditMarginX[4];
 extern int nEditMarginY[4];
 extern int nStringX[4];
@@ -214,7 +212,6 @@ LRESULT FileListDlg_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	if (~dwAppFrag & APP_ENABLE_MINIMAM_HANDLE)
 	{
 		SetEnableThemeDialogTexture(hWnd);
-		DarkMode_SetWindowTheme(hWnd);
 		SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM)tagMainWindow1.hIcon[0]);
 	}
 
@@ -639,15 +636,10 @@ LRESULT FileListDlg_OnSysColorChange(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT FileListDlg_OnThemeChanged(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(hWnd);
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 
-	if (g_darkModeSupported)
-	{
-		AllowDarkModeForWindow(hWnd, g_darkModeEnabled);
-		RefreshTitleBarThemeColor(hWnd);
-		UpdateWindow(hWnd);
-	}
 	return TRUE;
 }
 

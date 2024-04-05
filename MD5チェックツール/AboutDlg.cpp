@@ -10,8 +10,6 @@ AboutWindow tagAboutWindow1;
 // 外部ファイルの変数定義します。
 extern MainWindow tagMainWindow1;
 extern DWORD dwAppFrag;
-extern BOOL g_darkModeSupported;
-extern BOOL g_darkModeEnabled;
 extern int nEditMarginX[3];
 extern int nEditMarginY[3];
 extern int nStringX[3];
@@ -69,7 +67,6 @@ LRESULT AboutDlg_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 		SetEnableThemeDialogTexture(hWnd);
 		SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM)tagMainWindow1.hIcon[0]);
-		DarkMode_SetWindowTheme(hWnd);
 	}
 
 	tagAboutWindow1.nWindowMessage = RegisterWindowMessage(_T("AboutDlg"));
@@ -238,15 +235,10 @@ LRESULT AboutDlg_OnSysColorChange(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT AboutDlg_OnThemeChanged(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(hWnd);
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 
-	if (g_darkModeSupported)
-	{
-		AllowDarkModeForWindow(hWnd, g_darkModeEnabled);
-		RefreshTitleBarThemeColor(hWnd);
-		UpdateWindow(hWnd);
-	}
 	return TRUE;
 }
 

@@ -8,8 +8,6 @@
 extern OptionWindow tagOptionWindow1;
 extern MainWindow tagMainWindow1;
 extern DWORD dwAppFrag;
-extern BOOL g_darkModeSupported;
-extern BOOL g_darkModeEnabled;
 extern int nEditMarginX[4];
 extern int nEditMarginY[4];
 extern int nStringX[3];
@@ -199,14 +197,10 @@ LRESULT OptionDlgTab1_OnSysColorChange(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT OptionDlgTab1_OnThemeChanged(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(hWnd);
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 
-	if (g_darkModeSupported)
-	{
-		AllowDarkModeForWindow(hWnd, g_darkModeEnabled);
-		UpdateWindow(hWnd);
-	}
 	return TRUE;
 }
 

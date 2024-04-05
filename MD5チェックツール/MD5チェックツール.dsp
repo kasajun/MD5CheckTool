@@ -218,10 +218,6 @@ SOURCE=..\shared\crc32c.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\DarkMode.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\DebugDlg.cpp
 # End Source File
 # Begin Source File
@@ -409,10 +405,6 @@ SOURCE=..\shared\crc32.h
 # Begin Source File
 
 SOURCE=..\shared\crc32c.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\shared\DarkMode.h
 # End Source File
 # Begin Source File
 

@@ -60,7 +60,7 @@ VOID OptionDlg(HWND hWnd);
 VOID GetIniFileSetting(const TCHAR* cpInIniFile);
 VOID SetIniFileSetting(const TCHAR* cpInIniFile);
 VOID GetCheckSumFile(TCHAR* pInBuf);
-VOID SetChackSumFile(VOID);
+VOID SetCheckSumFile(VOID);
 VOID OptionDlg_SetWindowMove(VOID);
 VOID OptionDlg_TabChange(int nTab);
 VOID OptionDlg_HashCpuMode(DWORD dwCpuMode);

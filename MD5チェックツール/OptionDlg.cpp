@@ -18,8 +18,6 @@ extern DWORD dwHashFileOutToCopyFolderMode;
 extern DWORD dwHashCpuMode;
 extern unsigned int OPENSSL_ia32cap_P1[4];
 extern BOOL(WINAPI* SetLayeredWindowAttributes_Func)(HWND, COLORREF, BYTE, DWORD);
-extern BOOL g_darkModeSupported;
-extern BOOL g_darkModeEnabled;
 extern int nEditMarginX[4];
 extern int nEditMarginY[4];
 extern int nStringX[3];
@@ -107,9 +105,7 @@ LRESULT OptionDlg_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	TCITEM tItem = { 0 };
 	RECT rc = { 0 };
 
-	if (~dwAppFrag & APP_ENABLE_MINIMAM_HANDLE)
-	{
-		DarkMode_SetWindowTheme(hWnd);
+	if (~dwAppFrag & APP_ENABLE_MINIMAM_HANDLE) {
 		SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM)tagMainWindow1.hIcon[0]);
 	}
 
@@ -358,7 +354,7 @@ LRESULT OptionDlg_OnIdOk(HWND hWnd, WPARAM wParam, LPARAM lParam)
 			qtcscpy(tagMainWindow1.pCheckSumFile, tagMainWindow1.pStBuf);
 			dwAppFrag &= ~APP_EDIT_CHECKSUMFILE;
 		}
-		SetChackSumFile();
+		SetCheckSumFile();
 	}
 
 	dwHashFileOutToCopyFolderMode = tagOptionWindow1.dwRadioState[1];
@@ -458,15 +454,10 @@ LRESULT OptionDlg_OnSysColorChange(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT OptionDlg_OnThemeChanged(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(hWnd);
 	UNREFERENCED_PARAMETER(lParam);
 	UNREFERENCED_PARAMETER(wParam);
 
-	if (g_darkModeSupported)
-	{
-		AllowDarkModeForWindow(hWnd, g_darkModeEnabled);
-		RefreshTitleBarThemeColor(hWnd);
-		UpdateWindow(hWnd);
-	}
 	return TRUE;
 }
 
@@ -609,7 +600,7 @@ VOID GetCheckSumFile(TCHAR* pInBuf)
 	return;
 }
 
-VOID SetChackSumFile(VOID)
+VOID SetCheckSumFile(VOID)
 {
 	TCHAR** ppChackSumFile = tagMainWindow1.ppCheckSumFile;
 	TCHAR* pChackSumFile = tagMainWindow1.pCheckSumFile;
@@ -894,7 +885,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	if (*szBuf != '\0')
 	{
 		qtcscpy(tagMainWindow1.pCheckSumFile, szBuf);
-		SetChackSumFile();
+		SetCheckSumFile();
 		dwAppFrag |= APP_EDIT_CHECKSUMFILE;
 	}
 	else {

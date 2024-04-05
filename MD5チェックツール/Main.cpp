@@ -639,8 +639,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 #endif
 
 	memcpy(OPENSSL_ia32cap_P1, OPENSSL_ia32cap_P, sizeof(OPENSSL_ia32cap_P1));
-
-	InitDarkMode();
 	tagMainWindow1.hInst = hInstance;// グローバル変数にインスタンス処理を格納します。
 
 	i = LoadString(hInstance, IDS_APP_TITLE, tagMainWindow1.pTitle, MAX_LOADSTRING - 1);
@@ -807,7 +805,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		goto APPEXIT;
 	}
 
-	SetChackSumFile();
+	SetCheckSumFile();
 	LoadString(tagMainWindow1.hInst, IDS_INIFILE_NAME, tagMainWindow1.pStBuf, MAX_STRINGTABLE - 1);
 	GetIniFilePath(tagMainWindow1.pINIFile, tagMainWindow1.pStBuf, tagMainWindow1.pTitle);
 	GetIniFileSetting(tagMainWindow1.pINIFile);
@@ -882,7 +880,6 @@ APPEXIT:
 #endif /* __MSC_VER < 1500 */
 
 	HashThread_Shutdown(&tagMainWindow1.tagHashThread1);
-	ShutdownDarkMode();
 	Charlib_Shutdown();
 
 	if (pMsg) {
@@ -1636,7 +1633,6 @@ LRESULT MainWindow_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	if (~dwAppFrag & APP_ENABLE_MINIMAM_HANDLE)
 	{
 		SetEnableThemeDialogTexture(hWnd);
-		DarkMode_SetWindowTheme(hWnd);
 		tagMainWindow1.hIcon[0] = LoadIcon(tagMainWindow1.hInst, MAKEINTRESOURCE((size_t)IDI_HASH));
 		SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM)tagMainWindow1.hIcon[0]);
 		tagMainWindow1.hTool[0] = CreateWindowEx(NULL, TOOLTIPS_CLASS, NULL, WS_POPUP | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hWnd, NULL, tagMainWindow1.hInst, NULL);
@@ -2974,15 +2970,10 @@ LRESULT MainWindow_OnChangeCBChain(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT MainWindow_OnThemeChanged(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(hWnd);
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 
-	if (DarkMode_ThemeChanged())
-	{
-		AllowDarkModeForWindow(hWnd, g_darkModeEnabled);
-		RefreshTitleBarThemeColor(hWnd);
-		UpdateWindow(hWnd);
-	}
 	return TRUE;
 }
 

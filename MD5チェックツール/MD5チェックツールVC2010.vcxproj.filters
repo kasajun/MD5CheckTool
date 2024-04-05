@@ -63,9 +63,6 @@
     <ClInclude Include="..\shared\crc32.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\shared\DarkMode.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\getopt.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -210,9 +207,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\crc32.c">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="..\shared\DarkMode.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\getopt.c">
