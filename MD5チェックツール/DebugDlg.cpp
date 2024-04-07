@@ -309,7 +309,7 @@ TCHAR* VariableAddArrayCopy(TCHAR* pOutTChar, const TCHAR* cpInTChar, int nSize)
 		TCHAR szNum[16];
 
 		*pOutTChar++ = '[';
-		ITOT_FUNC(nSize, szNum, 10);
+		ITOT_FUNC(nSize, szNum, SIZEOF_NUM(szNum), 10);
 		pOutTChar = qtcscpy(pOutTChar, szNum);
 		*pOutTChar++ = ']';
 	}
@@ -351,17 +351,17 @@ TCHAR* FileTimeToTChar(TCHAR* pOutTChar, const FILETIME* pInFileTime)
 	FileTimeToLocalFileTime(pInFileTime , &ftLocalFileTime);
 	FileTimeToSystemTime(&ftLocalFileTime , &stFileTime);
 
-	ITOT_FUNC(stFileTime.wYear, szNum, 10);
+	ITOT_FUNC(stFileTime.wYear, szNum, SIZEOF_NUM(szNum), 10);
 	ptr = qtcscpy(ptr, szNum);
 	memcpy(ptr, _T("年"), sizeof(_T("年")));
 	ptr += _tcslen(_T("年"));
 
-	ITOT_FUNC(stFileTime.wMonth, szNum, 10);
+	ITOT_FUNC(stFileTime.wMonth, szNum, SIZEOF_NUM(szNum), 10);
 	ptr = qtcscpy(ptr, szNum);
 	memcpy(ptr, _T("月"), sizeof(_T("月")));
 	ptr += _tcslen(_T("月"));
 
-	ITOT_FUNC(stFileTime.wDay, szNum, 10);
+	ITOT_FUNC(stFileTime.wDay, szNum, SIZEOF_NUM(szNum), 10);
 	ptr = qtcscpy(ptr, szNum);
 	memcpy(ptr, _T("日"), sizeof(_T("日")));
 	ptr += _tcslen(_T("日"));
@@ -369,21 +369,21 @@ TCHAR* FileTimeToTChar(TCHAR* pOutTChar, const FILETIME* pInFileTime)
 	memcpy(ptr, _T("、"), sizeof(_T("、")));
 	ptr += _tcslen(_T("、"));
 
-	ITOT_FUNC(stFileTime.wHour, szNum, 10);
+	ITOT_FUNC(stFileTime.wHour, szNum, SIZEOF_NUM(szNum), 10);
 	ptr = qtcscpy(ptr, szNum);
 	*ptr++ = ':';
 
 	if (stFileTime.wMinute < 10) {
 		*ptr++ = '0';
 	}
-	ITOT_FUNC(stFileTime.wMinute, szNum, 10);
+	ITOT_FUNC(stFileTime.wMinute, szNum, SIZEOF_NUM(szNum), 10);
 	ptr = qtcscpy(ptr, szNum);
 	*ptr++ = ':';
 
 	if (stFileTime.wSecond < 10) {
 		*ptr++ = '0';
 	}
-	ITOT_FUNC(stFileTime.wSecond, szNum, 10);
+	ITOT_FUNC(stFileTime.wSecond, szNum, SIZEOF_NUM(szNum), 10);
 	ptr = qtcscpy(ptr, szNum);
 	*ptr++ = '\r';
 	*ptr++ = '\n';

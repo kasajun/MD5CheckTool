@@ -1800,6 +1800,8 @@ LRESULT MainWindow_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		if (nRet == IDYES) {
 			Hash_HashChange(HASH_SHA_256_TYPE);
 		}
+		SetIniFileSetting(tagMainWindow1.pINIFile);
+		dwAppFrag &= ~APP_NO_SETTING;
 	}
 
 	Hash_HashChange(tagMainWindow1.tagHashThread1.dwHashType);
@@ -2208,7 +2210,7 @@ LRESULT MainWindow_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPara
 	case ID_MAINSUBMENU1_COPY:
 	case ID_MAINSUBMENU1_EXTCOPY4:
 	case ID_MAINSUBMENU1_EXTCOPY5:
-		TCharToCharConv(tagMainWindow1.tagHashThread1.cpHashName, szHashName);
+		TCharToCharConv2(tagMainWindow1.tagHashThread1.cpHashName, szHashName);
 
 		// CF_TEXT
 		pDst = qtcscpy(pDst, tagMainWindow1.tagHashThread1.cpHashName);
@@ -2234,7 +2236,7 @@ COPY_JUMP0:
 		if (wmId == ID_MAINSUBMENU1_EXTCOPY5) {
 			pHashString = tagMainWindow1.pBase64String;
 		}
-		TCharToCharConv(pHashString, szHashString);
+		TCharToCharConv2(pHashString, szHashString);
 
 		// CF_TEXT
 		pDst = qtcscpy(pDst, pHashString);
@@ -2257,14 +2259,14 @@ COPY_JUMP0:
 			pDst = qtcscpy(pDst, _T(HASH_NAME_SPACE));
 
 			// RTF Text
-			TCharToCharConv(pName, szTextBuf);
+			TCharToCharConv2(pName, szTextBuf);
 			CharToRtfEncodeChar(szTextBuf, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 			pRtf = qstrcpy(pRtf, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_NAME_SPACE);
 
 			// HTML Text
-			TCharToUtf8CharConv(pName, szTextBuf);
+			TCharToUtf8CharConv2(pName, szTextBuf);
 			pHtml = qstrcpy(pHtml, szTextBuf);
 			pHtml = qstrcpy(pHtml, HASH_NAME_SPACE);
 			goto EXTCOPY4_JUMP1;
@@ -2283,7 +2285,7 @@ COPY_JUMP0:
 			case ID_MAINSUBMENU1_EXTCOPY3:
 EXTCOPY4_JUMP2:
 				pFileName = szSize;
-				FileSizeText2ToTChar(HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, tagMainWindow1.dwOpenItem)->llFileSize, pFileName);
+				FileSizeText2ToTChar2(HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, tagMainWindow1.dwOpenItem)->llFileSize, pFileName);
 				break;
 			default:
 EXTCOPY4_JUMP1:
@@ -2296,14 +2298,14 @@ EXTCOPY4_JUMP1:
 			pDst = qtcscpy(pDst, _T(HASH_TEXT_RETURNCODE));
 
 			// RTF Text
-			TCharToCharConv(pFileName, szTextBuf);
+			TCharToCharConv2(pFileName, szTextBuf);
 			CharToRtfEncodeChar(szTextBuf, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 			pRtf = qstrcpy(pRtf, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
 
 			// HTML Text
-			TCharToUtf8CharConv(pFileName, szTextBuf);
+			TCharToUtf8CharConv2(pFileName, szTextBuf);
 			pHtml = qstrcpy(pHtml, szTextBuf);
 			pHtml = qstrcpy(pHtml, HASH_HTML_RETURNCODE);
 
@@ -2316,14 +2318,14 @@ EXTCOPY4_JUMP1:
 				pDst = qtcscpy(pDst, _T(HASH_NAME_SPACE));
 
 				// RTF Text
-				TCharToCharConv(pName, szTextBuf);
+				TCharToCharConv2(pName, szTextBuf);
 				CharToRtfEncodeChar(szTextBuf, szRtfBuf);
 				pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 				pRtf = qstrcpy(pRtf, szRtfBuf);
 				pRtf = qstrcpy(pRtf, HASH_NAME_SPACE);
 
 				// HTML Text
-				TCharToUtf8CharConv(pName, szTextBuf);
+				TCharToUtf8CharConv2(pName, szTextBuf);
 				pHtml = qstrcpy(pHtml, szTextBuf);
 				pHtml = qstrcpy(pHtml, HASH_NAME_SPACE);
 				wmId = 0;
@@ -2344,7 +2346,7 @@ EXTCOPY4_JUMP1:
 	// HTML Text
 	pHtml = qstrcpy(pHtml, HASH_HTML_FOOTER);
 
-	SetClipboardText(tagMainWindow1.hWnd, tagMainWindow1.pBuf, (char*)(tagMainWindow1.pBuf + 2048), (char*)(tagMainWindow1.pBuf + 4096));
+	SetClipboardText2(tagMainWindow1.hWnd, tagMainWindow1.pBuf, (char*)(tagMainWindow1.pBuf + 2048), (char*)(tagMainWindow1.pBuf + 4096));
 	return TRUE;
 }
 
@@ -3512,7 +3514,7 @@ BOOL Hash_SetHashType(BOOL nIsLeftPos)
 
 	if (*tagMainWindow1.pHashFile != '\0')
 	{
-		TCHAR* pExt = GetTCharToExtension(tagMainWindow1.pHashFile, TRUE);
+		TCHAR* pExt = GetTCharToExtension2(tagMainWindow1.pHashFile, TRUE);
 
 		if (pExt) {
 			qtcscpy(pExt, cpHashExt);
@@ -3971,7 +3973,7 @@ BENCH_DLLFAIL:
 	//Sleep(10);
 	dwTimeStart = timeGetTime();
 	for (dwCount = 0; dwCount < BENCH_LOOP * 100; dwCount++) {
-		AlignedBinaryToWChar(szHashBuf, (const BYTE*)&dwHashByte, HASH_MD5_LEN);
+		AlignedBinaryToWCharToLower(szHashBuf, (const BYTE*)&dwHashByte, HASH_MD5_LEN);
 	}
 	dwTime[3] = timeGetTime() - dwTimeStart;
 	if (dwTime[3] == 0) {
@@ -4358,7 +4360,7 @@ VOID MainWindow_AddFile_End(BOOL nIsHashThread)
 				*pHashFileName = '\0';
 			}
 			LoadString(tagMainWindow1.hInst, IDS_FILENAME, tagMainWindow1.pStBuf, MAX_STRINGTABLE - 1);
-			pExt = GetTCharToExtension(tagMainWindow1.pStBuf, TRUE);
+			pExt = GetTCharToExtension2(tagMainWindow1.pStBuf, TRUE);
 			if (pExt != NULL) {
 				qtcscpy(pExt, tagMainWindow1.tagHashThread1.cpHashExt);
 			}
@@ -4498,7 +4500,7 @@ VOID Hash_SetFileInfo(DWORD dwItem)
 	{
 	case 0:
 	case (DWORD)-1:
-		FileSizeText2ToTChar(cptagHashFile_Recode->llFileSize, tagMainWindow1.pBuf);
+		FileSizeText2ToTChar2(cptagHashFile_Recode->llFileSize, tagMainWindow1.pBuf);
 		break;
 	case ERROR_FILE_NOT_FOUND:
 	case ERROR_PATH_NOT_FOUND:
@@ -4507,7 +4509,7 @@ VOID Hash_SetFileInfo(DWORD dwItem)
 		break;
 	default:
 		GetLastErrorMsg(cptagHashFile_Recode->dwFileLastError);
-		FileSizeText2ToTChar(cptagHashFile_Recode->llFileSize, tagMainWindow1.pBuf);
+		FileSizeText2ToTChar2(cptagHashFile_Recode->llFileSize, tagMainWindow1.pBuf);
 	}
 	SetWindowText(tagMainWindow1.hStatic[5], tagMainWindow1.pBuf);
 
@@ -4680,7 +4682,7 @@ BOOL GetHashFilePath(VOID)
 	size_t nCount = 0;
 
 	cpFileName = GetTCharToFileName(tagMainWindow1.pFile);
-	pExt = GetTCharToExtension(tagMainWindow1.pFile, TRUE);
+	pExt = GetTCharToExtension2(tagMainWindow1.pFile, TRUE);
 	if (pExt == NULL || _tcscmp(pExt, tagMainWindow1.tagHashThread1.cpHashExt) != 0)
 	{
 		if (tagMainWindow1.tagHashThread1.tagMultiFile->dwFileCount > 0) {
@@ -4781,7 +4783,7 @@ CREATE_FILENAME:
 #ifndef _UNICODE
 		nRet = qmbslen(tagMainWindow1.pStBuf);
 #endif
-		pExt = GetTCharToExtension(tagMainWindow1.pStBuf, TRUE);
+		pExt = GetTCharToExtension2(tagMainWindow1.pStBuf, TRUE);
 		if (pExt != NULL) {
 			nRet += tagMainWindow1.tagHashThread1.nHashExtLen - _tcslen(pExt);
 		}
@@ -5154,7 +5156,7 @@ VOID Hash_TimeView(BOOL nIsView)
 #ifdef _DEBUG
 				ptr = qtcscpy(szDebugText, _T("MainWindow: Hash_TimeView(): "));
 				ptr = qtcscpy(ptr, _T("nAgvN = "));
-				ITOT_FUNC(nAgvN, szNum, 10);
+				ITOT_FUNC(nAgvN, szNum, SIZEOF_NUM(szNum), 10);
 				ptr = qtcscpy(ptr, szNum);
 				ptr = qtcscpy(ptr, _T(";\r\n"));
 				OutputDebugString(szDebugText);
@@ -5207,7 +5209,7 @@ VOID Hash_TimeView(BOOL nIsView)
 				*ptr++ = '*';
 			}
 
-			ITOT_FUNC(i, szNum, 10);
+			ITOT_FUNC(i, szNum, SIZEOF_NUM(szNum), 10);
 			ptr = qtcscpy(ptr, szNum);
 			ptr = qtcscpy(ptr, _T("]"));
 			I64TOT_FUNC(llAvg[i], szNum, SIZEOF_NUM(szNum), 10);

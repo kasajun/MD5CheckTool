@@ -636,7 +636,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\shared\charlib.cpp"
+				RelativePath="..\shared\charlib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -704,7 +704,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\charlib_sysdll.cpp"
+				RelativePath="..\shared\charlib_sysdll.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -776,7 +776,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\shared\os.cpp"
+				RelativePath="..\shared\os.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

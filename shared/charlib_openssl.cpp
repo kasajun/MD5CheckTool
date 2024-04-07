@@ -190,7 +190,7 @@ unsigned __int64 FileToFileAes256EncryptA(const char* cpInFileName, unsigned cha
 	char* pOutFileName = NULL;
 	unsigned __int64 nOutLength = 0;
 
-	pOutFileName = CharToCopy(cpInFileName, ".aes", 1);
+	pOutFileName = CharToCopy2ToPadding(cpInFileName, ".aes", 1);
 	if (pOutFileName == NULL) {
 		return 0;
 	}
@@ -232,7 +232,7 @@ unsigned __int64 FileToFileAes256EncryptW(const WCHAR* cpInFileName, unsigned ch
 	WCHAR* pOutFileName = NULL;
 	unsigned __int64 nOutLength = 0;
 
-	pOutFileName = WCharToCopy(cpInFileName, L".aes", 1);
+	pOutFileName = WCharToCopy2ToPadding(cpInFileName, L".aes", 1);
 	if (pOutFileName == NULL) {
 		return 0;
 	}
@@ -434,7 +434,7 @@ unsigned __int64 FileToFileAes256DecryptA(const char* cpInFileName, unsigned cha
 	char* pTemp;
 	unsigned __int64 nOutLength = 0;
 
-	pOutFileName = CharToCopy(cpInFileName, 1);
+	pOutFileName = CharToCopyToPadding(cpInFileName, 1);
 	if (pOutFileName == NULL) {
 		return 0;
 	}
@@ -482,7 +482,7 @@ unsigned __int64 FileToFileAes256DecryptW(const WCHAR* cpInFileName, unsigned ch
 	WCHAR* pTemp;
 	unsigned __int64 nOutLength = 0;
 
-	pOutFileName = WCharToCopy(cpInFileName, 1);
+	pOutFileName = WCharToCopyToPadding(cpInFileName, 1);
 	if (pOutFileName == NULL) {
 		return 0;
 	}
@@ -1011,7 +1011,7 @@ char* CharTo ## NAME ## ToBase64Char(const void* cpIn, const size_t nLength, cha
 	if (bRet == NULL) { \
 		return NULL; \
 	} \
-	CharToBase64((char*)byHash, sizeof(byHash), pOutChar); \
+	CharSizeToBase64v2((char*)byHash, sizeof(byHash), pOutChar); \
 	return pOutChar; \
 } \
  \
@@ -1071,7 +1071,7 @@ WCHAR* CharTo ## NAME ## ToBase64WChar(const void* cpIn, const size_t nLength, W
 	if (bRet == NULL) { \
 		return NULL; \
 	} \
-	CharToBase64ToWChar((char*)byHash, sizeof(byHash), pOutWChar); \
+	CharSizeToBase64ToWCharv2((char*)byHash, sizeof(byHash), pOutWChar); \
 	return pOutWChar; \
 } \
  \

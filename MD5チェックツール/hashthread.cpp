@@ -1723,7 +1723,7 @@ unsigned __stdcall HashThread_MultiFile_Thread(void* lpThread)
 		{
 			dwLasterror = GetLastError();
 			hFile = NULL;
-			goto FILE_EXIT;
+			goto FILE_EXIT2;
 		}
 
 		Hash_Init_Func(mdCTX);
@@ -1768,6 +1768,8 @@ unsigned __stdcall HashThread_MultiFile_Thread(void* lpThread)
 
 FILE_EXIT:
 		CloseHandle(hFile);
+
+FILE_EXIT2:
 		hFile = NULL;
 
 		IF_UNLIKELY(dwLasterror != 0)
@@ -1793,7 +1795,7 @@ FILE_EXIT:
 		{
 			TCHAR szHashBuf[HASH_LOADSTRING];
 
-			BinaryToTChar(szHashBuf, ptagHashFile_Recode->pFileHashByte, dwHashLen);
+			BinaryToTCharToLower(szHashBuf, ptagHashFile_Recode->pFileHashByte, dwHashLen);
 			STPRINTF_FUNC(szDebugText, _T("HashThread: HashThread_MultiFile_Thread(): %s\r\n"), szHashBuf);
 			OutputDebugString(szDebugText);
 		}
@@ -2234,7 +2236,7 @@ FILE_EXIT:
 		{
 			TCHAR szHashBuf[HASH_LOADSTRING];
 
-			BinaryToTChar(szHashBuf, ptagHashFile_Recode->pFileHashByte, dwHashLen);
+			BinaryToTCharToLower(szHashBuf, ptagHashFile_Recode->pFileHashByte, dwHashLen);
 			STPRINTF_FUNC(szDebugText, _T("HashThread: HashThread_MultiFile_Bench_Thread(): %s\r\n"), szHashBuf);
 			OutputDebugString(szDebugText);
 		}
@@ -2504,7 +2506,7 @@ BOOL HashThread_ReNameFileRecode(HashThread* ptagHashThread, DWORD dwItem, const
 
 	ptagHashFile_Recode = HashThread_GetFileRecode_Core(ptagHashThread, dwItem);
 
-	pInFileName = TCharToCopy(ptagHashFile_Recode->szFileName, _MAX_FNAME);
+	pInFileName = TCharToCopyToPadding(ptagHashFile_Recode->szFileName, _MAX_FNAME);
 	IF_UNLIKELY(pInFileName == NULL) {
 		return FALSE;
 	}
@@ -2527,8 +2529,8 @@ BOOL HashThread_ReNameFileRecode(HashThread* ptagHashThread, DWORD dwItem, const
 	if (ptagHashFile_Recode->nIsHashOldFile)
 	{
 		const DWORD dwFileHashType = ptagHashFile_Recode->dwFileHashType;
-		TCHAR* pFileName = TCharToCopy(ptagHashFile_Recode->szFileName, cpHashExt[dwFileHashType],  20);
-		TCHAR* pHashFileName = TCharToCopy(pInFileName, cpHashExt[dwFileHashType], 20);
+		TCHAR* pFileName = TCharToCopy2ToPadding(ptagHashFile_Recode->szFileName, cpHashExt[dwFileHashType],  20);
+		TCHAR* pHashFileName = TCharToCopy2ToPadding(pInFileName, cpHashExt[dwFileHashType], 20);
 
 		IF_LIKELY(pFileName != NULL && pHashFileName != NULL)
 		{
@@ -2860,7 +2862,7 @@ FILE_FIND:
 		}
 
 		qtcscpy(cpInFileName + nInFileNameLen + 1, fdFindData->cFileName);
-		pExt = GetTCharToExtension(fdFindData->cFileName, TRUE);
+		pExt = GetTCharToExtension2(fdFindData->cFileName, TRUE);
 
 		if (pExt != NULL && !(_tcsicmp(pExt, cpHashExt1) == 0 && fdFindData->nFileSizeLow == dwHashLen * 2))
 		{
@@ -2960,7 +2962,7 @@ DWORD HashThread_GetHashFileType(HashThread* ptagHashThread, const TCHAR* cpInFi
 		goto FILETYPE_CHK;
 	}
 
-	pExt = GetTCharToExtension(cpInFileName, TRUE);
+	pExt = GetTCharToExtension2(cpInFileName, TRUE);
 	IF_UNLIKELY(pExt == NULL || _tcslen(pExt) > 11)
 	{
 		IF_UNLIKELY(ptagHashThread->pInFilePointer != NULL) {
@@ -2969,7 +2971,7 @@ DWORD HashThread_GetHashFileType(HashThread* ptagHashThread, const TCHAR* cpInFi
 		return dwHashType;
 	}
 
-	TCharToCharConv(pExt, szExtBuffer);
+	TCharToCharConv2(pExt, szExtBuffer);
 	CharToLower(szExtBuffer);
 
 	switch (*(CHAR_TO_4CHAR_TYPE*)cpExt)
@@ -3214,7 +3216,7 @@ OPTION_SKIP:
 	*pbyBuf = 0;
 	pPathBuf = MAX_PATH_SIZE * 3 + (TCHAR*)pbyBuf;
 
-	TCharToEnvString(cpInFileName, pFile, MAX_PATH_SIZE);
+	TCharToEnvString2(cpInFileName, pFile, MAX_PATH_SIZE);
 	dwRet = HashThread_FileNameCheck(pFile);
 	IF_UNLIKELY(!dwRet)
 	{
@@ -3321,13 +3323,13 @@ OPTION_SKIP:
 		switch (dwCharCode)
 		{
 		case HASHFILE_CHARCODE_UNICODE:
-			pBuf = WCharToTCharConv((WCHAR*)pbyBuf, pBuf);
+			pBuf = WCharToTCharConv2((WCHAR*)pbyBuf, pBuf);
 			break;
 		case HASHFILE_CHARCODE_UTF8:
-			pBuf = Utf8CharToTCharConv((char*)pbyBuf, pBuf);
+			pBuf = Utf8CharToTCharConv2((char*)pbyBuf, pBuf);
 			break;
 		default:
-			pBuf = CharToTCharConv((char*)pbyBuf, pBuf);
+			pBuf = CharToTCharConv2((char*)pbyBuf, pBuf);
 		}
 		nBufLen = _tcslen(pBuf);
 		*(pBuf + ((MAX_PATH_SIZE * 2) + 1)) = '\0';
@@ -3372,7 +3374,7 @@ OPTION_SKIP:
 				memset(ptagHashFile_Recode->nHashFileHashByte, 0, HASH_LEN);
 				continue;
 			}
-			TCharToEnvString(pPathBuf, pBuf, MAX_PATH_SIZE);
+			TCharToEnvString2(pPathBuf, pBuf, MAX_PATH_SIZE);
 
 			if ((_istalpha(*pBuf) && *(pBuf + 1) == ':' && *(pBuf + 2) == '\\') || TCHAR_COMP_TO_INT_2CHAR(pBuf, '\\', '\\')) {
 				;// 絶対パスであれば何もしない
@@ -3390,7 +3392,7 @@ OPTION_SKIP:
 			TCHAR* pExt;
 
 			qtcscpy(pBuf, pFile);
-			pExt = GetTCharToExtension(pBuf, TRUE);
+			pExt = GetTCharToExtension2(pBuf, TRUE);
 			if (pExt != NULL && _tcsicmp(pExt, HashThread_GetHashExt(dwHashType)) == 0) {
 				*pExt = '\0';
 			}
@@ -4097,7 +4099,7 @@ BOOL HashThread_CreateHashFile(const HashThread* cptagHashThread, const TCHAR* c
 				}
 
 				BinaryToWChar((WCHAR*)pBuf, ptagHashFile_Recode->pFileHashByte, dwHashLen, nIsHashUpper);
-				dwRet = WriteFile(hFile, pBuf, (size_t)dwHashLen * 2 * sizeof(WCHAR), &dwWrite, FALSE);
+				dwRet = WriteFile(hFile, pBuf, dwHashLen * 2 * sizeof(WCHAR), &dwWrite, FALSE);
 			}
 
 			IF_UNLIKELY(dwRet == 0)
@@ -4120,7 +4122,7 @@ BOOL HashThread_CreateHashFile(const HashThread* cptagHashThread, const TCHAR* c
 		DWORD dwFileCount = 0;
 		DWORD dwWrite = 0;
 		DWORD dwRet = 0;
-		char* (*TCharToCharConv_Func[])(const TCHAR*, char*) = { TCharToCharConv, NULL, TCharToUtf8CharConv, NULL };
+		char* (*TCharToCharConv_Func[])(const TCHAR*, char*) = { TCharToCharConv2, NULL, TCharToUtf8CharConv2, NULL };
 
 		hFile = CreateFile(cpInFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 		IF_UNLIKELY(hFile == INVALID_HANDLE_VALUE)
@@ -4191,7 +4193,7 @@ BOOL HashThread_CreateHashFile(const HashThread* cptagHashThread, const TCHAR* c
 				p += (size_t)dwHashLen * 2;
 				*p++ = ' ';
 				*p++ = ' ';
-				TCharToWCharConv(pOutFilePath, p);
+				TCharToWCharConv2(pOutFilePath, p);
 				p += wcslen(p);
 				*p++ = '\r';
 				*p++ = '\n';
@@ -4275,7 +4277,7 @@ BOOL HashThread_FileNameCheck(TCHAR* pInFileName)
 
 	// マルチバイト特有の不具合防止に一度 Unicode に変換します。
 	nFileSize = strlen(pInFileName);
-	pBufWChar = CharToWCharConv(pInFileName, pBufWChar);
+	pBufWChar = CharToWCharConv2(pInFileName, pBufWChar);
 	nLen = wcslen(pBufWChar);
 
 	IF_UNLIKELY(!(nLen > 1)) {
@@ -4333,7 +4335,7 @@ BOOL HashThread_FileNameCheck(TCHAR* pInFileName)
 #ifdef _UNICODE
 	qtcscpy(pInFileName, pOutWChar);
 #else
-	WCharToCharConv(pOutWChar, pInFileName);
+	WCharToCharConv2(pOutWChar, pInFileName);
 	nLen = strlen(pInFileName);
 	IF_UNLIKELY(!(nLen > 1)) {
 		return 0;

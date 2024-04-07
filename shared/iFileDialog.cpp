@@ -239,7 +239,7 @@ BOOL iFileOpenFolder_Func1(HWND hWnd, TCHAR* lpFolder, const TCHAR* lpTitle)
 #ifdef _UNICODE
 	lpszItem = lpFolder;
 #else
-	lpszItem = CharToWCharConv(lpFolder, szFolder);
+	lpszItem = CharToWCharConv2(lpFolder, szFolder);
 #endif
 
 #if _MSC_VER > 1920
@@ -273,7 +273,7 @@ BOOL iFileOpenFolder_Func1(HWND hWnd, TCHAR* lpFolder, const TCHAR* lpTitle)
 #ifdef _UNICODE
 			qwcscpy(lpFolder, lpszPath);
 #else
-			WCharToCharConv(lpszPath, lpFolder);
+			WCharToCharConv2(lpszPath, lpFolder);
 #endif
 
 			CoTaskMemFree(lpszPath);
@@ -343,10 +343,10 @@ int CALLBACK iFileOpenFolder2_CallbackProc(HWND hWnd, UINT message, WPARAM wPara
 		if (1)
 		{
 			TCHAR szFolder[MAX_PATH_SIZE];
-			DWORD dwRet;
+			int nRet;
 
-			dwRet = SHGetPathFromIDList((LPITEMIDLIST)wParam, szFolder);
-			if (dwRet != NULL)
+			nRet = SHGetPathFromIDList((LPITEMIDLIST)wParam, szFolder);
+			if (nRet != 0)
 			{
 				SendMessage(hWnd, BFFM_ENABLEOK, 0, TRUE);
 				SendMessage(hWnd, BFFM_SETSTATUSTEXT, 0, (LPARAM)szFolder);

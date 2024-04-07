@@ -99,7 +99,7 @@ char* WCharToUrlEncodeChar(const WCHAR* cpInWChar)
 	char* pBufUtf8Char;
 	char* pBufChar;
 
-	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar, NULL);
+	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
 	IF_UNLIKELY(pBufUtf8Char == NULL) {
 		return NULL;
 	}
@@ -114,7 +114,7 @@ WCHAR* WCharToUrlEncodeWChar(const WCHAR* cpInWChar)
 	char* pTmp;
 	WCHAR* pBufWChar;
 
-	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar, NULL);
+	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
 	IF_UNLIKELY(pBufUtf8Char == NULL) {
 		return NULL;
 	}

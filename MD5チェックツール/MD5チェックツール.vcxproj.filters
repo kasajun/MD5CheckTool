@@ -36,22 +36,22 @@
     <ClCompile Include="..\shared\BinaryView.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\charlib.cpp">
+    <ClCompile Include="..\shared\charlib.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\charlib_base64.cpp">
+    <ClCompile Include="..\shared\charlib_base64.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\charlib_sysdll.cpp">
+    <ClCompile Include="..\shared\charlib_sysdll.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\charlib_time.cpp">
+    <ClCompile Include="..\shared\charlib_time.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\charlib_url.cpp">
+    <ClCompile Include="..\shared\charlib_url.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\clipboard.cpp">
+    <ClCompile Include="..\shared\clipboard.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\cpuid.c">
@@ -69,7 +69,7 @@
     <ClCompile Include="..\shared\iFileDialog.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\IniFilePath.cpp">
+    <ClCompile Include="..\shared\IniFilePath.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\iTaskbarList3.cpp">
@@ -87,7 +87,7 @@
     <ClCompile Include="..\shared\md5_noasm.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\os.cpp">
+    <ClCompile Include="..\shared\os.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\sha1.c">
@@ -111,13 +111,13 @@
     <ClCompile Include="..\shared\sha512_noasm.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\os_full.cpp">
+    <ClCompile Include="..\shared\os_full.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\ToolTip.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\WindowSize.cpp">
+    <ClCompile Include="..\shared\WindowSize.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\xxhash.c">
@@ -150,7 +150,7 @@
     <ClCompile Include="..\shared\crc32c.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\ecoqos.cpp">
+    <ClCompile Include="..\shared\ecoqos.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

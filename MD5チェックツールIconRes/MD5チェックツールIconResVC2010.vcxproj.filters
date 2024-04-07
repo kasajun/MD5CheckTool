@@ -41,13 +41,13 @@
     <ClCompile Include="Main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\os.cpp">
+    <ClCompile Include="..\shared\os.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\charlib.cpp">
+    <ClCompile Include="..\shared\charlib.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\shared\charlib_sysdll.cpp">
+    <ClCompile Include="..\shared\charlib_sysdll.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

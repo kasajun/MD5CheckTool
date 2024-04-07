@@ -183,26 +183,26 @@ SOURCE=..\shared\BinaryView.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\charlib.cpp
+SOURCE=..\shared\charlib.c
 # SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\charlib_base64.cpp
+SOURCE=..\shared\charlib_base64.c
 # SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\charlib_sysdll.cpp
+SOURCE=..\shared\charlib_sysdll.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\charlib_url.cpp
+SOURCE=..\shared\charlib_url.c
 # SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\clipboard.cpp
+SOURCE=..\shared\clipboard.c
 # End Source File
 # Begin Source File
 
@@ -222,7 +222,7 @@ SOURCE=.\DebugDlg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\ecoqos.cpp
+SOURCE=..\shared\ecoqos.c
 # End Source File
 # Begin Source File
 
@@ -242,7 +242,7 @@ SOURCE=..\shared\iFileDialog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\IniFilePath.cpp
+SOURCE=..\shared\IniFilePath.c
 # End Source File
 # Begin Source File
 
@@ -292,11 +292,11 @@ SOURCE=.\OptionDlgTab4.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\os.cpp
+SOURCE=..\shared\os.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\os_full.cpp
+SOURCE=..\shared\os_full.c
 # SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
@@ -341,7 +341,7 @@ SOURCE=..\shared\ToolTip.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\shared\WindowSize.cpp
+SOURCE=..\shared\WindowSize.c
 # End Source File
 # Begin Source File
 

@@ -12,6 +12,10 @@
 #include <limits.h>
 #include <time.h>
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+
 #ifndef WCHAR
 typedef wchar_t WCHAR;
 #endif
@@ -41,9 +45,9 @@ typedef unsigned __int64 QWORD;
 #define SSCANF_FUNC _sscanf_s
 #define SWSCANF_FUNC _swscanf_s
 #define STSCANF_FUNC _stscanf_s
-#define ITOA_FUNC _itoa_s
-#define ITOW_FUNC _itow_s
-#define ITOT_FUNC _itot_s
+#define ITOA_FUNC(I, S, N, R) _itoa_s(I, S, N, R)
+#define ITOW_FUNC(I, S, N, R) _itow_s(I, S, N, R)
+#define ITOT_FUNC(I, S, N, R) _itot_s(I, S, N, R)
 #define I64TOA_FUNC(I, S, N, R) _i64toa_s(I, S, N, R)
 #define I64TOW_FUNC(I, S, N, R) _i64tow_s(I, S, N, R)
 #define I64TOT_FUNC(I, S, N, R) _i64tot_s(I, S, N, R)
@@ -62,9 +66,9 @@ typedef unsigned __int64 QWORD;
 #define SSCANF_FUNC _sscanf
 #define SWSCANF_FUNC _swscanf
 #define STSCANF_FUNC _stscanf
-#define ITOA_FUNC _itoa
-#define ITOW_FUNC _itow
-#define ITOT_FUNC _itot
+#define ITOA_FUNC(I, S, N, R) _itoa(I, S, R)
+#define ITOW_FUNC(I, S, N, R) _itow(I, S, R)
+#define ITOT_FUNC(I, S, N, R) _itot(I, S, R)
 #define I64TOA_FUNC(I, S, N, R) _i64toa(I, S, R)
 #define I64TOW_FUNC(I, S, N, R) _i64tow(I, S, R)
 #define I64TOT_FUNC(I, S, N, R) _i64tot(I, S, R)
@@ -122,16 +126,6 @@ unsigned __int64 __rdtsc();
 #endif
 #endif
 
-#if _MSC_VER < 1600
-#if !defined(_M_IX86)
-extern "C" {
-#endif
-	void __cpuidex(int* cpuInfo, int function_id, int subfunction_id);
-#if !defined(_M_IX86)
-}
-#endif
-#endif
-
 #ifdef _DEBUG
 #define DEBUG_OUT_STRING OutputDebugString
 #else
@@ -139,7 +133,9 @@ extern "C" {
 #endif
 
 #if _MSC_VER < 1600
-void* _AlignedMalloc(size_t s, size_t align = 16);
+void __cpuidex(int* cpuInfo, int function_id, int subfunction_id);
+
+void* _AlignedMalloc(size_t s, size_t align);
 void _AlignedFree(void* p);
 #else
 #define _AlignedMalloc _aligned_malloc
@@ -151,9 +147,9 @@ char* qstrncpy(char* _Destination, const char* _Source, size_t _Count);
 WCHAR* qwcscpy(WCHAR* _Destination, const WCHAR* _Source);
 WCHAR* qwcsncpy(WCHAR* _Destination, const WCHAR* _Source, size_t _Count);
 
-unsigned __int64 FILEToFileSize(FILE* pInFilePointer);
-unsigned __int64 CharToFileSize(const char* cpInFileName);
-unsigned __int64 WCharToFileSize(const WCHAR* cpInFileName);
+unsigned __int64 FileToFileSizeF(FILE* pInFilePointer);
+unsigned __int64 FileToFileSizeA(const char* cpInFileName);
+unsigned __int64 FileToFileSizeW(const WCHAR* cpInFileName);
 
 
 #ifndef qtcscpy
@@ -171,8 +167,8 @@ unsigned __int64 WCharToFileSize(const WCHAR* cpInFileName);
 size_t BinaryToFileA(const void* cpInBinary, const char* cpInFileName, size_t inSize);
 size_t BinaryToFileW(const void* cpInBinary, const WCHAR* cpInFileName, size_t inSize);
 
-size_t CharToFileA(const char* cpInChar, const char* cpInFileName, size_t inSize);
-size_t CharToFileW(const char* cpInChar, const WCHAR* cpInFileName, size_t inSize);
+size_t CharToFileSizeA(const char* cpInChar, const char* cpInFileName, size_t inSize);
+size_t CharToFileSizeW(const char* cpInChar, const WCHAR* cpInFileName, size_t inSize);
 
 size_t CharToFileA(const char* cpInChar, const char* cpInFileName);
 size_t CharToFileW(const char* cpInChar, const WCHAR* cpInFileName);
@@ -200,41 +196,51 @@ size_t qmbslen(const char* cpInChar);
 int qwctomb(char* pDst, const wchar_t* pSrc);
 int qmbtowc(wchar_t* pDst, const char* pSrc);
 
-char* CharToCharConv(const char* cpInChar, char* pOutChar = NULL);
+char* CharToCharConv(const char* cpInChar);
+char* CharToCharConv2(const char* cpInChar, char* pOutChar);
 size_t CharToCharLength(const char* cpInChar);
 
-WCHAR* CharToWCharConv(const char* cpInChar, WCHAR* pOutWChar = NULL);
+WCHAR* CharToWCharConv(const char* cpInChar);
+WCHAR* CharToWCharConv2(const char* cpInChar, WCHAR* pOutWChar);
 size_t CharToWCharLength(const char* cpInChar);
 
-char* WCharToCharConv(const WCHAR* cpInWChar, char* pOutChar = NULL);
+char* WCharToCharConv(const WCHAR* cpInWChar);
+char* WCharToCharConv2(const WCHAR* cpInWChar, char* pOutChar);
 size_t WCharToCharLength(const WCHAR* cpInWChar);
 
-WCHAR* WCharToWCharConv(const WCHAR* cpInWChar, WCHAR* pOutWChar = NULL);
+WCHAR* WCharToWCharConv(const WCHAR* cpInWChar);
+WCHAR* WCharToWCharConv2(const WCHAR* cpInWChar, WCHAR* pOutWChar);
 size_t WCharToWCharLength(const WCHAR* cpInWChar);
 
-char* CharToUtf8CharConv(const char* cpInChar, char* pOutUtf8Char = NULL);
+char* CharToUtf8CharConv(const char* cpInChar);
+char* CharToUtf8CharConv2(const char* cpInChar, char* pOutUtf8Char);
 size_t CharToUtf8CharLength(const char* cpInChar);
 
-char* Utf8CharToCharConv(const char* cpInUtf8Char, char* pOutChar = NULL);
+char* Utf8CharToCharConv(const char* cpInUtf8Char);
+char* Utf8CharToCharConv2(const char* cpInUtf8Char, char* pOutChar);
 size_t Utf8CharToCharLength(const char* cpInUtf8Char);
 
-char* WCharToUtf8CharConv(const WCHAR* cpInWChar, char* pOutUtf8Char = NULL);
+char* WCharToUtf8CharConv(const WCHAR* cpInWChar);
+char* WCharToUtf8CharConv2(const WCHAR* cpInWChar, char* pOutUtf8Char);
 size_t WCharToUtf8CharLength(const WCHAR* cpInWChar);
 
-WCHAR* Utf8CharToWCharConv(const char* cpInUtf8Char, WCHAR* pOutWChar = NULL);
+WCHAR* Utf8CharToWCharConv(const char* cpInUtf8Char);
+WCHAR* Utf8CharToWCharConv2(const char* cpInUtf8Char, WCHAR* pOutWChar);
 size_t Utf8CharToWCharLength(const char* cpInUtf8Char);
 
-char* DecToChar(size_t inDec, char* pOutChar = NULL);
-WCHAR* DecToWChar(size_t inDec, WCHAR* pOutWChar = NULL);
+char* DecToChar(size_t inDec, char* pOutChar);
+WCHAR* DecToWChar(size_t inDec, WCHAR* pOutWChar);
 
-char* HexToChar(size_t inHex, char* pOutChar = NULL);
-WCHAR* HexToWChar(size_t inHex, WCHAR* pOutWChar = NULL);
+char* HexToChar(size_t inHex, char* pOutChar);
+WCHAR* HexToWChar(size_t inHex, WCHAR* pOutWChar);
 
-char* CharToEnvString(const char* cpInChar, char* pOutChar, size_t nInSize = (size_t)-1);
-WCHAR* WCharToEnvString(const WCHAR* cpInWChar, WCHAR* pOutWChar, size_t nInSize = (size_t)-1);
+char* CharToEnvString(const char* cpInChar);
+char* CharToEnvString2(const char* cpInChar, char* pOutChar, size_t nInSize);
+WCHAR* WCharToEnvString(const WCHAR* cpInWChar);
+WCHAR* WCharToEnvString2(const WCHAR* cpInWChar, WCHAR* pOutWChar, size_t nInSize);
 
-size_t CharToDeleteReturnCode(char* pInChar, size_t nSize = (size_t)-1);
-size_t WCharToDeleteReturnCode(WCHAR* pInWChar, size_t nSize = (size_t)-1);
+size_t CharToDeleteReturnCode(char* pInChar, size_t nSize);
+size_t WCharToDeleteReturnCode(WCHAR* pInWChar, size_t nSize);
 
 char* CharToSpaceSkip(const char* cpInChar);
 WCHAR* WCharToSpaceSkip(const WCHAR* cpInWChar);
@@ -245,14 +251,14 @@ BYTE* CharToBinary(BYTE* pOutBinary, const char* cpInChar, size_t nInCharSize);
 unsigned char* WCharToHex(const WCHAR* cpInWChar, unsigned char* pOutHex, size_t nInSize);
 BYTE* WCharToBinary(BYTE* pOutBinary, const WCHAR* cpInWChar, size_t nInWCharSize);
 
-size_t CharToHashFileLine(const char* cpInChar, size_t nInSize, char* pOutFileName, unsigned char* pOutHash, size_t nOutHashSize = 32);
-size_t WCharToHashFileLine(const WCHAR* cpInWChar, size_t nInSize, WCHAR* pOutFileName, unsigned char* pOutHash, size_t nOutHashSize = 32);
+size_t CharToHashFileLine(const char* cpInChar, size_t nInSize, char* pOutFileName, unsigned char* pOutHash, size_t nOutHashSize);
+size_t WCharToHashFileLine(const WCHAR* cpInWChar, size_t nInSize, WCHAR* pOutFileName, unsigned char* pOutHash, size_t nOutHashSize);
 
 size_t CharToGetLine(char** ppOutChar, size_t* npInCount, const char* cpInChar, size_t nInCharSize);
 size_t WCharToGetLine(WCHAR** ppOutWChar, size_t* npInCount, const WCHAR* cpInWChar, size_t nInCharSize);
 
 
-size_t CharToFWrite(FILE* fp, const void* cpInChar, size_t nSize);
+size_t CharSizeToFWrite(FILE* fp, const void* cpInChar, size_t nSize);
 size_t CharToFWrite(FILE* fp, const char* cpInChar);
 
 size_t CharToCharFWrite(FILE* fp, const char* cpInChar);
@@ -268,7 +274,7 @@ size_t Utf8CharToWCharFWrite(FILE* fp, const char* cpInUtf8Char);
 size_t Utf8CharToUtf8CharFWrite(FILE* fp, const char* cpUtf8InChar);
 
 
-BOOL CharToWriteFile(HANDLE hFile, const void* cpInChar, DWORD nLength);
+BOOL CharSizeToWriteFile(HANDLE hFile, const void* cpInChar, DWORD nLength);
 
 BOOL CharToWriteFile(HANDLE hFile, const char* cpInChar);
 BOOL CharToWCharWriteFile(HANDLE hFile, const char* cpInChar);
@@ -288,32 +294,43 @@ BOOL GetWCharIsBool(const WCHAR* cpInWChar);
 char* CharToUpper(char* pInChar);
 WCHAR* WCharToUpper(WCHAR* pInWChar);
 
-char* CharToUpper(char* pInChar, size_t nInSize);
-WCHAR* WCharToUpper(WCHAR* pInWChar, size_t nInSize);
+char* CharSizeToUpper(char* pInChar, size_t nInSize);
+WCHAR* WCharSizeToUpper(WCHAR* pInWChar, size_t nInSize);
 
 char* CharToLower(char* pInChar);
 WCHAR* WCharToLower(WCHAR* pInWChar);
 
-char* CharToLower(char* pInChar, size_t nInSize);
-WCHAR* WCharToLower(WCHAR* pInWChar, size_t nInSize);
+char* CharSizeToLower(char* pInChar, size_t nInSize);
+WCHAR* WCharSizeToLower(WCHAR* pInWChar, size_t nInSize);
 
-char* CharToCopy(const char* cpInChar, const size_t nSize = 101);
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const size_t nSize = 101);
+char* CharToCopy(const char* cpInChar);
+WCHAR* WCharToCopy(const WCHAR* cpInWChar);
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const size_t nSize = 101);
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const size_t nSize = 101);
+char* CharToCopy2(const char* cpInChar, const char* cpCharArg1);
+WCHAR* WCharToCopy2(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1);
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const size_t nSize = 101);
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const size_t nSize = 101);
+char* CharToCopy3(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2);
+WCHAR* WCharToCopy3(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2);
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const size_t nSize = 101);
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const size_t nSize = 101);
+char* CharToCopy4(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3);
+WCHAR* WCharToCopy4(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3);
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4, const size_t nSize = 101);
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4, const size_t nSize = 101);
+char* CharToCopy5(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4);
+WCHAR* WCharToCopy5(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4);
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4, const char* cpCharArg5, const size_t nSize = 101);
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4, const WCHAR* cpWCharArg5, const size_t nSize = 101);
+char* CharToCopy6(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4, const char* cpCharArg5);
+WCHAR* WCharToCopy6(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4, const WCHAR* cpWCharArg5);
+
+
+char* CharToCopyToPadding(const char* cpInChar, size_t nPaddingSize);
+WCHAR* WCharToCopyToPadding(const WCHAR* cpInWChar, size_t nPaddingSize);
+
+char* CharToCopy2ToPadding(const char* cpInChar, const char* cpCharArg1, size_t nPaddingSize);
+WCHAR* WCharToCopy2ToPadding(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, size_t nPaddingSize);
+
+char* CharToCopy3ToPadding(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, size_t nPaddingSize);
+WCHAR* WCharToCopy3ToPadding(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, size_t nPaddingSize);
+
 
 char* GetCharToRoot(char* pInFileName);
 WCHAR* GetWCharToRoot(WCHAR* pInFileName);
@@ -330,15 +347,19 @@ size_t GetUtf8CharToFileNameNoExtensionLen(const char* cpInFileName);
 char* GetCharToFileName(const char* cpInFileName);
 WCHAR* GetWCharToFileName(const WCHAR* cpInFileName);
 
-char* GetCharToExtension(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr = FALSE);
-WCHAR* GetWCharToExtension(const WCHAR* cpInFileName, BOOL bIsNoExtensionReturnNullptr = FALSE);
+char* GetCharToExtension(const char* cpInFileName);
+char* GetCharToExtension2(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr);
+
+WCHAR* GetWCharToExtension(const WCHAR* cpInFileName);
+WCHAR* GetWCharToExtension2(const WCHAR* cpInFileName, BOOL bIsNoExtensionReturnNullptr);
 
 char* GetCharToFolderName(char* pInFileName);
 WCHAR* GetWCharToFolderName(WCHAR* pInFileName);
 
 char* GetUtf8CharToRoot(char* pInFileName);
 char* GetUtf8CharToFileName(const char* cpInFileName);
-char* GetUtf8CharToExtension(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr = FALSE);
+char* GetUtf8CharToExtension(const char* cpInFileName);
+char* GetUtf8CharToExtension2(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr);
 char* GetUtf8CharToFolderName(char* cpInFileName);
 
 char* GetSystemDirectoryFileNameToCharA(const char* cpFileName);
@@ -366,7 +387,7 @@ WCHAR* Utf8CharFileToWCharA(const char* cpInFileName);
 WCHAR* Utf8CharFileToWCharW(const WCHAR* cpInFileName);
 
 size_t CharToRtfEncodeCharLength(const char* cpInChar);
-char* CharToRtfEncodeChar(const char* cpInChar, char* pOutChar = NULL);
+char* CharToRtfEncodeChar(const char* cpInChar, char* pOutChar);
 
 char* SetCharToHexChar(const char cpInChar, char* outBuf);
 WCHAR* SetCharToHexWChar(const char cpInChar, WCHAR* outBuf);
@@ -374,11 +395,21 @@ WCHAR* SetCharToHexWChar(const char cpInChar, WCHAR* outBuf);
 char* SetCharToHexLowerChar(const char cpInChar, char* outBuf);
 WCHAR* SetCharToHexLowerWChar(const char cpInChar, WCHAR* outBuf);
 
-char* BinaryToChar(char* pOutChar, const BYTE* cpBinary, const DWORD dwLength, BOOL bIsUpper = FALSE);
-WCHAR* BinaryToWChar(WCHAR* pWChar, const BYTE* cpBinary, const DWORD dwLength, BOOL bIsUpper = FALSE);
+char* BinaryToChar(char* pOutChar, const BYTE* cpBinary, const DWORD dwLength, BOOL bIsUpper);
+char* BinaryToCharToUpper(char* pOutChar, const BYTE* cpBinary, const DWORD dwLength);
+char* BinaryToCharToLower(char* pOutChar, const BYTE* cpBinary, const DWORD dwLength);
 
-char* AlignedBinaryToChar(char* pOutChar, const BYTE* cpAlignedInBinary, const DWORD dwLength, BOOL bIsUpper = FALSE);
-WCHAR* AlignedBinaryToWChar(WCHAR* pOutWChar, const BYTE* cpAlignedInBinary, const DWORD dwLength, BOOL bIsUpper = FALSE);
+WCHAR* BinaryToWChar(WCHAR* pWChar, const BYTE* cpBinary, const DWORD dwLength, BOOL bIsUpper);
+WCHAR* BinaryToWCharToUpper(WCHAR* pWChar, const BYTE* cpBinary, const DWORD dwLength);
+WCHAR* BinaryToWCharToLower(WCHAR* pWChar, const BYTE* cpBinary, const DWORD dwLength);
+
+char* AlignedBinaryToChar(char* pOutChar, const BYTE* cpAlignedInBinary, const DWORD dwLength, BOOL bIsUpper);
+char* AlignedBinaryToCharToUpper(char* pOutChar, const BYTE* cpAlignedInBinary, const DWORD dwLength);
+char* AlignedBinaryToCharToLower(char* pOutChar, const BYTE* cpAlignedInBinary, const DWORD dwLength);
+
+WCHAR* AlignedBinaryToWChar(WCHAR* pOutWChar, const BYTE* cpAlignedInBinary, const DWORD dwLength, BOOL bIsUpper);
+WCHAR* AlignedBinaryToWCharToUpper(WCHAR* pOutWChar, const BYTE* cpAlignedInBinary, const DWORD dwLength);
+WCHAR* AlignedBinaryToWCharToLower(WCHAR* pOutWChar, const BYTE* cpAlignedInBinary, const DWORD dwLength);
 
 char* FileToCharA(const char* cpInFileName, unsigned __int64* outFilesize);
 char* FileToCharW(const WCHAR* cpInFileName, unsigned __int64* outFilesize);
@@ -465,18 +496,21 @@ unsigned __int64 __fastcall BSwap64(unsigned __int64 i);
    'sha1' command into two parts: a hexadecimal digest, and the file
    name.  S is modified.  Return true if successful.  */
 
-bool bsd_split_3(char* s, size_t s_len, unsigned char** hex_digest, char** file_name, bool escaped_filename);
-bool bsd_split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, WCHAR** file_name, bool escaped_filename);
-bool split_3(char* s, size_t s_len, unsigned char** hex_digest, int* binary, char** file_name,
+BOOL bsd_split_3A(char* s, size_t s_len, unsigned char** hex_digest, char** file_name, BOOL escaped_filename);
+BOOL bsd_split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, WCHAR** file_name, BOOL escaped_filename);
+BOOL split_3A(char* s, size_t s_len, unsigned char** hex_digest, int* binary, char** file_name,
 	const char* digest_type_string, const size_t min_digest_line_length, const size_t digest_hex_bytes);
-bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** file_name,
+BOOL split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** file_name,
 	const WCHAR* digest_type_string, const size_t min_digest_line_length, const size_t digest_hex_bytes);
 
 #ifdef _UNICODE
 #define IsUnicode 1
 #define TCharToFileSize WCharToFileSize
 #define BinaryToFile BinaryToFileW
+#define FileToFileSize FileToFileSizeW
+#define CharToFileSize CharToFileSizeW
 #define CharToFile CharToFileW
+#define CharSizeToFile CharSizeToFileW
 #define CharToCharFile CharToCharFileW
 #define CharToWCharFile CharToWCharFileW
 #define CharToUtf8CharFile CharToUtf8CharFileW
@@ -492,6 +526,7 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define GetTCharToFileNameNoExtensionLen GetWCharToFileNameNoExtensionLen
 #define GetTCharToFileName GetWCharToFileName
 #define GetTCharToExtension GetWCharToExtension
+#define GetTCharToExtension2 GetWCharToExtension2
 #define GetTCharToFolderName GetWCharToFolderName
 #define GetSystemDirectoryFileNameToTChar GetSystemDirectoryFileNameToWChar
 #define GetSystemDirectoryFileNameToChar GetSystemDirectoryFileNameToCharW
@@ -505,29 +540,55 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define Utf8CharFileToWChar Utf8CharFileToWCharW
 
 #define TCharToCharConv WCharToCharConv
+#define TCharToCharConv2 WCharToCharConv2
 #define TCharToCharLength WCharToCharLength
 #define TCharToWCharConv WCharToWCharConv
+#define TCharToWCharConv2 WCharToWCharConv2
 #define TCharToWCharLength WCharToWCharLength
 #define TCharToUtf8CharConv WCharToUtf8CharConv
+#define TCharToUtf8CharConv2 WCharToUtf8CharConv2
 #define TCharToUtf8CharLength WCharToUtf8CharLength
 #define CharToTCharConv CharToWCharConv
+#define CharToTCharConv2 CharToWCharConv2
 #define CharToTCharLength CharToWCharLength
 #define WCharToTCharConv WCharToWCharConv
+#define WCharToTCharConv2 WCharToWCharConv2
 #define WCharToTCharLength WCharToWCharLength
 #define Utf8CharToTCharConv Utf8CharToWCharConv
+#define Utf8CharToTCharConv2 Utf8CharToWCharConv2
 #define Utf8CharToTCharLength Utf8CharToWCharLength
 #define TCharToEnvString WCharToEnvString
+#define TCharToEnvString2 WCharToEnvString2
 #define TCharToDeleteReturnCode WCharToDeleteReturnCode
 #define qtcslen wcslen
 #define TCharToUpper WCharToUpper
 #define TCharToLower WCharToLower
 #define TCharToCopy WCharToCopy
-#define CharToBase64ToTChar CharToBase64ToWChar
-#define BinaryToBase64ToTChar BinaryToBase64ToWChar
+#define TCharToCopy2 WCharToCopy2
+#define TCharToCopy3 WCharToCopy3
+#define TCharToCopy4 WCharToCopy4
+#define TCharToCopy5 WCharToCopy5
+#define TCharToCopy6 WCharToCopy6
+#define TCharToCopyToPadding WCharToCopyToPadding
+#define TCharToCopy2ToPadding WCharToCopy2ToPadding
+#define TCharToCopy3ToPadding WCharToCopy3ToPadding
+#define TCharSizeToUpper WCharSizeToUpper
+#define TCharSizeToLower WCharSizeToLower
+#define TCharSizeToCopy WCharSizeToCopy
+#define TCharSizeToCopy2 WCharSizeToCopy2
+#define TCharSizeToCopy3 WCharSizeToCopy3
+#define TCharSizeToCopy4 WCharSizeToCopy4
+#define TCharSizeToCopy5 WCharSizeToCopy5
+#define TCharSizeToCopy6 WCharSizeToCopy6
+
 #define SetCharToHexTChar SetCharToHexWChar
 #define SetCharToHexLowerTChar SetCharToHexLowerWChar
 #define BinaryToTChar BinaryToWChar
+#define BinaryToTCharToUpper BinaryToWCharToUpper
+#define BinaryToTCharToLower BinaryToWCharToLower
 #define AlignedBinaryToTChar AlignedBinaryToWChar
+#define AlignedBinaryToTCharToUpper AlignedBinaryToWCharToUpper
+#define AlignedBinaryToTCharToLower AlignedBinaryToWCharToLower
 
 #define TCharToFWrite WCharToFWrite
 #define TCharToCharFWrite WCharToCharFWrite
@@ -551,7 +612,10 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define IsUnicode 0
 #define TCharToFileSize CharToFileSize
 #define BinaryToFile BinaryToFileA
+#define FileToFileSize FileToFileSizeA
+#define CharToFileSize CharToFileSizeA
 #define CharToFile CharToFileA
+#define CharToFileSize CharToFileSizeA
 #define CharToCharFile CharToCharFileA
 #define CharToWCharFile CharToWCharFileA
 #define CharToUtf8CharFile CharToUtf8CharFileA
@@ -567,6 +631,7 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define GetTCharToFileNameNoExtensionLen GetCharToFileNameNoExtensionLen
 #define GetTCharToFileName GetCharToFileName
 #define GetTCharToExtension GetCharToExtension
+#define GetTCharToExtension2 GetCharToExtension2
 #define GetTCharToFolderName GetCharToFolderName
 #define GetSystemDirectoryFileNameToTChar GetSystemDirectoryFileNameToChar
 #define GetSystemDirectoryFileNameToChar GetSystemDirectoryFileNameToCharA
@@ -580,29 +645,55 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define Utf8CharFileToWChar Utf8CharFileToWCharA
 
 #define TCharToCharConv CharToCharConv
+#define TCharToCharConv2 CharToCharConv2
 #define TCharToCharLength CharToCharLength
 #define TCharToWCharConv CharToWCharConv
+#define TCharToWCharConv2 CharToWCharConv2
 #define TCharToWCharLength CharToWCharLength
 #define TCharToUtf8CharConv CharToUtf8CharConv
+#define TCharToUtf8CharConv2 CharToUtf8CharConv2
 #define TCharToUtf8CharLength CharToUtf8CharLength
 #define CharToTCharConv CharToCharConv
+#define CharToTCharConv2 CharToCharConv2
 #define CharToTCharLength CharToCharLength
 #define WCharToTCharConv WCharToCharConv
+#define WCharToTCharConv2 WCharToCharConv2
 #define WCharToTCharLength WCharToCharLength
 #define Utf8CharToTCharConv Utf8CharToCharConv
+#define Utf8CharToTCharConv2 Utf8CharToCharConv2
 #define Utf8CharToTCharLength Utf8CharToCharLength
 #define TCharToEnvString CharToEnvString
+#define TCharToEnvString2 CharToEnvString2
 #define TCharToDeleteReturnCode CharToDeleteReturnCode
 #define qtcslen qmbslen
 #define TCharToUpper CharToUpper
 #define TCharToLower CharToLower
 #define TCharToCopy CharToCopy
-#define CharToBase64ToTChar CharToBase64
-#define BinaryToBase64ToTChar BinaryToBase64
+#define TCharToCopy2 CharToCopy2
+#define TCharToCopy3 CharToCopy3
+#define TCharToCopy4 CharToCopy4
+#define TCharToCopy5 CharToCopy5
+#define TCharToCopy6 CharToCopy6
+#define TCharToCopyToPadding CharToCopyToPadding
+#define TCharToCopy2ToPadding CharToCopy2ToPadding
+#define TCharToCopy3ToPadding CharToCopy3ToPadding
+#define TCharSizeToUpper CharSizeToUpper
+#define TCharSizeToLower CharSizeToLower
+#define TCharSizeToCopy CharSizeToCopy
+#define TCharSizeToCopy2 CharSizeToCopy2
+#define TCharSizeToCopy3 CharSizeToCopy3
+#define TCharSizeToCopy4 CharSizeToCopy4
+#define TCharSizeToCopy5 CharSizeToCopy5
+#define TCharSizeToCopy6 CharSizeToCopy6
+
 #define SetCharToHexTChar SetCharToHexChar
 #define SetCharToHexLowerTChar SetCharToHexLowerChar
 #define BinaryToTChar BinaryToChar
+#define BinaryToTCharToUpper BinaryToCharToUpper
+#define BinaryToTCharToLower BinaryToCharToLower
 #define AlignedBinaryToTChar AlignedBinaryToChar
+#define AlignedBinaryToTCharToUpper AlignedBinaryToCharToUpper
+#define AlignedBinaryToTCharToLower AlignedBinaryToCharToLower
 
 #define TCharToFWrite CharToFWrite
 #define TCharToCharFWrite CharToCharFWrite
@@ -781,5 +872,9 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 #define TCHAR_COPY_TO_INT_3CHAR(string, char1, char2, char3) CHAR_COPY_TO_INT_3CHAR(string, char1, char2, char3)
 #define TCHAR_COPY_TO_INT_4CHAR(string, char1, char2, char3, char4) CHAR_COPY_TO_INT_4CHAR(string, char1, char2, char3, char4)
 
+#endif
+
+#ifdef  __cplusplus
+}
 #endif
 #endif

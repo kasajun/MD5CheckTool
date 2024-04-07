@@ -556,7 +556,19 @@ char* GetUtf8CharToFileName(const char* cpInFileName)
 	return pTmp + 1;
 }
 
-char* GetCharToExtension(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr)
+char* GetCharToExtension(const char* cpInFileName)
+{
+	char* pExt;
+
+	pExt = GetCharToFileName(cpInFileName);
+	pExt = (char*)_mbsrchr((unsigned char*)pExt, '.');
+	if (pExt == NULL) {
+		return (char*)cpInFileName + strlen(cpInFileName);
+	}
+	return pExt;
+}
+
+char* GetCharToExtension2(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr)
 {
 	char* pExt;
 
@@ -568,7 +580,19 @@ char* GetCharToExtension(const char* cpInFileName, BOOL bIsNoExtensionReturnNull
 	return pExt;
 }
 
-WCHAR* GetWCharToExtension(const WCHAR* cpInFileName, BOOL bIsNoExtensionReturnNullptr)
+WCHAR* GetWCharToExtension(const WCHAR* cpInFileName)
+{
+	WCHAR* pExt;
+
+	pExt = GetWCharToFileName(cpInFileName);
+	pExt = (WCHAR*)wcsrchr(pExt, '.');
+	if (pExt == NULL) {
+		return (WCHAR*)cpInFileName + wcslen(cpInFileName);
+	}
+	return pExt;
+}
+
+WCHAR* GetWCharToExtension2(const WCHAR* cpInFileName, BOOL bIsNoExtensionReturnNullptr)
 {
 	WCHAR* pExt;
 
@@ -580,7 +604,19 @@ WCHAR* GetWCharToExtension(const WCHAR* cpInFileName, BOOL bIsNoExtensionReturnN
 	return pExt;
 }
 
-char* GetUtf8CharToExtension(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr)
+char* GetUtf8CharToExtension(const char* cpInFileName)
+{
+	char* pExt;
+
+	pExt = GetUtf8CharToFileName(cpInFileName);
+	pExt = (char*)strrchr(pExt, '.');
+	if (pExt == NULL) {
+		return (char*)cpInFileName + strlen(cpInFileName);
+	}
+	return pExt;
+}
+
+char* GetUtf8CharToExtension2(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr)
 {
 	char* pExt;
 
@@ -650,7 +686,7 @@ char* GetUtf8CharToFolderName(char* cpInFileName)
 	return cpInFileName;
 }
 
-unsigned __int64 FILEToFileSize(FILE* pInFilePointer)
+unsigned __int64 FileToFileSizeF(FILE* pInFilePointer)
 {
 #ifndef _NODLL
 	IF_LIKELY(pInFilePointer != NULL && _fseeki64(pInFilePointer, 0, SEEK_END) == 0) {
@@ -664,7 +700,7 @@ unsigned __int64 FILEToFileSize(FILE* pInFilePointer)
 	return 0;
 }
 
-unsigned __int64 CharToFileSize(const char* cpInFileName)
+unsigned __int64 FileToFileSizeA(const char* cpInFileName)
 {
 	WIN32_FIND_DATAA fdFindData = { 0 };
 	HANDLE hFind = NULL;
@@ -680,7 +716,7 @@ unsigned __int64 CharToFileSize(const char* cpInFileName)
 	return nRet;
 }
 
-unsigned __int64 WCharToFileSize(const WCHAR* cpInFileName)
+unsigned __int64 FileToFileSizeW(const WCHAR* cpInFileName)
 {
 	WIN32_FIND_DATAW fdFindData = { 0 };
 	HANDLE hFind = NULL;
@@ -787,7 +823,7 @@ char* CharFileToCharW(const WCHAR* cpInFileName)
 	errno_t error = 0;
 #endif
 
-	iBufferSize = (size_t)WCharToFileSize(cpInFileName);
+	iBufferSize = (size_t)FileToFileSizeW(cpInFileName);
 	pBufChar = (char*)malloc(iBufferSize + 4);
 	IF_UNLIKELY(pBufChar == NULL) {
 		return NULL;
@@ -841,7 +877,7 @@ char* CharFileToCharA(const char* cpInFileName)
 	errno_t error = 0;
 #endif
 
-	iBufferSize = (size_t)CharToFileSize(cpInFileName);
+	iBufferSize = (size_t)FileToFileSizeA(cpInFileName);
 	pBufChar = (char*)malloc(iBufferSize + 4);
 	IF_UNLIKELY(pBufChar == NULL) {
 		return NULL;
@@ -893,7 +929,7 @@ char* FileToCharW(const WCHAR* cpInFileName, unsigned __int64* outFilesize)
 	errno_t error;
 #endif
 
-	iBufferSize = (size_t)WCharToFileSize(cpInFileName);
+	iBufferSize = (size_t)FileToFileSizeW(cpInFileName);
 	*outFilesize = 0;
 	pBufChar = (char*)malloc(iBufferSize + 1);
 	IF_UNLIKELY(pBufChar == NULL) {
@@ -926,7 +962,7 @@ char* FileToCharA(const char* cpInFileName, unsigned __int64* outFilesize)
 	errno_t error;
 #endif
 
-	iBufferSize = (size_t)CharToFileSize(cpInFileName);
+	iBufferSize = (size_t)FileToFileSizeA(cpInFileName);
 	*outFilesize = 0;
 	pBufChar = (char*)malloc(iBufferSize + 1);
 	IF_UNLIKELY(pBufChar == NULL) {
@@ -1045,7 +1081,7 @@ WCHAR* WCharFileToWCharW(const WCHAR* cpInFileName)
 	errno_t error;
 #endif
 
-	iBufferSize = (size_t)WCharToFileSize(cpInFileName);
+	iBufferSize = (size_t)FileToFileSizeW(cpInFileName);
 	IF_UNLIKELY(iBufferSize < 2) {
 		return NULL;
 	}
@@ -1102,7 +1138,7 @@ WCHAR* WCharFileToWCharA(const char* cpInFileName)
 	errno_t error;
 #endif
 
-	iBufferSize = (size_t)CharToFileSize(cpInFileName);
+	iBufferSize = (size_t)FileToFileSizeA(cpInFileName);
 	IF_UNLIKELY(iBufferSize < 2) {
 		return NULL;
 	}
@@ -1180,13 +1216,13 @@ char* WCharFileToCharA(const char* cpInFileName)
 size_t CharToCharFileA(const char* cpInChar, const char* cpInFileName)
 {
 	const size_t iBufferSize = strlen(cpInChar);
-	return CharToFileA(cpInChar, cpInFileName, iBufferSize);
+	return CharToFileSizeA(cpInChar, cpInFileName, iBufferSize);
 }
 
 size_t CharToCharFileW(const char* cpInChar, const WCHAR* cpInFileName)
 {
 	const size_t iBufferSize = strlen(cpInChar);
-	return CharToFileW(cpInChar, cpInFileName, iBufferSize);
+	return CharToFileSizeW(cpInChar, cpInFileName, iBufferSize);
 }
 
 size_t CharToWCharFileA(const char* cpInChar, const char* cpInFileName)
@@ -1228,7 +1264,7 @@ size_t CharToUtf8CharFileA(const char* cpInChar, const char* cpInFileName)
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
-	nRet = CharToFileA(pBufUtf8Char, cpInFileName, iBufferSize);
+	nRet = CharToFileSizeA(pBufUtf8Char, cpInFileName, iBufferSize);
 	free(pBufUtf8Char);
 	return nRet;
 }
@@ -1244,7 +1280,7 @@ size_t CharToUtf8CharFileW(const char* cpInChar, const WCHAR* cpInFileName)
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
-	nRet = CharToFileW(pBufUtf8Char, cpInFileName, iBufferSize);
+	nRet = CharToFileSizeW(pBufUtf8Char, cpInFileName, iBufferSize);
 	free(pBufUtf8Char);
 	return nRet;
 }
@@ -1270,7 +1306,7 @@ size_t BinaryToFileA(const void* cpInBinary, const char* cpInFileName, size_t in
 	return nRet;
 }
 
-size_t CharToFileA(const char* cpInChar, const char* cpInFileName, size_t inSize)
+size_t CharToFileSizeA(const char* cpInChar, const char* cpInFileName, size_t inSize)
 {
 	return BinaryToFileA((BYTE*)cpInChar, cpInFileName, inSize);
 }
@@ -1301,7 +1337,7 @@ size_t BinaryToFileW(const void* cpInBinary, const WCHAR* cpInFileName, size_t i
 	return nRet;
 }
 
-size_t CharToFileW(const char* cpInChar, const WCHAR* cpInFileName, size_t inSize)
+size_t CharToFileSizeW(const char* cpInChar, const WCHAR* cpInFileName, size_t inSize)
 {
 	return BinaryToFileW((BYTE*)cpInChar, cpInFileName, inSize);
 }
@@ -1322,7 +1358,7 @@ size_t WCharToCharFileW(const WCHAR* cpInWChar, const WCHAR* cpInFileName)
 		return nRet;
 	}
 	iBufferSize = strlen(pBufChar);
-	nRet = CharToFileW(pBufChar, cpInFileName, iBufferSize);
+	nRet = CharToFileSizeW(pBufChar, cpInFileName, iBufferSize);
 	free(pBufChar);
 	return nRet;
 }
@@ -1338,7 +1374,7 @@ size_t WCharToCharFileA(const WCHAR* cpInWChar, const char* cpInFileName)
 		return nRet;
 	}
 	iBufferSize = strlen(pBufChar);
-	nRet = CharToFileA(pBufChar, cpInFileName, iBufferSize);
+	nRet = CharToFileSizeA(pBufChar, cpInFileName, iBufferSize);
 	free(pBufChar);
 	return nRet;
 }
@@ -1403,12 +1439,12 @@ size_t WCharToUtf8CharFileW(const WCHAR* cpInWChar, const WCHAR* cpInFileName)
 	size_t nRet = FALSE;
 	char* pBufUtf8Char;
 
-	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar, NULL);
+	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
 	IF_UNLIKELY(pBufUtf8Char == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
-	nRet = CharToFileW(pBufUtf8Char, cpInFileName, iBufferSize);
+	nRet = CharToFileSizeW(pBufUtf8Char, cpInFileName, iBufferSize);
 	free(pBufUtf8Char);
 	return nRet;
 }
@@ -1419,12 +1455,12 @@ size_t WCharToUtf8CharFileA(const WCHAR* cpInWChar, const char* cpInFileName)
 	size_t nRet = FALSE;
 	char* pBufUtf8Char;
 
-	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar, NULL);
+	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
 	IF_UNLIKELY(pBufUtf8Char == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
-	nRet = CharToFileA(pBufUtf8Char, cpInFileName, iBufferSize);
+	nRet = CharToFileSizeA(pBufUtf8Char, cpInFileName, iBufferSize);
 	free(pBufUtf8Char);
 	return nRet;
 }
@@ -1610,13 +1646,30 @@ size_t qmbslen(const char* cpInChar)
 	return iBufferSize;
 }
 
-#define HEXCHAR_LU(U) const char* cpHexLU[2] = { "0123456789abcdef", "0123456789ABCDEF" }; \
-const char* cpHexChar = cpHexLU[(U) & 1];
+char* BinaryToCharToUpper(char* pOutChar, const BYTE* cpInBinary, const DWORD dwLength)
+{
+	return BinaryToChar(pOutChar, cpInBinary, dwLength, TRUE);
+}
 
+char* BinaryToCharToLower(char* pOutChar, const BYTE* cpInBinary, const DWORD dwLength)
+{
+	return BinaryToChar(pOutChar, cpInBinary, dwLength, FALSE);
+}
+
+WCHAR* BinaryToWCharToUpper(WCHAR* pOutWChar, const BYTE* cpInBinary, const DWORD dwLength)
+{
+	return BinaryToWChar(pOutWChar, cpInBinary, dwLength, TRUE);
+}
+
+WCHAR* BinaryToWCharToLower(WCHAR* pOutWChar, const BYTE* cpInBinary, const DWORD dwLength)
+{
+	return BinaryToWChar(pOutWChar, cpInBinary, dwLength, FALSE);
+}
 
 char* BinaryToChar(char* pOutChar, const BYTE* cpInBinary, const DWORD dwLength, BOOL bIsUpper)
 {
-	HEXCHAR_LU(bIsUpper);
+	const char* cpHexLU[2] = { "0123456789abcdef", "0123456789ABCDEF" };
+	const char* cpHexChar = cpHexLU[(bIsUpper) & 1];
 	DWORD dwCount;
 	char* p;
 	size_t* aligned_p;
@@ -1720,7 +1773,8 @@ char* BinaryToChar(char* pOutChar, const BYTE* cpInBinary, const DWORD dwLength,
 
 WCHAR* BinaryToWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, const DWORD dwLength, BOOL bIsUpper)
 {
-	HEXCHAR_LU(bIsUpper);
+	const char* cpHexLU[2] = { "0123456789abcdef", "0123456789ABCDEF" };
+	const char* cpHexChar = cpHexLU[(bIsUpper) & 1];
 	DWORD dwCount;
 	WCHAR* p;
 	size_t* aligned_p;
@@ -1826,9 +1880,30 @@ WCHAR* BinaryToWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, const DWORD dwLen
 	return pOutWChar;
 }
 
+char* AlignedBinaryToCharToUpper(char* pOutChar, const BYTE* cpAlignedInBinary, const DWORD dwLength)
+{
+	return AlignedBinaryToChar(pOutChar, cpAlignedInBinary, dwLength, TRUE);
+}
+
+char* AlignedBinaryToCharToLower(char* pOutChar, const BYTE* cpAlignedInBinary, const DWORD dwLength)
+{
+	return AlignedBinaryToChar(pOutChar, cpAlignedInBinary, dwLength, FALSE);
+}
+
+WCHAR* AlignedBinaryToWCharToUpper(WCHAR* pOutWChar, const BYTE* cpAlignedInBinary, const DWORD dwLength)
+{
+	return AlignedBinaryToWChar(pOutWChar, cpAlignedInBinary, dwLength, TRUE);
+}
+
+WCHAR* AlignedBinaryToWCharToLower(WCHAR* pOutWChar, const BYTE* cpAlignedInBinary, const DWORD dwLength)
+{
+	return AlignedBinaryToWChar(pOutWChar, cpAlignedInBinary, dwLength, FALSE);
+}
+
 char* AlignedBinaryToChar(char* pOutChar, const BYTE* cpAlignedInBinary, const DWORD dwLength, BOOL bIsUpper)
 {
-	HEXCHAR_LU(bIsUpper);
+	const char* cpHexLU[2] = { "0123456789abcdef", "0123456789ABCDEF" };
+	const char* cpHexChar = cpHexLU[(bIsUpper) & 1];
 	DWORD dwCount;
 	size_t* aligned_p;
 	size_t* aligned_b;
@@ -1906,7 +1981,8 @@ char* AlignedBinaryToChar(char* pOutChar, const BYTE* cpAlignedInBinary, const D
 
 WCHAR* AlignedBinaryToWChar(WCHAR* pOutWChar, const BYTE* cpAlignedInBinary, const DWORD dwLength, BOOL bIsUpper)
 {
-	HEXCHAR_LU(bIsUpper);
+	const char* cpHexLU[2] = { "0123456789abcdef", "0123456789ABCDEF" };
+	const char* cpHexChar = cpHexLU[(bIsUpper) & 1];
 	DWORD dwCount;
 	size_t* aligned_p;
 	size_t* aligned_b;
@@ -2196,7 +2272,12 @@ BYTE* WCharToBinary(BYTE* pOutBinary, const WCHAR* cpInWChar, size_t nInWCharSiz
 	return pOutBinary;
 }
 
-char* CharToCopy(const char* cpInChar, const size_t nSize)
+char* CharToCopy(const char* cpInChar)
+{
+	return CharToCopyToPadding(cpInChar, 0);
+}
+
+char* CharToCopyToPadding(const char* cpInChar, size_t nPaddingSize)
 {
 	char* cpBufChar;
 	size_t iBufferSize;
@@ -2205,7 +2286,7 @@ char* CharToCopy(const char* cpInChar, const size_t nSize)
 		return NULL;
 	}
 	iBufferSize = strlen(cpInChar);
-	cpBufChar = (char*)malloc(iBufferSize + nSize);
+	cpBufChar = (char*)malloc((iBufferSize + nPaddingSize + 1));
 	IF_UNLIKELY(cpBufChar == NULL) {
 		return NULL;
 	}
@@ -2213,7 +2294,12 @@ char* CharToCopy(const char* cpInChar, const size_t nSize)
 	return cpBufChar;
 }
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const size_t nSize)
+char* CharToCopy2(const char* cpInChar, const char* cpCharArg1)
+{
+	return CharToCopy2ToPadding(cpInChar,cpCharArg1, 0);
+}
+
+char* CharToCopy2ToPadding(const char* cpInChar, const char* cpCharArg1, size_t nPaddingSize)
 {
 	char* cpBufChar;
 	char* pTmp;
@@ -2221,10 +2307,10 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const size_t nSiz
 
 	iBufferSize = strlen(cpInChar);
 	if (cpCharArg1 == NULL) {
-		return CharToCopy(cpInChar, nSize);
+		return CharToCopyToPadding(cpInChar, nPaddingSize);
 	}
 	iBufferSize += strlen(cpCharArg1);
-	cpBufChar = (char*)malloc(iBufferSize + nSize);
+	cpBufChar = (char*)malloc((iBufferSize + nPaddingSize + 1));
 	IF_UNLIKELY(cpBufChar == NULL) {
 		return NULL;
 	}
@@ -2233,7 +2319,12 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const size_t nSiz
 	return cpBufChar;
 }
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const size_t nSize)
+char* CharToCopy3(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2)
+{
+	return CharToCopy3ToPadding(cpInChar, cpCharArg1, cpCharArg2, 0);
+}
+
+char* CharToCopy3ToPadding(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, size_t nPaddingSize)
 {
 	char* cpBufChar;
 	char* pTmp;
@@ -2241,14 +2332,14 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 
 	iBufferSize = strlen(cpInChar);
 	if (cpCharArg1 == NULL) {
-		return CharToCopy(cpInChar, nSize);
+		return CharToCopyToPadding(cpInChar, nPaddingSize);
 	}
 	iBufferSize += strlen(cpCharArg1);
 	if (cpCharArg2 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, nSize);
+		return CharToCopy2ToPadding(cpInChar, cpCharArg1, nPaddingSize);
 	}
 	iBufferSize += strlen(cpCharArg2);
-	cpBufChar = (char*)malloc(iBufferSize + nSize);
+	cpBufChar = (char*)malloc((iBufferSize + nPaddingSize + 1));
 	IF_UNLIKELY(cpBufChar == NULL) {
 		return NULL;
 	}
@@ -2258,7 +2349,7 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 	return cpBufChar;
 }
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const size_t nSize)
+char* CharToCopy4(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3)
 {
 	char* cpBufChar;
 	char* pTmp;
@@ -2266,18 +2357,18 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 
 	iBufferSize = strlen(cpInChar);
 	if (cpCharArg1 == NULL) {
-		return CharToCopy(cpInChar, nSize);
+		return CharToCopy(cpInChar);
 	}
 	iBufferSize += strlen(cpCharArg1);
 	if (cpCharArg2 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, nSize);
+		return CharToCopy2(cpInChar, cpCharArg1);
 	}
 	iBufferSize += strlen(cpCharArg2);
 	if (cpCharArg3 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, cpCharArg2, nSize);
+		return CharToCopy3(cpInChar, cpCharArg1, cpCharArg2);
 	}
 	iBufferSize += strlen(cpCharArg3);
-	cpBufChar = (char*)malloc(iBufferSize + nSize);
+	cpBufChar = (char*)malloc((iBufferSize + 1));
 	IF_UNLIKELY(cpBufChar == NULL) {
 		return NULL;
 	}
@@ -2288,7 +2379,7 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 	return cpBufChar;
 }
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4, const size_t nSize)
+char* CharToCopy5(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4)
 {
 	char* cpBufChar;
 	char* pTmp;
@@ -2296,22 +2387,22 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 
 	iBufferSize = strlen(cpInChar);
 	if (cpCharArg1 == NULL) {
-		return CharToCopy(cpInChar, nSize);
+		return CharToCopy(cpInChar);
 	}
 	iBufferSize += strlen(cpCharArg1);
 	if (cpCharArg2 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, nSize);
+		return CharToCopy2(cpInChar, cpCharArg1);
 	}
 	iBufferSize += strlen(cpCharArg2);
 	if (cpCharArg3 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, cpCharArg2, nSize);
+		return CharToCopy3(cpInChar, cpCharArg1, cpCharArg2);
 	}
 	iBufferSize += strlen(cpCharArg3);
 	if (cpCharArg4 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, cpCharArg2, cpCharArg3, nSize);
+		return CharToCopy4(cpInChar, cpCharArg1, cpCharArg2, cpCharArg3);
 	}
 	iBufferSize += strlen(cpCharArg4);
-	cpBufChar = (char*)malloc(iBufferSize + nSize);
+	cpBufChar = (char*)malloc((iBufferSize + 1));
 	IF_UNLIKELY(cpBufChar == NULL) {
 		return NULL;
 	}
@@ -2323,7 +2414,7 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 	return cpBufChar;
 }
 
-char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4, const char* cpCharArg5, const size_t nSize)
+char* CharToCopy6(const char* cpInChar, const char* cpCharArg1, const char* cpCharArg2, const char* cpCharArg3, const char* cpCharArg4, const char* cpCharArg5)
 {
 	char* cpBufChar;
 	char* pTmp;
@@ -2331,26 +2422,26 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 
 	iBufferSize = strlen(cpInChar);
 	if (cpCharArg1 == NULL) {
-		return CharToCopy(cpInChar, nSize);
+		return CharToCopy(cpInChar);
 	}
 	iBufferSize += strlen(cpCharArg1);
 	if (cpCharArg2 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, nSize);
+		return CharToCopy2(cpInChar, cpCharArg1);
 	}
 	iBufferSize += strlen(cpCharArg2);
 	if (cpCharArg3 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, cpCharArg2, nSize);
+		return CharToCopy3(cpInChar, cpCharArg1, cpCharArg2);
 	}
 	iBufferSize += strlen(cpCharArg3);
 	if (cpCharArg4 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, cpCharArg2, cpCharArg3, nSize);
+		return CharToCopy4(cpInChar, cpCharArg1, cpCharArg2, cpCharArg3);
 	}
 	iBufferSize += strlen(cpCharArg4);
 	if (cpCharArg5 == NULL) {
-		return CharToCopy(cpInChar, cpCharArg1, cpCharArg2, cpCharArg3, cpCharArg4, nSize);
+		return CharToCopy5(cpInChar, cpCharArg1, cpCharArg2, cpCharArg3, cpCharArg4);
 	}
 	iBufferSize += strlen(cpCharArg5);
-	cpBufChar = (char*)malloc(iBufferSize + nSize);
+	cpBufChar = (char*)malloc((iBufferSize + 1));
 	IF_UNLIKELY(cpBufChar == NULL) {
 		return NULL;
 	}
@@ -2363,13 +2454,19 @@ char* CharToCopy(const char* cpInChar, const char* cpCharArg1, const char* cpCha
 	return cpBufChar;
 }
 
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const size_t nSize)
+
+WCHAR* WCharToCopy(const WCHAR* cpInWChar)
+{
+	return WCharToCopyToPadding(cpInWChar, 0);
+}
+
+WCHAR* WCharToCopyToPadding(const WCHAR* cpInWChar, size_t nPaddingSize)
 {
 	WCHAR* cpBufWChar;
 	size_t iBufferSize;
 
 	iBufferSize = wcslen(cpInWChar);
-	cpBufWChar = (WCHAR*)malloc((iBufferSize + nSize) * sizeof(WCHAR));
+	cpBufWChar = (WCHAR*)malloc((iBufferSize + nPaddingSize + 1) * sizeof(WCHAR));
 	IF_UNLIKELY(cpBufWChar == NULL) {
 		return NULL;
 	}
@@ -2377,7 +2474,12 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const size_t nSize)
 	return cpBufWChar;
 }
 
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const size_t nSize)
+WCHAR* WCharToCopy2(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1)
+{
+	return WCharToCopy2ToPadding(cpInWChar, cpWCharArg1, 0);
+}
+
+WCHAR* WCharToCopy2ToPadding(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, size_t nPaddingSize)
 {
 	WCHAR* cpBufWChar;
 	WCHAR* pTmp;
@@ -2385,10 +2487,10 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const size_
 
 	iBufferSize = wcslen(cpInWChar);
 	if (cpWCharArg1 == NULL) {
-		return WCharToCopy(cpInWChar, nSize);
+		return WCharToCopyToPadding(cpInWChar, nPaddingSize);
 	}
 	iBufferSize += wcslen(cpWCharArg1);
-	cpBufWChar = (WCHAR*)malloc((iBufferSize + nSize) * sizeof(WCHAR));
+	cpBufWChar = (WCHAR*)malloc((iBufferSize + nPaddingSize + 1) * sizeof(WCHAR));
 	IF_UNLIKELY(cpBufWChar == NULL) {
 		return NULL;
 	}
@@ -2397,7 +2499,12 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const size_
 	return cpBufWChar;
 }
 
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const size_t nSize)
+WCHAR* WCharToCopy3(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2)
+{
+	return WCharToCopy3ToPadding(cpInWChar, cpWCharArg1, cpWCharArg2, 0);
+}
+
+WCHAR* WCharToCopy3ToPadding(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, size_t nPaddingSize)
 {
 	WCHAR* cpBufWChar;
 	WCHAR* pTmp;
@@ -2405,14 +2512,14 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 
 	iBufferSize = wcslen(cpInWChar);
 	if (cpWCharArg1 == NULL) {
-		return WCharToCopy(cpInWChar, nSize);
+		return WCharToCopyToPadding(cpInWChar, nPaddingSize);
 	}
 	iBufferSize += wcslen(cpWCharArg1);
 	if (cpWCharArg2 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, nSize);
+		return WCharToCopy2ToPadding(cpInWChar, cpWCharArg1, nPaddingSize);
 	}
 	iBufferSize += wcslen(cpWCharArg2);
-	cpBufWChar = (WCHAR*)malloc((iBufferSize + nSize) * sizeof(WCHAR));
+	cpBufWChar = (WCHAR*)malloc((iBufferSize + nPaddingSize + 1) * sizeof(WCHAR));
 	IF_UNLIKELY(cpBufWChar == NULL) {
 		return NULL;
 	}
@@ -2422,7 +2529,7 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 	return cpBufWChar;
 }
 
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const size_t nSize)
+WCHAR* WCharToCopy4(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3)
 {
 	WCHAR* cpBufWChar;
 	WCHAR* pTmp;
@@ -2430,18 +2537,18 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 
 	iBufferSize = wcslen(cpInWChar);
 	if (cpWCharArg1 == NULL) {
-		return WCharToCopy(cpInWChar, nSize);
+		return WCharToCopy(cpInWChar);
 	}
 	iBufferSize += wcslen(cpWCharArg1);
 	if (cpWCharArg2 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, nSize);
+		return WCharToCopy2(cpInWChar, cpWCharArg1);
 	}
 	iBufferSize += wcslen(cpWCharArg2);
 	if (cpWCharArg3 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, cpWCharArg2, nSize);
+		return WCharToCopy3(cpInWChar, cpWCharArg1, cpWCharArg2);
 	}
 	iBufferSize += wcslen(cpWCharArg3);
-	cpBufWChar = (WCHAR*)malloc((iBufferSize + nSize) * sizeof(WCHAR));
+	cpBufWChar = (WCHAR*)malloc((iBufferSize + 1) * sizeof(WCHAR));
 	IF_UNLIKELY(cpBufWChar == NULL) {
 		return NULL;
 	}
@@ -2452,7 +2559,7 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 	return cpBufWChar;
 }
 
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4, const size_t nSize)
+WCHAR* WCharToCopy5(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4)
 {
 	WCHAR* cpBufWChar;
 	WCHAR* pTmp;
@@ -2460,22 +2567,22 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 
 	iBufferSize = wcslen(cpInWChar);
 	if (cpWCharArg1 == NULL) {
-		return WCharToCopy(cpInWChar, nSize);
+		return WCharToCopy(cpInWChar);
 	}
 	iBufferSize += wcslen(cpWCharArg1);
 	if (cpWCharArg2 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, nSize);
+		return WCharToCopy2(cpInWChar, cpWCharArg1);
 	}
 	iBufferSize += wcslen(cpWCharArg2);
 	if (cpWCharArg3 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, cpWCharArg2, nSize);
+		return WCharToCopy3(cpInWChar, cpWCharArg1, cpWCharArg2);
 	}
 	iBufferSize += wcslen(cpWCharArg3);
 	if (cpWCharArg4 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, cpWCharArg2, cpWCharArg3, nSize);
+		return WCharToCopy4(cpInWChar, cpWCharArg1, cpWCharArg2, cpWCharArg3);
 	}
 	iBufferSize += wcslen(cpWCharArg4);
-	cpBufWChar = (WCHAR*)malloc((iBufferSize + nSize) * sizeof(WCHAR));
+	cpBufWChar = (WCHAR*)malloc((iBufferSize + 1) * sizeof(WCHAR));
 	IF_UNLIKELY(cpBufWChar == NULL) {
 		return NULL;
 	}
@@ -2487,7 +2594,7 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 	return cpBufWChar;
 }
 
-WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4, const WCHAR* cpWCharArg5, const size_t nSize)
+WCHAR* WCharToCopy6(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, const WCHAR* cpWCharArg3, const WCHAR* cpWCharArg4, const WCHAR* cpWCharArg5)
 {
 	WCHAR* cpBufWChar;
 	WCHAR* pTmp;
@@ -2495,26 +2602,26 @@ WCHAR* WCharToCopy(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR
 
 	iBufferSize = wcslen(cpInWChar);
 	if (cpWCharArg1 == NULL) {
-		return WCharToCopy(cpInWChar, nSize);
+		return WCharToCopy(cpInWChar);
 	}
 	iBufferSize += wcslen(cpWCharArg1);
 	if (cpWCharArg2 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, nSize);
+		return WCharToCopy2(cpInWChar, cpWCharArg1);
 	}
 	iBufferSize += wcslen(cpWCharArg2);
 	if (cpWCharArg3 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, cpWCharArg2, nSize);
+		return WCharToCopy3(cpInWChar, cpWCharArg1, cpWCharArg2);
 	}
 	iBufferSize += wcslen(cpWCharArg3);
 	if (cpWCharArg4 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, cpWCharArg2, cpWCharArg3, nSize);
+		return WCharToCopy4(cpInWChar, cpWCharArg1, cpWCharArg2, cpWCharArg3);
 	}
 	iBufferSize += wcslen(cpWCharArg4);
 	if (cpWCharArg5 == NULL) {
-		return WCharToCopy(cpInWChar, cpWCharArg1, cpWCharArg2, cpWCharArg3, cpWCharArg4, nSize);
+		return WCharToCopy5(cpInWChar, cpWCharArg1, cpWCharArg2, cpWCharArg3, cpWCharArg4);
 	}
 	iBufferSize += wcslen(cpWCharArg5);
-	cpBufWChar = (WCHAR*)malloc((iBufferSize + nSize) * sizeof(WCHAR));
+	cpBufWChar = (WCHAR*)malloc((iBufferSize + 1) * sizeof(WCHAR));
 	IF_UNLIKELY(cpBufWChar == NULL) {
 		return NULL;
 	}
@@ -2533,11 +2640,17 @@ size_t CharToCharLength(const char* cpInChar)
 	return strlen(cpInChar);
 }
 
-char* CharToCharConv(const char* cpInChar, char* pOutChar)
+char* CharToCharConv(const char* cpInChar)
+{
+	return CharToCharConv2(cpInChar, NULL);
+}
+
+char* CharToCharConv2(const char* cpInChar, char* pOutChar)
 {
 	IF_UNLIKELY(pOutChar == NULL)
 	{
 		const size_t nCharSize = CharToCharLength(cpInChar);
+
 		pOutChar = (char*)malloc((nCharSize + 1));
 		IF_UNLIKELY(pOutChar == NULL) {
 			return NULL;
@@ -2552,11 +2665,7 @@ size_t CharToWCharLength(const char* cpInChar)
 	unsigned char* pSrc;
 	size_t DstCount = 0;
 
-	IF_UNLIKELY(cpInChar == NULL) {
-		return 0;
-	}
 	pSrc = (unsigned char*)cpInChar;
-
 	while (*pSrc)
 	{
 		if (*pSrc >= 0x80)
@@ -2572,7 +2681,12 @@ size_t CharToWCharLength(const char* cpInChar)
 	return DstCount;
 }
 
-WCHAR* CharToWCharConv(const char* cpInChar, WCHAR* pOutWChar)
+WCHAR* CharToWCharConv(const char* cpInChar)
+{
+	return CharToWCharConv2(cpInChar, NULL);
+}
+
+WCHAR* CharToWCharConv2(const char* cpInChar, WCHAR* pOutWChar)
 {
 	WCHAR* pDst;
 	unsigned char* pSrc;
@@ -2585,6 +2699,7 @@ WCHAR* CharToWCharConv(const char* cpInChar, WCHAR* pOutWChar)
 			return NULL;
 		}
 	}
+
 	pSrc = (unsigned char*)cpInChar;
 	pDst = pOutWChar;
 
@@ -2656,11 +2771,7 @@ size_t WCharToCharLength(const WCHAR* cpInWChar)
 	WCHAR* pSrc;
 	size_t DstCount = 0;
 
-	IF_UNLIKELY(cpInWChar == NULL) {
-		return 0;
-	}
 	pSrc = (WCHAR*)cpInWChar;
-
 	while (*pSrc)
 	{
 		if (*pSrc >= 0x80) {
@@ -2674,7 +2785,12 @@ size_t WCharToCharLength(const WCHAR* cpInWChar)
 	return DstCount;
 }
 
-char* WCharToCharConv(const WCHAR* cpInWChar, char* pOutChar)
+char* WCharToCharConv(const WCHAR* cpInWChar)
+{
+	return WCharToCharConv2(cpInWChar, NULL);
+}
+
+char* WCharToCharConv2(const WCHAR* cpInWChar, char* pOutChar)
 {
 	unsigned char* pDst;
 	WCHAR* pSrc;
@@ -2687,6 +2803,7 @@ char* WCharToCharConv(const WCHAR* cpInWChar, char* pOutChar)
 			return NULL;
 		}
 	}
+
 	pSrc = (WCHAR*)cpInWChar;
 	pDst = (unsigned char*)pOutChar;
 
@@ -2715,7 +2832,13 @@ size_t WCharToWCharLength(const WCHAR* cpInWChar)
 	return wcslen(cpInWChar);
 }
 
-WCHAR* WCharToWCharConv(const WCHAR* cpInWChar, WCHAR* pOutWChar)
+
+WCHAR* WCharToWCharConv(const WCHAR* cpInWChar)
+{
+	return WCharToWCharConv2(cpInWChar, NULL);
+}
+
+WCHAR* WCharToWCharConv2(const WCHAR* cpInWChar, WCHAR* pOutWChar)
 {
 	IF_UNLIKELY(pOutWChar == NULL)
 	{
@@ -2771,7 +2894,13 @@ size_t CharToUtf8CharLength(const char* cpInChar)
 	return DstCount;
 }
 
-char* CharToUtf8CharConv(const char* cpInChar, char* pOutUtf8Char)
+
+char* CharToUtf8CharConv(const char* cpInChar)
+{
+	return CharToUtf8CharConv2(cpInChar, NULL);
+}
+
+char* CharToUtf8CharConv2(const char* cpInChar, char* pOutUtf8Char)
 {
 	unsigned char* pDst;
 	unsigned char* pSrc;
@@ -2784,6 +2913,7 @@ char* CharToUtf8CharConv(const char* cpInChar, char* pOutUtf8Char)
 			return NULL;
 		}
 	}
+
 	pSrc = (unsigned char*)cpInChar;
 	pDst = (unsigned char*)pOutUtf8Char;
 
@@ -2867,7 +2997,13 @@ size_t Utf8CharToCharLength(const char* cpInUtf8Char)
 	return DstCount;
 }
 
-char* Utf8CharToCharConv(const char* cpInUtf8Char, char* pOutChar)
+
+char* Utf8CharToCharConv(const char* cpInUtf8Char)
+{
+	return Utf8CharToCharConv2(cpInUtf8Char, NULL);
+}
+
+char* Utf8CharToCharConv2(const char* cpInUtf8Char, char* pOutChar)
 {
 	unsigned char* pDst;
 	unsigned char* pSrc;
@@ -2992,7 +3128,13 @@ size_t Utf8CharToWCharLength(const char* cpInUtf8Char)
 	return DstCount;
 }
 
-WCHAR* Utf8CharToWCharConv(const char* cpInUtf8Char, WCHAR* pOutWChar)
+
+WCHAR* Utf8CharToWCharConv(const char* cpInUtf8Char)
+{
+	return Utf8CharToWCharConv2(cpInUtf8Char, NULL);
+}
+
+WCHAR* Utf8CharToWCharConv2(const char* cpInUtf8Char, WCHAR* pOutWChar)
 {
 	WCHAR* pDst;
 	unsigned char* pSrc;
@@ -3106,7 +3248,13 @@ size_t WCharToUtf8CharLength(const WCHAR* cpInWChar)
 	return DstCount;
 }
 
-char* WCharToUtf8CharConv(const WCHAR* cpInWChar, char* pOutUtf8Char)
+
+char* WCharToUtf8CharConv(const WCHAR* cpInWChar)
+{
+	return WCharToUtf8CharConv2(cpInWChar, NULL);
+}
+
+char* WCharToUtf8CharConv2(const WCHAR* cpInWChar, char* pOutUtf8Char)
 {
 	unsigned char* pDst;
 	WCHAR* pSrc;
@@ -3170,6 +3318,7 @@ char* WCharToUtf8CharConv(const WCHAR* cpInWChar, char* pOutUtf8Char)
 	*pDst = '\0';
 	return pOutUtf8Char;
 }
+
 
 char* GetSystemDirectoryFileNameToCharA(const char* cpFileName)
 {
@@ -3357,7 +3506,7 @@ char* CharToLower(char* pInChar)
 	return pInChar;
 }
 
-char* CharToUpper(char* pInChar, size_t nInSize)
+char* CharSizeToUpper(char* pInChar, size_t nInSize)
 {
 	char* pDst = pInChar;
 
@@ -3375,7 +3524,7 @@ char* CharToUpper(char* pInChar, size_t nInSize)
 	return pInChar;
 }
 
-char* CharToLower(char* pInChar, size_t nInSize)
+char* CharSizeToLower(char* pInChar, size_t nInSize)
 {
 	char* pDst = pInChar;
 
@@ -3413,7 +3562,7 @@ WCHAR* WCharToLower(WCHAR* pInWChar)
 	return pInWChar;
 }
 
-WCHAR* WCharToUpper(WCHAR* pInWChar, size_t nInSize)
+WCHAR* WCharSizeToUpper(WCHAR* pInWChar, size_t nInSize)
 {
 	WCHAR* pDst = pInWChar;
 
@@ -3431,7 +3580,7 @@ WCHAR* WCharToUpper(WCHAR* pInWChar, size_t nInSize)
 	return pInWChar;
 }
 
-WCHAR* WCharToLower(WCHAR* pInWChar, size_t nInSize)
+WCHAR* WCharSizeToLower(WCHAR* pInWChar, size_t nInSize)
 {
 	WCHAR* pDst = pInWChar;
 
@@ -3449,7 +3598,7 @@ WCHAR* WCharToLower(WCHAR* pInWChar, size_t nInSize)
 	return pInWChar;
 }
 
-size_t CharToFWrite(FILE* fp, const void* cpInChar, size_t nSize)
+size_t CharSizeToFWrite(FILE* fp, const void* cpInChar, size_t nSize)
 {
 	return fwrite(cpInChar, nSize, 1, fp);
 }
@@ -3562,7 +3711,7 @@ size_t Utf8CharToUtf8CharFWrite(FILE* fp, const char* cpInUtf8Char)
 	return fwrite(cpInUtf8Char, strlen(cpInUtf8Char), 1, fp);
 }
 
-BOOL CharToWriteFile(HANDLE hFile, const void* cpInChar, DWORD nLength)
+BOOL CharSizeToWriteFile(HANDLE hFile, const void* cpInChar, DWORD nLength)
 {
 	DWORD dwWriteByte = 0;
 	return  WriteFile(hFile, cpInChar, nLength, &dwWriteByte, NULL);
@@ -3750,11 +3899,13 @@ HASHLINE_ERR:
 
 	if (isxdigit((unsigned char)*pPos))
 	{
+		size_t i;
+
 		pHash = pPos;
 		pPos++;
 		nHashSize++;
 
-		for (size_t i = 0; i < nInSize; i++)
+		for (i = 0; i < nInSize; i++)
 		{
 			if (!isxdigit((unsigned char)*pPos)) {
 				break;
@@ -3772,6 +3923,7 @@ HASHLINE_ERR:
 	else
 	{
 		pPos = (char*)cpInChar + nInSize - 1;
+
 		while (isspace((unsigned char)*pPos))
 		{
 			if (pPos == cpInChar) {
@@ -3863,7 +4015,7 @@ NO_FILENAME:
 
 		pPos = pFileName;
 		memcpy(szExtBuffer, pFileName, sizeof(szExtBuffer));
-		CharToUpper(szExtBuffer, sizeof(szExtBuffer));
+		CharSizeToUpper(szExtBuffer, sizeof(szExtBuffer));
 
 		switch (*aligned_nExt & 0x00FFFFFF)
 		{
@@ -3891,7 +4043,7 @@ NO_FILENAME:
 			if (szExtBuffer[3] == '3')
 			{
 				memcpy(szExtBuffer, pFileName + 4, sizeof(szExtBuffer));
-				CharToUpper(szExtBuffer, sizeof(szExtBuffer));
+				CharSizeToUpper(szExtBuffer, sizeof(szExtBuffer));
 				if (szExtBuffer[0] == '2')
 				{
 					if (szExtBuffer[1] == 'C') {
@@ -3994,7 +4146,8 @@ NO_FILENAME:
 		if (pOutFileName != NULL)
 		{
 			char* pOutFileName_p = pOutFileName;
-			while (*pPos != NULL)
+
+			while (*pPos != '\0')
 			{
 				if (*pPos == ')')
 				{
@@ -4052,11 +4205,13 @@ HASHLINE_ERR:
 
 	if (iswxdigit(*pPos))
 	{
+		size_t i;
+
 		pHash = pPos;
 		pPos++;
 		nHashSize++;
 
-		for (size_t i = 0; i < nInSize; i++)
+		for (i = 0; i < nInSize; i++)
 		{
 			if (!iswxdigit(*pPos)) {
 				break;
@@ -4166,7 +4321,7 @@ NO_FILENAME:
 
 		pPos = pFileName;
 		memcpy(szExtBuffer, pFileName, sizeof(szExtBuffer));
-		WCharToUpper(szExtBuffer, SIZEOF_NUM(szExtBuffer));
+		WCharSizeToUpper(szExtBuffer, SIZEOF_NUM(szExtBuffer));
 
 		switch (*aligned_nExt & 0x0000FFFFFFFFFFFF)
 		{
@@ -4194,7 +4349,7 @@ NO_FILENAME:
 			if (szExtBuffer[3] == '3')
 			{
 				memcpy(szExtBuffer, pFileName + 4, sizeof(szExtBuffer));
-				WCharToUpper(szExtBuffer, SIZEOF_NUM(szExtBuffer));
+				WCharSizeToUpper(szExtBuffer, SIZEOF_NUM(szExtBuffer));
 				if (szExtBuffer[0] == '2')
 				{
 					if (szExtBuffer[1] == 'C') {
@@ -4301,7 +4456,8 @@ NO_FILENAME:
 		if (pOutFileName != NULL)
 		{
 			WCHAR* pOutFileName_p = pOutFileName;
-			while (*pPos != NULL)
+
+			while (*pPos != '\0')
 			{
 				if (*pPos == ')')
 				{
@@ -4363,9 +4519,11 @@ size_t CharToDeleteReturnCode(char* pInChar, size_t nInSize)
 {
 	char* pPos;
 	const char szReturnCode[] = { '\r', '\n' };
+
 	if (nInSize == (size_t)-1) {
 		nInSize = strlen(pInChar);
 	}
+
 	pPos = pInChar + nInSize - 2;
 	if (memcmp(pPos, szReturnCode, sizeof(szReturnCode)) == 0)
 	{
@@ -4389,12 +4547,14 @@ size_t WCharToDeleteReturnCode(WCHAR* pInWChar, size_t nInSize)
 {
 	WCHAR* pPos;
 	const WCHAR szReturnCode[] = {'\r', '\n'};
+
 	if (nInSize == (size_t)-1) {
 		nInSize = wcslen(pInWChar);
 	}
 	if (nInSize < 1) {
 		return 0;
 	}
+
 	pPos = pInWChar + nInSize - 2;
 	if (memcmp(pPos, szReturnCode, sizeof(szReturnCode)) == 0)
 	{
@@ -4414,8 +4574,30 @@ size_t WCharToDeleteReturnCode(WCHAR* pInWChar, size_t nInSize)
 	return nInSize;
 }
 
-char* CharToEnvString(const char* cpInChar, char* pOutChar, size_t nInSize)
+
+char* CharToEnvString(const char* cpInChar)
 {
+	char* pOutChar;
+	size_t nInSize;
+	int nRet;
+
+	nInSize = _MAX_PATH * 4;
+	pOutChar = (char*)malloc(nInSize);
+	if (pOutChar == NULL) {
+		return NULL;
+	}
+
+	nRet = ExpandEnvironmentStringsA(cpInChar, pOutChar, (UINT)nInSize);
+	if (!nRet) {
+		qstrcpy(pOutChar, cpInChar);
+	}
+	return pOutChar;
+}
+
+char* CharToEnvString2(const char* cpInChar, char* pOutChar, size_t nInSize)
+{
+	int nRet;
+
 	if (pOutChar == NULL)
 	{
 		nInSize = _MAX_PATH * 4;
@@ -4427,15 +4609,38 @@ char* CharToEnvString(const char* cpInChar, char* pOutChar, size_t nInSize)
 	if (nInSize == -1) {
 		nInSize = strlen(cpInChar);
 	}
-	const BOOL nRet = ExpandEnvironmentStringsA(cpInChar, pOutChar, (UINT)nInSize);
+
+	nRet = ExpandEnvironmentStringsA(cpInChar, pOutChar, (UINT)nInSize);
 	if (!nRet) {
 		qstrcpy(pOutChar, cpInChar);
 	}
 	return pOutChar;
 }
 
-WCHAR* WCharToEnvString(const WCHAR* cpInWChar, WCHAR* pOutWChar, size_t nInSize)
+
+WCHAR* WCharToEnvString(const WCHAR* cpInWChar)
 {
+	WCHAR* pOutWChar;
+	size_t nInSize;
+	int nRet;
+
+	nInSize = _MAX_PATH * 4;
+	pOutWChar = (WCHAR*)malloc(nInSize * sizeof(WCHAR));
+	if (pOutWChar == NULL) {
+		return NULL;
+	}
+
+	nRet = ExpandEnvironmentStringsW(cpInWChar, pOutWChar, (UINT)nInSize);
+	if (!nRet) {
+		qwcscpy(pOutWChar, cpInWChar);
+	}
+	return pOutWChar;
+}
+
+WCHAR* WCharToEnvString2(const WCHAR* cpInWChar, WCHAR* pOutWChar, size_t nInSize)
+{
+	int nRet;
+
 	if (pOutWChar == NULL)
 	{
 		nInSize = _MAX_PATH * 4;
@@ -4447,7 +4652,8 @@ WCHAR* WCharToEnvString(const WCHAR* cpInWChar, WCHAR* pOutWChar, size_t nInSize
 	if (nInSize == -1) {
 		nInSize = wcslen(cpInWChar);
 	}
-	const BOOL nRet = ExpandEnvironmentStringsW(cpInWChar, pOutWChar, (UINT)nInSize);
+
+	nRet = ExpandEnvironmentStringsW(cpInWChar, pOutWChar, (UINT)nInSize);
 	if (!nRet) {
 		qwcscpy(pOutWChar, cpInWChar);
 	}
@@ -4570,8 +4776,9 @@ WCHAR* qwcsncpy(WCHAR* _Destination, const WCHAR* _Source, size_t _Count)
 static char* filename_unescape(char* s, size_t s_len)
 {
 	char* dst = s;
+	size_t i;
 
-	for (size_t i = 0; i < s_len; i++)
+	for (i = 0; i < s_len; i++)
 	{
 		switch (s[i])
 		{
@@ -4615,8 +4822,9 @@ static char* filename_unescape(char* s, size_t s_len)
 static WCHAR* filename_wunescape(WCHAR* s, size_t s_len)
 {
 	WCHAR* dst = s;
+	size_t i;
 
-	for (size_t i = 0; i < s_len; i++)
+	for (i = 0; i < s_len; i++)
 	{
 		switch (s[i])
 		{
@@ -4657,12 +4865,12 @@ static WCHAR* filename_wunescape(WCHAR* s, size_t s_len)
 	return s;
 }
 
-bool bsd_split_3(char* s, size_t s_len, unsigned char** hex_digest, char** file_name, bool escaped_filename)
+BOOL bsd_split_3A(char* s, size_t s_len, unsigned char** hex_digest, char** file_name, BOOL escaped_filename)
 {
 	size_t i;
 
 	if (s_len == 0) {
-		return false;
+		return FALSE;
 	}
 
 	/* Find end of filename. The BSD 'md5' and 'sha1' commands do not escape
@@ -4673,13 +4881,13 @@ bool bsd_split_3(char* s, size_t s_len, unsigned char** hex_digest, char** file_
 	}
 
 	if (s[i] != ')') {
-		return false;
+		return FALSE;
 	}
 
 	*file_name = s;
 
 	if (escaped_filename && filename_unescape(s, i) == NULL) {
-		return false;
+		return FALSE;
 	}
 
 	s[i++] = '\0';
@@ -4689,7 +4897,7 @@ bool bsd_split_3(char* s, size_t s_len, unsigned char** hex_digest, char** file_
 	}
 
 	if (s[i] != '=') {
-		return false;
+		return FALSE;
 	}
 
 	i++;
@@ -4699,15 +4907,15 @@ bool bsd_split_3(char* s, size_t s_len, unsigned char** hex_digest, char** file_
 	}
 
 	*hex_digest = (unsigned char*)&s[i];
-	return true;
+	return TRUE;
 }
 
-bool bsd_split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, WCHAR** file_name, bool escaped_filename)
+BOOL bsd_split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, WCHAR** file_name, BOOL escaped_filename)
 {
 	size_t i;
 
 	if (s_len == 0) {
-		return false;
+		return FALSE;
 	}
 
 	/* Find end of filename. The BSD 'md5' and 'sha1' commands do not escape
@@ -4718,13 +4926,13 @@ bool bsd_split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, WCHAR** file_name, 
 	}
 
 	if (s[i] != ')') {
-		return false;
+		return FALSE;
 	}
 
 	*file_name = s;
 
 	if (escaped_filename && filename_wunescape(s, i) == NULL) {
-		return false;
+		return FALSE;
 	}
 
 	s[i++] = '\0';
@@ -4734,7 +4942,7 @@ bool bsd_split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, WCHAR** file_name, 
 	}
 
 	if (s[i] != '=') {
-		return false;
+		return FALSE;
 	}
 
 	i++;
@@ -4744,15 +4952,15 @@ bool bsd_split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, WCHAR** file_name, 
 	}
 
 	*hex_digest = (WCHAR*)&s[i];
-	return true;
+	return TRUE;
 }
 
 static int bsd_reversed = -1;
 
-bool split_3(char* s, size_t s_len,	unsigned char** hex_digest, int* binary, char** file_name,
+BOOL split_3A(char* s, size_t s_len,	unsigned char** hex_digest, int* binary, char** file_name,
 	const char* digest_type_string, const size_t min_digest_line_length, const size_t digest_hex_bytes)
 {
-	bool escaped_filename = false;
+	BOOL escaped_filename = FALSE;
 	size_t algo_name_len;
 	size_t i = 0;
 
@@ -4770,11 +4978,11 @@ bool split_3(char* s, size_t s_len,	unsigned char** hex_digest, int* binary, cha
 		if (s[i + algo_name_len] == '(')
 		{
 			*binary = 0;
-			return bsd_split_3(s + i + algo_name_len + 1,
+			return bsd_split_3A(s + i + algo_name_len + 1,
 				s_len - (i + algo_name_len + 1),
 				hex_digest, file_name, escaped_filename);
 		}
-		return false;
+		return FALSE;
 	}
 
 	/* Ignore this line if it is too short.
@@ -4782,13 +4990,13 @@ bool split_3(char* s, size_t s_len,	unsigned char** hex_digest, int* binary, cha
 	   the first is a backslash) more characters to contain correct message digest
 	   information.  */
 	if (s_len - i < min_digest_line_length + (s[i] == '\\')) {
-		return false;
+		return FALSE;
 	}
 
 	if (s[i] == '\\')
 	{
 		++i;
-		escaped_filename = true;
+		escaped_filename = TRUE;
 	}
 	*hex_digest = (unsigned char*)&s[i];
 
@@ -4797,14 +5005,14 @@ bool split_3(char* s, size_t s_len,	unsigned char** hex_digest, int* binary, cha
 	   immediately by a white space it's an error.  */
 	i += digest_hex_bytes;
 	if (!ISWHITE(s[i])) {
-		return false;
+		return FALSE;
 	}
 
 	s[i++] = '\0';
 
 
 	if (s[i] != ' ' && s[i] != '*') {
-		return false;
+		return FALSE;
 	}
 	*binary = (s[i++] == '*');
 
@@ -4822,7 +5030,7 @@ bool split_3(char* s, size_t s_len,	unsigned char** hex_digest, int* binary, cha
 		   that the first file name does not have
 		   a leading ' ' or '*'.  */
 		if (bsd_reversed == 0) {
-			return false;
+			return FALSE;
 		}
 		bsd_reversed = 1;
 	}
@@ -4839,13 +5047,13 @@ bool split_3(char* s, size_t s_len,	unsigned char** hex_digest, int* binary, cha
 	if (escaped_filename) {
 		return filename_unescape(&s[i], s_len - i) != NULL;
 	}
-	return true;
+	return TRUE;
 }
 
-bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** file_name,
+BOOL split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** file_name,
 	const WCHAR* digest_type_string, const size_t min_digest_line_length, const size_t digest_hex_bytes)
 {
-	bool escaped_filename = false;
+	BOOL escaped_filename = FALSE;
 	size_t algo_name_len;
 	size_t i = 0;
 
@@ -4863,11 +5071,11 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 		if (s[i + algo_name_len] == '(')
 		{
 			*binary = 0;
-			return bsd_split_3(s + i + algo_name_len + 1,
+			return bsd_split_3W(s + i + algo_name_len + 1,
 				s_len - (i + algo_name_len + 1),
 				hex_digest, file_name, escaped_filename);
 		}
-		return false;
+		return FALSE;
 	}
 
 	/* Ignore this line if it is too short.
@@ -4875,13 +5083,13 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 	   the first is a backslash) more characters to contain correct message digest
 	   information.  */
 	if (s_len - i < min_digest_line_length + (s[i] == '\\')) {
-		return false;
+		return FALSE;
 	}
 
 	if (s[i] == '\\')
 	{
 		++i;
-		escaped_filename = true;
+		escaped_filename = TRUE;
 	}
 	*hex_digest = (WCHAR*)&s[i];
 
@@ -4890,7 +5098,7 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 	   immediately by a white space it's an error.  */
 	i += digest_hex_bytes;
 	if (!ISWHITE(s[i])) {
-		return false;
+		return FALSE;
 	}
 
 	s[i++] = '\0';
@@ -4906,7 +5114,7 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 		   that the first file name does not have
 		   a leading ' ' or '*'.  */
 		if (bsd_reversed == 0) {
-			return false;
+			return FALSE;
 		}
 		bsd_reversed = 1;
 	}
@@ -4923,7 +5131,7 @@ bool split_3(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** fi
 	if (escaped_filename) {
 		return filename_wunescape(&s[i], s_len - i) != NULL;
 	}
-	return true;
+	return TRUE;
 }
 
 size_t CharToGetLine(char** ppOutChar, size_t* npInCount, const char *cpInChar, size_t nInCharSize)

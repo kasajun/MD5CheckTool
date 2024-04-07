@@ -369,7 +369,7 @@ LRESULT OptionDlg_OnIdCancel(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(lParam);
 	TCHAR szBuf[NUMBER_LOADSTRING] = { 0 };
 
-	ITOT_FUNC(tagOptionWindow1.nActiveTab, szBuf, 10);
+	ITOT_FUNC(tagOptionWindow1.nActiveTab, szBuf, SIZEOF_NUM(szBuf), 10);
 	WritePrivateProfileString(_T("Option"), _T("ActiveTab"), szBuf, tagMainWindow1.pINIFile);
 	OptionDlg_Free();
 	tagOptionWindow1.hWnd = NULL;
@@ -647,11 +647,11 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 
 
 	GetPrivateProfileString(_T("Option"), _T("HashTypeString"), _T(""), szBuf, NUMBER_LOADSTRING, cpInIniFile);
-	if (*szBuf != '\0') // èââÒãNìÆÇÃîªíË
+	if (szBuf[0] != '\0') // èââÒãNìÆÇÃîªíË
 	{
-		int i = 0;
+		int i;
 
-		for (; i < MAX_HASH_TYPE; i++)
+		for (i = 0; i < MAX_HASH_TYPE; i++)
 		{
 			if (_tcsicmp(szBuf, HashThread_GetHashName(i)) == 0) {
 				nRet = (int)i;
@@ -662,7 +662,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	else
 	{
 		GetPrivateProfileString(_T("Option"), _T("HashType"), _T(""), szBuf, NUMBER_LOADSTRING, cpInIniFile);
-		if (*szBuf != '\0')
+		if (szBuf[0] != '\0')
 		{
 			nRet = _ttoi(szBuf);
 
@@ -686,7 +686,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableHashLower"), _T("1"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_HASHOUT_LOWER;
 	}
 	else {
@@ -694,7 +694,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableHashMultiLine"), _T("1"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_ENABLE_MULTILINE;
 	}
 	else {
@@ -706,7 +706,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 		int nArg = FALSE;
 
 		GetPrivateProfileString(_T("Option"), _T("EnableEcoQos"), _T("0"), szBuf, 2, cpInIniFile);
-		if (*szBuf != '0')
+		if (szBuf[0] != '0')
 		{
 			nArg = TRUE;
 			dwAppFrag |= APP_ECOQOS;
@@ -722,7 +722,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableWindowAlpha"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_WINDOWALPHA;
 	}
 	else {
@@ -730,7 +730,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableTopMost"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		dwAppFrag |= APP_ENABLE_TOPMOST;
 		hRet = HWND_TOPMOST;
@@ -740,12 +740,13 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 		dwAppFrag &= ~APP_ENABLE_TOPMOST;
 		hRet = HWND_NOTOPMOST;
 	}
+
 	if (tagMainWindow1.hWnd) {
 		SetWindowPos(tagMainWindow1.hWnd, hRet, 0, 0, 0, 0, (SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW));
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("DisableMultiFileUpDateDraw"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag &= ~APP_DISABLE_MULTIFILE_UPDATE_DRAW;
 	}
 	else {
@@ -753,7 +754,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableFileList"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_ENABLE_FILELIST;
 	}
 	else {
@@ -761,7 +762,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableDebug"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_ENABLE_DEBUG;
 	}
 	else {
@@ -769,7 +770,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableMinimumHandle"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_ENABLE_MINIMAM_HANDLE;
 	}
 	else {
@@ -777,7 +778,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("DisableHashNoAsm"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		dwAppFrag |= APP_DISABLE_HASH_NOASM;
 		HashThread_SetHashFunc(TRUE);
@@ -789,7 +790,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableLargeBufferSize"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		dwAppFrag |= APP_ENABLE_LARGE_BUFFERSIZE;
 		tagMainWindow1.tagHashThread1.dwFileBufferSize = 0x100000;
@@ -801,7 +802,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableFileNoCache"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		dwAppFrag |= APP_FILE_NOCACHE;
 		tagMainWindow1.tagHashThread1.nFileNoCache = TRUE;
@@ -813,7 +814,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableHiddenFile"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		dwAppFrag |= APP_ENABLE_HIDDENFILE;
 		tagMainWindow1.tagHashThread1.dwFileAttributeMask = 0xFFFFFFFF;
@@ -825,7 +826,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableHashFileWriteTime"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_ENABLE_HASHFILE_WRITETIME;
 	}
 	else {
@@ -833,7 +834,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("EnableHashFileHash"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0') {
+	if (szBuf[0] != '0') {
 		dwAppFrag |= APP_HASHFILE_ENABLE_HASH;
 	}
 	else {
@@ -842,7 +843,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 
 
 	GetPrivateProfileString(_T("Option"), _T("EnableOldSaveFile"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		dwAppFrag |= APP_OLDHASHFILE;
 		tagMainWindow1.ofnFileName[1].nFilterIndex = 2;
@@ -854,7 +855,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("ActiveTab"), _T("0"), szBuf, 2, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		tagOptionWindow1.nActiveTab = _ttoi(szBuf);
 		if (tagOptionWindow1.nActiveTab > SIZEOF_NUM(tagOptionWindow1.hWndTab)) {
@@ -868,10 +869,9 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 		tagMainWindow1.dwSaveHashFileCharCode = 2;
 	}
 
-
 	/*
 	GetPrivateProfileString(_T("Option"), _T("SaveFileFilterIndex"), _T("0"), szBuf, NUMBER_LOADSTRING, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		tagMainWindow1.ofnFileName[1].nFilterIndex = _ttoi(szBuf);
 		if (tagMainWindow1.ofnFileName[1].nFilterIndex > 2) {
@@ -880,9 +880,8 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 	*/
 
-
 	GetPrivateProfileString(_T("Option"), _T("CheckSumFile"), _T(""), szBuf, MAX_STRINGTABLE - 1, cpInIniFile);
-	if (*szBuf != '\0')
+	if (szBuf[0] != '\0')
 	{
 		qtcscpy(tagMainWindow1.pCheckSumFile, szBuf);
 		SetCheckSumFile();
@@ -893,7 +892,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 	}
 
 	GetPrivateProfileString(_T("Option"), _T("HashFileOutToCopyFolderMode"), _T("0"), szBuf, NUMBER_LOADSTRING, cpInIniFile);
-	if (*szBuf != '0')
+	if (szBuf[0] != '0')
 	{
 		dwHashFileOutToCopyFolderMode = _ttoi(szBuf);
 		if (dwHashFileOutToCopyFolderMode > 4) {
@@ -907,7 +906,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 #endif
 
 		GetPrivateProfileString(_T("Option"), _T("HashCpuMode"), _T("0"), szBuf, NUMBER_LOADSTRING, cpInIniFile);
-		if (*szBuf != '0')
+		if (szBuf[0] != '0')
 		{
 			dwHashCpuMode = _ttoi(szBuf);
 			if (dwHashCpuMode > 3) {
@@ -921,11 +920,12 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 #endif
 
 	gLoad_dwAppFrag = dwAppFrag;
+	gLoad_dwAppFrag &= ~APP_NO_SETTING;
 
 
 	GetPrivateProfileString(_T("FileList"), _T("ListViewTextColorHashComp"), _T(""), szBuf, 11, cpInIniFile);
 	if (TCHAR_COMP_TO_INT_2CHAR(szBuf, _T('0'), _T('x'))) {
-		STSCANF_FUNC(szBuf + 2, _T("%x"), &tagFileListWindow1.clListTextColor[0]);
+		STSCANF_FUNC((szBuf + 2), _T("%x"), &tagFileListWindow1.clListTextColor[0]);
 	}
 	else {
 		tagFileListWindow1.clListTextColor[0] = 0x00FF0000;
@@ -933,7 +933,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 
 	GetPrivateProfileString(_T("FileList"), _T("ListViewTextColorHashCompFoul"), _T(""), szBuf, 11, cpInIniFile);
 	if (TCHAR_COMP_TO_INT_2CHAR(szBuf, _T('0'), _T('x'))) {
-		STSCANF_FUNC(szBuf + 2, _T("%x"), &tagFileListWindow1.clListTextColor[1]);
+		STSCANF_FUNC((szBuf + 2), _T("%x"), &tagFileListWindow1.clListTextColor[1]);
 	}
 	else {
 		tagFileListWindow1.clListTextColor[1] = 0x000000FF;
@@ -941,7 +941,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 
 	GetPrivateProfileString(_T("FileList"), _T("ListViewTextColorFileError"), _T(""), szBuf, 11, cpInIniFile);
 	if (TCHAR_COMP_TO_INT_2CHAR(szBuf, _T('0'), _T('x')))	{
-		STSCANF_FUNC(szBuf + 2, _T("%x"), &tagFileListWindow1.clListTextColor[2]);
+		STSCANF_FUNC((szBuf + 2), _T("%x"), &tagFileListWindow1.clListTextColor[2]);
 	}
 	else {
 		tagFileListWindow1.clListTextColor[2] = 0x000040FF;
@@ -988,14 +988,14 @@ VOID SetIniFileSetting(const TCHAR* cpInIniFile)
 
 	if (tagMainWindow1.dwSaveHashFileCharCode != 2)
 	{
-		ITOT_FUNC(tagMainWindow1.dwSaveHashFileCharCode, szBuf, 10);
+		ITOT_FUNC(tagMainWindow1.dwSaveHashFileCharCode, szBuf, SIZEOF_NUM(szBuf), 10);
 		WritePrivateProfileString(_T("Option"), _T("SaveFileCharCode"), szBuf, cpInIniFile);
 	}
 
 	GetCheckSumFile(szBuf);
 	WritePrivateProfileString(_T("Option"), _T("CheckSumFile"), szBuf, cpInIniFile);
 
-	ITOT_FUNC(dwHashFileOutToCopyFolderMode, szBuf, 10);
+	ITOT_FUNC(dwHashFileOutToCopyFolderMode, szBuf, SIZEOF_NUM(szBuf), 10);
 	WritePrivateProfileString(_T("Option"), _T("HashFileOutToCopyFolderMode"), szBuf, cpInIniFile);
 
 #if !defined(UNICODE) && _MSC_VER < 1400
@@ -1003,7 +1003,7 @@ VOID SetIniFileSetting(const TCHAR* cpInIniFile)
 	{
 #endif
 
-		ITOT_FUNC(dwHashCpuMode, szBuf, 10);
+		ITOT_FUNC(dwHashCpuMode, szBuf, SIZEOF_NUM(szBuf), 10);
 		WritePrivateProfileString(_T("Option"), _T("HashCpuMode"), szBuf, cpInIniFile);
 
 #if !defined(UNICODE) && _MSC_VER < 1400

@@ -73,7 +73,7 @@ int GetIniFilePath(TCHAR* pInPath, const TCHAR* cpInINIFileName, const TCHAR* cp
 					*ptr = '\0';
 
 					// cpInAppName のフォルダーがない場合は作成する。
-					if (PathIsDirectory(pInPath) == NULL) {
+					if (PathIsDirectory(pInPath) == FALSE) {
 						CreateDirectory(pInPath, NULL);
 					}
 
@@ -90,7 +90,7 @@ FUNC_END:
 	}
 #endif /* _MSC_VER < 1500 */
 
-	if (nRet == NULL && GetModuleFileName(NULL, szFilePath, MAX_PATH_SIZE) != NULL)
+	if (nRet == FALSE && GetModuleFileName(NULL, szFilePath, MAX_PATH_SIZE) != FALSE)
 	{
 		PathRemoveFileSpec(szFilePath);
 		ptr = qtcscpy(pInPath, szFilePath);

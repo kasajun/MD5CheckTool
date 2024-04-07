@@ -23,26 +23,24 @@ static const unsigned char pr2six[] =
 	64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
 };
 
-size_t Base64Decode(unsigned char* pOutChar, const char* cpBase64Char)
-{
-	return Base64Decode((char*)pOutChar, cpBase64Char);
-}
 
-size_t Base64Decode(char* pOutChar, const char* cpBase64Char)
+size_t Base64Decode(unsigned char* pOutChar, const char* cpBase64Char)
 {
 	size_t nbytesdecoded = 0;
 	const unsigned char* bufin;
 	unsigned char* bufout;
-	size_t nprbytes;
 
-	bufout = (unsigned char*)pOutChar;
+	bufout = pOutChar;
 	bufin = (const unsigned char*)cpBase64Char;
 
 LINEFEED_LOOP:
 	if (1)
 	{
 		const unsigned char* bufinstart = bufin;
+		size_t nprbytes;
+
 		while (pr2six[*(bufin++)] <= 63);
+
 		nprbytes = (bufin - bufinstart) - 1;
 		nbytesdecoded += ((nprbytes + 3) / 4) * 3;
 		bufin = bufinstart;
@@ -82,21 +80,23 @@ LINEFEED_LOOP:
 	return nbytesdecoded;
 }
 
-size_t Base64ToWCharDecode(char* pOutChar, const WCHAR* cpBase64WChar)
+size_t Base64ToWCharDecode(unsigned char* pOutChar, const WCHAR* cpBase64WChar)
 {
 	size_t nbytesdecoded = 0;
 	const WCHAR* bufin;
 	unsigned char* bufout;
-	size_t nprbytes;
 
-	bufout = (unsigned char*)pOutChar;
+	bufout = pOutChar;
 	bufin = (const WCHAR*)cpBase64WChar;
 
 LINEFEED_LOOP:
 	if (1)
 	{
 		const WCHAR* bufinstart = bufin;
+		size_t nprbytes;
+
 		while (pr2six[*(bufin++)] <= 63);
+
 		nprbytes = (bufin - bufinstart) - 1;
 		nbytesdecoded += ((nprbytes + 3) / 4) * 3;
 		bufin = bufinstart;
@@ -133,12 +133,8 @@ LINEFEED_LOOP:
 	return nbytesdecoded;
 }
 
-size_t Base64DecodeLength(const unsigned char* cpBase64Char)
-{
-	return Base64DecodeLength((const char*)cpBase64Char);
-}
 
-size_t Base64DecodeLength(const char* cpBase64Char)
+size_t Base64DecodeLength(const unsigned char* cpBase64Char)
 {
 	size_t nbytesdecoded = 0;
 	const unsigned char* bufin;
@@ -148,9 +144,11 @@ LINEFEED_LOOP:
 	if (1)
 	{
 		const unsigned char* bufinstart = bufin;
+		size_t nprbytes;
+
 		while (pr2six[*(bufin++)] <= 63);
 
-		const size_t nprbytes = (bufin - bufinstart) - 1;
+		nprbytes = (bufin - bufinstart) - 1;
 		nbytesdecoded += ((nprbytes + 3) / 4) * 3;
 		if (*(bufin - 1) == '\r' && *bufin++ == '\n' && *bufin != '\0') {
 			goto LINEFEED_LOOP;
@@ -169,9 +167,11 @@ LINEFEED_LOOP:
 	if (1)
 	{
 		const WCHAR* bufinstart = bufin;
+		size_t nprbytes;
+
 		while (pr2six[*(bufin++)] <= 63);
 
-		const size_t nprbytes = (bufin - bufinstart) - 1;
+		nprbytes = (bufin - bufinstart) - 1;
 		nbytesdecoded = ((nprbytes + 3) / 4) * 3;
 		if (*(bufin - 1) == '\r' && *bufin++ == '\n' && *bufin != '\0') {
 			goto LINEFEED_LOOP;
@@ -183,20 +183,12 @@ LINEFEED_LOOP:
 static const char Base64Table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char Base64FileNameTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-";
 
+
 size_t Base64Encode(char* pOutChar, const unsigned char* cpInChar, size_t nInSize)
 {
-	return Base64Encode(pOutChar, (const char*)cpInChar, nInSize);
-}
-
-size_t Base64Encode(char* pOutChar, const char* cpInChar, size_t nInSize)
-{
 	size_t i;
-	const char* pSrc = cpInChar;
+	const char* pSrc = (const char*)cpInChar;
 	char* pDst;
-
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
 
 	pDst = pOutChar;
 	for (i = 0; i < (nInSize - 2); i += 3, pSrc += 3)
@@ -227,15 +219,11 @@ size_t Base64Encode(char* pOutChar, const char* cpInChar, size_t nInSize)
 	return pDst - pOutChar;
 }
 
-size_t Base64EncodeToWChar(WCHAR* pOutWChar, const char* cpInChar, size_t nInSize)
+size_t Base64EncodeToWChar(WCHAR* pOutWChar, const unsigned char* cpInChar, size_t nInSize)
 {
 	size_t i;
-	const char* pSrc = cpInChar;
+	const char* pSrc = (const char*)cpInChar;
 	WCHAR* pDst;
-
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
 
 	pDst = pOutWChar;
 	for (i = 0; i < (nInSize - 2); i += 3, pSrc += 3)
@@ -266,26 +254,30 @@ size_t Base64EncodeToWChar(WCHAR* pOutWChar, const char* cpInChar, size_t nInSiz
 	return pDst - pOutWChar;
 }
 
-size_t Base64EncodeLength(const char* cpInChar, size_t nInSize)
+
+size_t Base64EncodeLength(const char* cpInChar)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
+	size_t nInSize = strlen(cpInChar);
+	return Base64EncodeLength2(nInSize);
+}
+
+size_t Base64EncodeLength2(size_t nInSize)
+{
 	return ((nInSize + 2) / 3 * 4) + 1;
 }
 
-size_t Base64EncodeToWCharLength(const WCHAR* cpInWChar, size_t nInSize)
+
+size_t Base64EncodeToWCharLength(const WCHAR* cpInWChar)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = wcslen(cpInWChar);
-	}
+	size_t nInSize = wcslen(cpInWChar);
+	return Base64EncodeToWCharLength2(nInSize);
+}
+
+size_t Base64EncodeToWCharLength2(size_t nInSize)
+{
 	return ((nInSize + 2) / 3 * 4) + 1;
 }
  
-size_t Base64EncodeLength(const unsigned char* cpInChar, size_t nInSize)
-{
-	return Base64EncodeLength((const char*)cpInChar, nInSize);
-}
 
 size_t Base64FileNameEncode(char* pOutChar, const char* cpInChar, size_t nInSize)
 {
@@ -363,13 +355,13 @@ char* BinaryToBase64(const void* cpIn, size_t nInSize, char* pOutBase64Char)
 {
 	IF_UNLIKELY(pOutBase64Char == NULL)
 	{
-		const size_t nOutBase64CharSize = Base64EncodeLength((const char*)cpIn, nInSize);
+		size_t nOutBase64CharSize = Base64EncodeLength2(nInSize);
 		pOutBase64Char = (char*)malloc(nOutBase64CharSize);
 		IF_UNLIKELY(pOutBase64Char == NULL) {
 			return NULL;
 		}
 	}
-	Base64Encode(pOutBase64Char, (const char*)cpIn, nInSize);
+	Base64Encode(pOutBase64Char, (const unsigned char*)cpIn, nInSize);
 	return pOutBase64Char;
 }
 
@@ -377,151 +369,112 @@ WCHAR* BinaryToBase64ToWChar(const void* cpIn, size_t nInSize, WCHAR* pOutBase64
 {
 	IF_UNLIKELY(pOutBase64WChar == NULL)
 	{
-		const size_t nOutBase64CharSize = Base64EncodeLength((const char*)cpIn, nInSize);
+		size_t nOutBase64CharSize = Base64EncodeLength2(nInSize);
 		pOutBase64WChar = (WCHAR*)malloc(nOutBase64CharSize * sizeof(WCHAR));
 		IF_UNLIKELY(pOutBase64WChar == NULL) {
 			return NULL;
 		}
 	}
-	Base64EncodeToWChar(pOutBase64WChar, (const char*)cpIn, nInSize);
+	Base64EncodeToWChar(pOutBase64WChar, (const unsigned char*)cpIn, nInSize);
 	return pOutBase64WChar;
 }
 
-char* CharToBase64(const char* cpInChar, size_t nInSize, char* pOutBase64Char)
+
+char* CharToBase64(const char* cpInChar)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
+	size_t nInSize = strlen(cpInChar);
+	return BinaryToBase64(cpInChar, nInSize, NULL);
+}
+
+char* CharToBase64v2(const char* cpInChar, char* pOutBase64Char)
+{
+	size_t nInSize = strlen(cpInChar);
 	return BinaryToBase64(cpInChar, nInSize, pOutBase64Char);
 }
 
-WCHAR* CharToBase64ToWChar(const char* cpInChar, size_t nInSize, WCHAR* pOutBase64WChar)
+char* CharSizeToBase64(const char* cpInChar, size_t nInSize)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
+	return BinaryToBase64(cpInChar, nInSize, NULL);
+}
+
+char* CharSizeToBase64v2(const char* cpInChar, size_t nInSize, char* pOutBase64Char)
+{
+	return BinaryToBase64(cpInChar, nInSize, pOutBase64Char);
+}
+
+
+WCHAR* CharToBase64ToWChar(const char* cpInChar)
+{
+	size_t nInSize = strlen(cpInChar);
+	return BinaryToBase64ToWChar(cpInChar, nInSize, NULL);
+}
+
+WCHAR* CharToBase64ToWCharv2(const char* cpInChar, WCHAR* pOutBase64WChar)
+{
+	size_t nInSize = strlen(cpInChar);
 	return BinaryToBase64ToWChar(cpInChar, nInSize, pOutBase64WChar);
 }
 
-char* WCharToBase64(const WCHAR* cpInWChar, size_t nInSize)
+WCHAR* CharSizeToBase64ToWChar(const char* cpInChar, size_t nInSize)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = wcslen(cpInWChar) * sizeof(WCHAR);
-	}
-	return CharToBase64((char*)cpInWChar, nInSize);
+	return BinaryToBase64ToWChar(cpInChar, nInSize, NULL);
 }
 
-WCHAR* WCharToBase64ToWChar(const WCHAR* cpInWChar, size_t nInSize)
+WCHAR* CharSizeToBase64ToWCharv2(const char* cpInChar, size_t nInSize, WCHAR* pOutBase64WChar)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = wcslen(cpInWChar) * sizeof(WCHAR);
-	}
-	return CharToBase64ToWChar((char*)cpInWChar, nInSize);
+	return BinaryToBase64ToWChar(cpInChar, nInSize, pOutBase64WChar);
 }
 
-size_t Base64LineFeedEncodeLength(const char* cpInChar, size_t nInSize)
+
+char* WCharToBase64(const WCHAR* cpInWChar)
 {
-	size_t nLineFeed;
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
-	nLineFeed = INT_CEIL(nInSize, 48) * 2;
-	return Base64EncodeLength(cpInChar, nInSize) + nLineFeed;
+	size_t nInSize = wcslen(cpInWChar) * sizeof(WCHAR);
+	return BinaryToBase64(cpInWChar, nInSize, NULL);
 }
 
-char* BinaryToBase64LineFeed(const void* cpIn, size_t nInSize)
+char* WCharToBase64v2(const WCHAR* cpInWChar, char* pOutBase64Char)
 {
-	char* pBase64Char;
-	size_t nBase64CharSize;
-	size_t nRet;
-	size_t nCount;
-	char* pSrc;
-	char* pDst;
-
-	nBase64CharSize = Base64LineFeedEncodeLength((char*)cpIn, nInSize);
-	pBase64Char = (char*)malloc(nBase64CharSize);
-	IF_UNLIKELY(pBase64Char == NULL) {
-		return NULL;
-	}
-	pSrc = (char*)cpIn;
-	pDst = pBase64Char;
-	nCount = nInSize;
-	while (nCount >= 48)
-	{
-		Base64Encode(pDst, pSrc, 48);
-		pSrc += 48;
-		pDst += 64;
-		*pDst++ = '\r';
-		*pDst++ = '\n';
-		nCount -= 48;
-	}
-	if (nCount > 0)
-	{
-		nRet = Base64Encode(pDst, pSrc, nCount);
-		pDst += nRet - 1;
-		*pDst++ = '\r';
-		*pDst++ = '\n';
-	}
-	*pDst++ = '\0';
-	return pBase64Char;
+	size_t nInSize = wcslen(cpInWChar) * sizeof(WCHAR);
+	return BinaryToBase64(cpInWChar, nInSize, pOutBase64Char);
 }
 
-char* CharToBase64LineFeed(const char* cpInChar, size_t nInSize)
+char* WCharSizeToBase64(const WCHAR* cpInWChar, size_t nInSize)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
-	return BinaryToBase64LineFeed(cpInChar, nInSize);
+	return BinaryToBase64(cpInWChar, nInSize, NULL);
 }
 
-WCHAR* BinaryToBase64LineFeedToWChar(const void* cpIn, size_t nInSize)
+char* WCharSizeToBase64v2(const WCHAR* cpInWChar, size_t nInSize, char* pOutBase64Char)
 {
-	WCHAR* pBase64WChar;
-	size_t nBase64WCharSize;
-	size_t nRet;
-	size_t nCount;
-	char* pSrc;
-	WCHAR* pDst;
-
-	nBase64WCharSize = Base64LineFeedEncodeLength((const char*)cpIn, nInSize);
-	pBase64WChar = (WCHAR*)malloc(nBase64WCharSize * sizeof(WCHAR));
-	IF_UNLIKELY(pBase64WChar == NULL) {
-		return NULL;
-	}
-	pSrc = (char*)cpIn;
-	pDst = pBase64WChar;
-	nCount = nInSize;
-	while (nCount >= 48)
-	{
-		Base64EncodeToWChar(pDst, pSrc, 48);
-		pSrc += 48;
-		pDst += 64;
-		*pDst++ = '\r';
-		*pDst++ = '\n';
-		nCount -= 48;
-	}
-	if (nCount > 0)
-	{
-		nRet = Base64EncodeToWChar(pDst, pSrc, nCount);
-		pDst += nRet - 1;
-		*pDst++ = '\r';
-		*pDst++ = '\n';
-	}
-	*pDst++ = '\0';
-	return pBase64WChar;
+	return BinaryToBase64(cpInWChar, nInSize, pOutBase64Char);
 }
 
-WCHAR* CharToBase64LineFeedToWChar(const char* cpInChar, size_t nInSize)
+
+WCHAR* WCharToBase64ToWChar(const WCHAR* cpInWChar)
 {
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
-	return BinaryToBase64LineFeedToWChar(cpInChar, nInSize);
+	size_t nInSize = wcslen(cpInWChar) * sizeof(WCHAR);
+	return BinaryToBase64ToWChar((char*)cpInWChar, nInSize, NULL);
 }
+
+WCHAR* WCharToBase64ToWCharv2(const WCHAR* cpInWChar, WCHAR* pOutBase64WChar)
+{
+	size_t nInSize = wcslen(cpInWChar) * sizeof(WCHAR);
+	return BinaryToBase64ToWChar((char*)cpInWChar, nInSize, pOutBase64WChar);
+}
+
+WCHAR* WCharSizeToBase64ToWChar(const WCHAR* cpInWChar, size_t nInSize)
+{
+	return BinaryToBase64ToWChar((char*)cpInWChar, nInSize, NULL);
+}
+
+WCHAR* WCharSizeToBase64ToWCharv2(const WCHAR* cpInWChar, size_t nInSize, WCHAR* pOutBase64WChar)
+{
+	return BinaryToBase64ToWChar((char*)cpInWChar, nInSize, pOutBase64WChar);
+}
+
 
 void* Base64ToBinary(const char* cpInBase64Char, void* pOut, size_t *pOutSize)
 {
-	*pOutSize = Base64DecodeLength(cpInBase64Char);
+	*pOutSize = Base64DecodeLength((const unsigned char*)cpInBase64Char);
 	IF_UNLIKELY(pOut == NULL)
 	{
 		pOut = (char*)malloc(*pOutSize);
@@ -529,15 +482,30 @@ void* Base64ToBinary(const char* cpInBase64Char, void* pOut, size_t *pOutSize)
 			return NULL;
 		}
 	}
-	*pOutSize = Base64Decode((char*)pOut, cpInBase64Char);
+	*pOutSize = Base64Decode((unsigned char*)pOut, cpInBase64Char);
 	return pOut;
 }
 
-char* Base64ToChar(const char* cpInBase64Char, char* pOutChar)
+
+char* Base64ToCharA(const char* cpInBase64Char)
+{
+	char* pOutChar;
+	size_t nOutCharSize;
+
+	nOutCharSize = Base64DecodeLength((const unsigned char*)cpInBase64Char);
+	pOutChar = (char*)malloc(nOutCharSize + 1);
+	IF_UNLIKELY(pOutChar == NULL) {
+		return NULL;
+	}
+	Base64Decode((unsigned char*)pOutChar, cpInBase64Char);
+	return pOutChar;
+}
+
+char* Base64ToCharv2A(const char* cpInBase64Char, char* pOutChar)
 {
 	size_t nOutCharSize;
 
-	nOutCharSize = Base64DecodeLength(cpInBase64Char);
+	nOutCharSize = Base64DecodeLength((const unsigned char*)cpInBase64Char);
 	IF_UNLIKELY(pOutChar == NULL)
 	{
 		pOutChar = (char*)malloc(nOutCharSize + 1);
@@ -545,11 +513,57 @@ char* Base64ToChar(const char* cpInBase64Char, char* pOutChar)
 			return NULL;
 		}
 	}
-	Base64Decode(pOutChar, cpInBase64Char);
+	Base64Decode((unsigned char*)pOutChar, cpInBase64Char);
 	return pOutChar;
 }
 
-char* WCharToBase64ToChar(const WCHAR* cpInBase64WChar, char* pOutChar)
+
+WCHAR* Base64ToWCharA(const char* cpInBase64Char)
+{
+	WCHAR* pOutWChar;
+	size_t nOutWCharSize;
+
+	nOutWCharSize = Base64DecodeLength((const unsigned char*)cpInBase64Char);
+	pOutWChar = (WCHAR*)malloc((nOutWCharSize + 1) * sizeof(WCHAR));
+	IF_UNLIKELY(pOutWChar == NULL) {
+		return NULL;
+	}
+	Base64Decode((unsigned char*)pOutWChar, cpInBase64Char);
+	return pOutWChar;
+}
+
+WCHAR* Base64ToWCharv2A(const char* cpInBase64Char, WCHAR* pOutWChar)
+{
+	size_t nOutWCharSize;
+
+	nOutWCharSize = Base64DecodeLength((const unsigned char*)cpInBase64Char);
+	IF_UNLIKELY(pOutWChar == NULL)
+	{
+		pOutWChar = (WCHAR*)malloc((nOutWCharSize + 1) * sizeof(WCHAR));
+		IF_UNLIKELY(pOutWChar == NULL) {
+			return NULL;
+		}
+	}
+	Base64Decode((unsigned char*)pOutWChar, cpInBase64Char);
+	return pOutWChar;
+}
+
+
+char* Base64ToCharW(const WCHAR* cpInBase64WChar)
+{
+	char* pOutChar;
+	size_t nOutCharSize;
+
+	nOutCharSize = Base64ToWCharDecodeLength(cpInBase64WChar);
+	pOutChar = (char*)malloc(nOutCharSize + 1);
+	IF_UNLIKELY(pOutChar == NULL) {
+		return NULL;
+	}
+	Base64ToWCharDecode((unsigned char*)pOutChar, cpInBase64WChar);
+	return pOutChar;
+}
+
+char* Base64ToCharv2W(const WCHAR* cpInBase64WChar, char* pOutChar)
 {
 	size_t nOutCharSize;
 
@@ -561,6 +575,176 @@ char* WCharToBase64ToChar(const WCHAR* cpInBase64WChar, char* pOutChar)
 			return NULL;
 		}
 	}
-	Base64ToWCharDecode(pOutChar, cpInBase64WChar);
+	Base64ToWCharDecode((unsigned char*)pOutChar, cpInBase64WChar);
 	return pOutChar;
+}
+
+
+WCHAR* Base64ToWCharW(const WCHAR* cpInBase64WChar)
+{
+	WCHAR* pOutWChar;
+	size_t nOutWCharSize;
+
+	nOutWCharSize = Base64ToWCharDecodeLength(cpInBase64WChar);
+	pOutWChar = (WCHAR*)malloc((nOutWCharSize + 1) * sizeof(WCHAR));
+	IF_UNLIKELY(pOutWChar == NULL) {
+		return NULL;
+	}
+	Base64ToWCharDecode((unsigned char*)pOutWChar, cpInBase64WChar);
+	return pOutWChar;
+}
+
+WCHAR* Base64ToWCharv2W(const WCHAR* cpInBase64WChar, WCHAR* pOutWChar)
+{
+	size_t nOutWCharSize;
+
+	nOutWCharSize = Base64ToWCharDecodeLength(cpInBase64WChar);
+	IF_UNLIKELY(pOutWChar == NULL)
+	{
+		pOutWChar = (WCHAR*)malloc((nOutWCharSize + 1) * sizeof(WCHAR));
+		IF_UNLIKELY(pOutWChar == NULL) {
+			return NULL;
+		}
+	}
+	Base64ToWCharDecode((unsigned char*)pOutWChar, cpInBase64WChar);
+	return pOutWChar;
+}
+
+
+size_t Base64LineFeedEncodeLength(const char* cpInChar)
+{
+	size_t nInSize = strlen(cpInChar);
+	size_t nLineFeed = INT_CEIL(nInSize, 48) * 2;
+	return Base64EncodeLength2(nInSize) + nLineFeed;
+}
+
+size_t Base64LineFeedEncodeLength2(size_t nInSize)
+{
+	size_t nLineFeed = INT_CEIL(nInSize, 48) * 2;
+	return Base64EncodeLength2(nInSize) + nLineFeed;
+}
+
+char* BinaryToBase64LineFeed(const void* cpIn, size_t nInSize, char* pOutBase64Char)
+{
+	size_t nBase64CharSize;
+	size_t nRet;
+	size_t nCount;
+	char* pSrc;
+	char* pDst;
+
+	nBase64CharSize = Base64LineFeedEncodeLength2(nInSize);
+	IF_UNLIKELY(pOutBase64Char == NULL)
+	{
+		pOutBase64Char = (char*)malloc(nBase64CharSize);
+		IF_UNLIKELY(pOutBase64Char == NULL) {
+			return NULL;
+		}
+	}
+
+	pSrc = (char*)cpIn;
+	pDst = pOutBase64Char;
+	nCount = nInSize;
+	while (nCount >= 48)
+	{
+		Base64Encode(pDst, (const unsigned char*)pSrc, 48);
+		pSrc += 48;
+		pDst += 64;
+		*pDst++ = '\r';
+		*pDst++ = '\n';
+		nCount -= 48;
+	}
+	if (nCount > 0)
+	{
+		nRet = Base64Encode(pDst, (const unsigned char*)pSrc, nCount);
+		pDst += nRet - 1;
+		*pDst++ = '\r';
+		*pDst++ = '\n';
+	}
+	*pDst++ = '\0';
+	return pOutBase64Char;
+}
+
+WCHAR* BinaryToBase64LineFeedToWChar(const void* cpIn, size_t nInSize, WCHAR* pOutBase64WChar)
+{
+	size_t nBase64WCharSize;
+	size_t nRet;
+	size_t nCount;
+	char* pSrc;
+	WCHAR* pDst;
+
+	nBase64WCharSize = Base64LineFeedEncodeLength2(nInSize);
+	IF_UNLIKELY(pOutBase64WChar == NULL)
+	{
+		pOutBase64WChar = (WCHAR*)malloc(nBase64WCharSize * sizeof(WCHAR));
+		IF_UNLIKELY(pOutBase64WChar == NULL) {
+			return NULL;
+		}
+	}
+	pSrc = (char*)cpIn;
+	pDst = pOutBase64WChar;
+	nCount = nInSize;
+	while (nCount >= 48)
+	{
+		Base64EncodeToWChar(pDst, (const unsigned char*)pSrc, 48);
+		pSrc += 48;
+		pDst += 64;
+		*pDst++ = '\r';
+		*pDst++ = '\n';
+		nCount -= 48;
+	}
+	if (nCount > 0)
+	{
+		nRet = Base64EncodeToWChar(pDst, (const unsigned char*)pSrc, nCount);
+		pDst += nRet - 1;
+		*pDst++ = '\r';
+		*pDst++ = '\n';
+	}
+	*pDst++ = '\0';
+	return pOutBase64WChar;
+}
+
+
+char* CharToBase64LineFeed(const char* cpInChar)
+{
+	size_t nInSize = strlen(cpInChar);
+	return BinaryToBase64LineFeed(cpInChar, nInSize, NULL);
+}
+
+char* CharToBase64LineFeedv2(const char* cpInChar, char* pOutChar)
+{
+	size_t nInSize = strlen(cpInChar);
+	return BinaryToBase64LineFeed(cpInChar, nInSize, pOutChar);
+}
+
+char* CharSizeToBase64LineFeed(const char* cpInChar, size_t nInSize)
+{
+	return BinaryToBase64LineFeed(cpInChar, nInSize, NULL);
+}
+
+char* CharSizeToBase64LineFeedv2(const char* cpInChar, size_t nInSize, char* pOutChar)
+{
+	return BinaryToBase64LineFeed(cpInChar, nInSize, pOutChar);
+}
+
+
+WCHAR* CharToBase64LineFeedToWChar(const char* cpInChar)
+{
+	size_t nInSize = strlen(cpInChar);
+	return BinaryToBase64LineFeedToWChar(cpInChar, nInSize, NULL);
+}
+
+WCHAR* CharToBase64LineFeedToWCharv2(const char* cpInChar, WCHAR* pOutWChar)
+{
+	size_t nInSize = strlen(cpInChar);
+	return BinaryToBase64LineFeedToWChar(cpInChar, nInSize, pOutWChar);
+}
+
+WCHAR* CharSizeToBase64LineFeedToWChar(const char* cpInChar, size_t nInSize)
+{
+	return BinaryToBase64LineFeedToWChar(cpInChar, nInSize, NULL);
+}
+
+WCHAR* CharSizeToBase64LineFeedToWCharv2(const char* cpInChar, size_t nInSize, WCHAR* pOutWChar)
+{
+	return BinaryToBase64LineFeedToWChar(cpInChar, nInSize, pOutWChar);
 }

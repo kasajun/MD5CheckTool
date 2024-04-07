@@ -730,7 +730,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\charlib.cpp"
+				RelativePath="..\shared\charlib.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -798,7 +798,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\charlib_base64.cpp"
+				RelativePath="..\shared\charlib_base64.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -866,7 +866,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\charlib_sysdll.cpp"
+				RelativePath="..\shared\charlib_sysdll.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -934,7 +934,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\charlib_url.cpp"
+				RelativePath="..\shared\charlib_url.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1002,7 +1002,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\clipboard.cpp"
+				RelativePath="..\shared\clipboard.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1283,7 +1283,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\shared\ecoqos.cpp"
+				RelativePath="..\shared\ecoqos.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1560,7 +1560,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\IniFilePath.cpp"
+				RelativePath="..\shared\IniFilePath.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -2000,7 +2000,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\shared\os.cpp"
+				RelativePath="..\shared\os.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -2068,7 +2068,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\os_full.cpp"
+				RelativePath="..\shared\os_full.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -2832,7 +2832,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\shared\WindowSize.cpp"
+				RelativePath="..\shared\WindowSize.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

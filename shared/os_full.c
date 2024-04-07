@@ -1,17 +1,12 @@
 // os_full.cpp
 
-#if _MSC_VER >= 1400
-# define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES			1
-# define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT		1
-#endif
-
 #include "os_full.h"
 #include "c20.h"
 
 
 BOOL GetOSRegRead(TCHAR* pInString)
 {
-	TCHAR szRegBuf[_OS_FULL_SIZE];
+	TCHAR szRegBuf[_OS_FULL_SIZE] = _T("");
 	TCHAR* ptr = NULL;
 	HKEY hKey = NULL;
 	LONG lRet = 0;
@@ -805,10 +800,10 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 			TCHAR szVal[32];
 
 			*ptr++ = ' ';
-			_itot(osVerInfo.dwMajorVersion, szVal, 10);
+			ITOT_FUNC(osVerInfo.dwMajorVersion, szVal, SIZEOF_NUM(szVal), 10);
 			ptr = qtcscpy(ptr, szVal);
 			*ptr++ = '.';
-			_itot(osVerInfo.dwMinorVersion, szVal, 10);
+			ITOT_FUNC(osVerInfo.dwMinorVersion, szVal, SIZEOF_NUM(szVal), 10);
 			ptr = qtcscpy(ptr, szVal);
 		}
 	}
@@ -846,7 +841,7 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 			*ptr++ = ' ';
 			*ptr++ = 'S';
 			*ptr++ = 'P';
-			_itot((int)osVerInfo.wServicePackMajor, szVal, 10);
+			ITOT_FUNC((int)osVerInfo.wServicePackMajor, szVal, SIZEOF_NUM(szVal), 10);
 			ptr = qtcscpy(ptr, szVal);
 		}
 #if _MSC_VER < 1500

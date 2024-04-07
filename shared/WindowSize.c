@@ -4,7 +4,6 @@
 #include "WindowSize.h"
 #include "c20.h"
 
-
 TCHAR szWindowSizeBuf[32];
 TCHAR szOldWindowSizeBuf[32];
 int nDpi;
@@ -35,7 +34,11 @@ BOOL WindowSize_GetScreen(HWND hWnd)
 	nDeskTopX = GetSystemMetrics(SM_CXSCREEN);
 	nDeskTopY = GetSystemMetrics(SM_CYSCREEN);
 
-	STPRINTF_FUNC(szWindowSizeBuf, _T("WindowSize%dx%dx%d"), nDeskTopX, nDeskTopY, nDpi);
+	STPRINTF_FUNC(szWindowSizeBuf,
+#if _MSC_VER > 1300
+		SIZEOF_NUM(szWindowSizeBuf),
+#endif
+		_T("WindowSize%dx%dx%d"), nDeskTopX, nDeskTopY, nDpi);
 	return TRUE;
 }
 
@@ -168,13 +171,17 @@ MONITOR_INFO_EXIT:
 
 	if (rc.left != gLoad_rc.left || rc.top != gLoad_rc.top || rc.right != gLoad_rc.right || rc.bottom != gLoad_rc.bottom)
 	{
-		STPRINTF_FUNC(szNum, _T("%d,%d,%d,%d"), rc.left, rc.top, rc.right, rc.bottom);
+		STPRINTF_FUNC(szNum,
+#if _MSC_VER > 1300
+			SIZEOF_NUM(szNum),
+#endif			
+			_T("%d,%d,%d,%d"), rc.left, rc.top, rc.right, rc.bottom);
 		WritePrivateProfileString(cpInWindowName, szWindowSizeBuf, szNum, cpInIniFile);
 	}
 
 	if (gLoad_nState != nState)
 	{
-		ITOT_FUNC(nState, szNum, 10);
+		ITOT_FUNC(nState, szNum, SIZEOF_NUM(szNum), 10);
 		WritePrivateProfileString(cpInWindowName, _T("WindowState"), szNum, cpInIniFile);
 	}
 	return TRUE;
