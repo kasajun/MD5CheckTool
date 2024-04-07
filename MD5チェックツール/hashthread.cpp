@@ -42,7 +42,7 @@
 #define MS_ENH_RSA_AES_PROV_W			L"Microsoft Enhanced RSA and AES Cryptographic Provider"
 #define MS_ENH_RSA_AES_PROV_XP_A		"Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)"
 #define MS_ENH_RSA_AES_PROV_XP_W		L"Microsoft Enhanced RSA and AES Cryptographic Provider (Prototype)"
-#ifdef UNICODE
+#ifdef _UNICODE
 #define MS_ENH_RSA_AES_PROV_XP			MS_ENH_RSA_AES_PROV_XP_W
 #define MS_ENH_RSA_AES_PROV				MS_ENH_RSA_AES_PROV_W
 #else
@@ -72,9 +72,7 @@ int Hash_MD5_WinCrypt_Init(void* mdCTX)
 	IF_LIKELY(nRet) {
 		return CryptCreateHash(((WinCrypt_CTX*)mdCTX)->hCryptProv, CALG_MD5, 0, 0, &((WinCrypt_CTX*)mdCTX)->hHash);
 	}
-	else {
-		return 0;
-	}
+	return FALSE;
 }
 
 int Hash_SHA1_Init(void* mdCTX)
@@ -87,9 +85,7 @@ int Hash_SHA1_WinCrypt_Init(void* mdCTX)
 	IF_LIKELY(nRet) {
 		return CryptCreateHash(((WinCrypt_CTX*)mdCTX)->hCryptProv, CALG_SHA1, 0, 0, &((WinCrypt_CTX*)mdCTX)->hHash);
 	}
-	else {
-		return 0;
-	}
+	return FALSE;
 }
 
 int Hash_SHA256_192_Init(void* mdCTX)
@@ -110,11 +106,9 @@ int Hash_SHA256_WinCrypt_Init(void* mdCTX)
 {
 	int nRet = CryptAcquireContext(&((WinCrypt_CTX*)mdCTX)->hCryptProv, NULL, MS_ENH_RSA_AES_PROV, PROV_RSA_AES, CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET);
 	IF_LIKELY(nRet) {
-	return CryptCreateHash(((WinCrypt_CTX*)mdCTX)->hCryptProv, CALG_SHA_256, 0, 0, &((WinCrypt_CTX*)mdCTX)->hHash);
+		return CryptCreateHash(((WinCrypt_CTX*)mdCTX)->hCryptProv, CALG_SHA_256, 0, 0, &((WinCrypt_CTX*)mdCTX)->hHash);
 	}
-	else {
-		return 0;
-	}
+	return FALSE;
 }
 
 int Hash_SHA384_Init(void* mdCTX)
@@ -127,9 +121,7 @@ int Hash_SHA384_WinCrypt_Init(void* mdCTX)
 	IF_LIKELY(nRet) {
 		return CryptCreateHash(((WinCrypt_CTX*)mdCTX)->hCryptProv, CALG_SHA_384, 0, 0, &((WinCrypt_CTX*)mdCTX)->hHash);
 	}
-	else {
-		return 0;
-	}
+	return FALSE;
 }
 
 int Hash_SHA512_Init(void* mdCTX)
@@ -142,9 +134,7 @@ int Hash_SHA512_WinCrypt_Init(void* mdCTX)
 	IF_LIKELY(nRet) {
 		return CryptCreateHash(((WinCrypt_CTX*)mdCTX)->hCryptProv, CALG_SHA_512, 0, 0, &((WinCrypt_CTX*)mdCTX)->hHash);
 	}
-	else {
-		return 0;
-	}
+	return FALSE;
 }
 
 int Hash_SHA512_224_Init(void* mdCTX)

@@ -175,6 +175,7 @@ PostBuild_Cmds=mt.exe -nologo -outputresource:"$(TargetPath)" -manifest "..\shar
 # Begin Source File
 
 SOURCE=.\AboutDlg.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
@@ -194,6 +195,7 @@ SOURCE=..\shared\charlib_base64.c
 # Begin Source File
 
 SOURCE=..\shared\charlib_sysdll.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
@@ -203,54 +205,67 @@ SOURCE=..\shared\charlib_url.c
 # Begin Source File
 
 SOURCE=..\shared\clipboard.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\cpuid.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\crc32.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\crc32c.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\DebugDlg.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\ecoqos.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\FileListDlg.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\getopt.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\hashthread.cpp
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\iFileDialog.cpp
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\IniFilePath.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\iTaskbarList3.cpp
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\Main.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
@@ -265,34 +280,42 @@ SOURCE=..\shared\md4.c
 # Begin Source File
 
 SOURCE=..\shared\md5.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\md5_noasm.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\OptionDlg.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\OptionDlgTab1.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\OptionDlgTab2.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\OptionDlgTab3.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\OptionDlgTab4.cpp
+# ADD CPP /Yu"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\os.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
@@ -302,65 +325,62 @@ SOURCE=..\shared\os_full.c
 # Begin Source File
 
 SOURCE=..\shared\sha1.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\sha1_noasm.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\sha256.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\sha256_noasm.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\sha3.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\sha3_noasm.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\sha512.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\sha512_noasm.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\stdafx.cpp
+# ADD CPP /Yc"stdafx.h"
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\ToolTip.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\WindowSize.c
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=..\shared\xxhash.c
-
-!IF  "$(CFG)" == "MD5チェックツール - Win32 Release"
-
-# ADD CPP /Ob2
-
-!ELSEIF  "$(CFG)" == "MD5チェックツール - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "MD5チェックツール - Win32 ReleaseW"
-
-# ADD CPP /Ob2
-
-!ELSEIF  "$(CFG)" == "MD5チェックツール - Win32 DebugW"
-
-!ENDIF 
-
+# SUBTRACT CPP /YX
 # End Source File
 # End Group
 # Begin Group "Header Files"
