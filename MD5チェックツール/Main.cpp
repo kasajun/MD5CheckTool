@@ -5907,7 +5907,7 @@ DWORD FixString(TCHAR* pString)
 #ifdef _UNICODE
 
 	pSrc = pString;
-	pBuf = (WCHAR*)malloc((nBufSize * 2 + 1) * sizeof(WCHAR));
+	pBuf = (WCHAR*)malloc(((nBufSize + 1) * 2) * sizeof(WCHAR));
 	IF_UNLIKELY(pBuf == NULL) {
 		return (DWORD)-2;
 	}
@@ -5936,7 +5936,7 @@ DWORD FixString(TCHAR* pString)
 #else
 
 	pSrc = pString;
-	pBuf = (char*)malloc(nBufSize * 2 * sizeof(char));
+	pBuf = (char*)malloc((nBufSize + 1) * 2 * sizeof(char));
 	if (pBuf == NULL) {
 		return(DWORD) - 2;
 	}

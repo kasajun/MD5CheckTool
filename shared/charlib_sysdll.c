@@ -257,54 +257,7 @@ LPSTR StrFormatByteSize_Func(__int64 qdw, LPSTR szBuf, UINT uiBufSize)
 
 char* FileSizeText2ToChar(const __int64 cdwlFileSize)
 {
-	char* pOutChar;
-	char szDot[] = ".";
-	char szConma[] = ",";
-	char szNumber[33];
-	const NUMBERFMTA nfmt = { 0, 0, 3, szDot, szConma, 1 };
-	char* pTemp;
-	__int64 llFileSize;
-	int nRet;
-
-	pOutChar = (char*)malloc((size_t)100 + 1);
-	IF_UNLIKELY(pOutChar == NULL) {
-		return NULL;
-	}
-
-	llFileSize = cdwlFileSize;
-	pTemp = pOutChar;
-	IF_UNLIKELY(cdwlFileSize < 0)
-	{
-		*pTemp++ = '-';
-		llFileSize = -cdwlFileSize;
-	}
-	STRFORMATBYTESIZEA_MACRO(llFileSize, pTemp, sizeof(szNumber));
-
-	pTemp += strlen(pTemp);
-	*pTemp++ = ' ';
-	*pTemp++ = '(';
-
-#ifndef _NODLL
-	_i64toa_s(cdwlFileSize, szNumber, sizeof(szNumber), 10);
-#else
-	_i64toa(cdwlFileSize, szNumber, 10);
-#endif
-
-	nRet = GetNumberFormatA(LOCALE_SYSTEM_DEFAULT, 0, szNumber, &nfmt, pTemp, sizeof(szNumber));
-	pTemp += nRet;
-	pTemp--;
-
-	IF_UNLIKELY(*szByteChar == '\0')
-	{
-		char szBuf[sizeof(szByteChar)];
-		STRFORMATBYTESIZEA_MACRO(0, szBuf, sizeof(szByteChar));
-		qstrcpy(szByteChar, szBuf + 1);
-	}
-
-	pTemp = qstrcpy(pTemp, szByteChar);
-	*pTemp++ = ')';
-	*pTemp = '\0';
-	return pOutChar;
+	return FileSizeText2ToChar2(cdwlFileSize, NULL);
 }
 
 char* FileSizeText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
@@ -317,8 +270,12 @@ char* FileSizeText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutChar == NULL) {
-		return FileSizeText2ToChar(cdwlFileSize);
+	IF_UNLIKELY(pOutChar == NULL)
+	{
+		pOutChar = (char*)malloc((size_t)100 + 1);
+		IF_UNLIKELY(pOutChar == NULL) {
+			return NULL;
+		}
 	}
 
 	llFileSize = cdwlFileSize;
@@ -359,54 +316,7 @@ char* FileSizeText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 
 WCHAR* FileSizeText2ToWChar(const __int64 cdwlFileSize)
 {
-	WCHAR* pOutWChar;
-	WCHAR szDot[] = L".";
-	WCHAR szConma[] = L",";
-	WCHAR szNumber[33];
-	const NUMBERFMTW nfmt = { 0, 0, 3, szDot, szConma, 1 };
-	WCHAR* pTemp;
-	__int64 llFileSize;
-	int nRet;
-
-	pOutWChar = (WCHAR*)malloc(((size_t)100 + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(pOutWChar == NULL) {
-		return NULL;
-	}
-
-	llFileSize = cdwlFileSize;
-	pTemp = pOutWChar;
-	IF_UNLIKELY(llFileSize < 0)
-	{
-		*pTemp++ = '-';
-		llFileSize = -cdwlFileSize;
-	}
-	StrFormatByteSizeW(llFileSize, pTemp, SIZEOF_NUM(szNumber));
-
-	pTemp += wcslen(pTemp);
-	*pTemp++ = ' ';
-	*pTemp++ = '(';
-
-#ifndef _NODLL
-	_i64tow_s(cdwlFileSize, szNumber, SIZEOF_NUM(szNumber), 10);
-#else
-	_i64tow(cdwlFileSize, szNumber, 10);
-#endif
-
-	nRet = GetNumberFormatW(LOCALE_SYSTEM_DEFAULT, 0, szNumber, &nfmt, pTemp, 33);
-	pTemp += nRet;
-	pTemp--;
-
-	IF_UNLIKELY(*szByteWChar == '\0')
-	{
-		WCHAR szBuf[SIZEOF_NUM(szByteWChar)];
-		StrFormatByteSizeW(0, szBuf, SIZEOF_NUM(szBuf));
-		qwcscpy(szByteWChar, szBuf + 1);
-	}
-
-	pTemp = qwcscpy(pTemp, szByteWChar);
-	*pTemp++ = ')';
-	*pTemp = '\0';
-	return pOutWChar;
+	return FileSizeText2ToWChar2(cdwlFileSize, NULL);
 }
 
 WCHAR* FileSizeText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
@@ -419,8 +329,12 @@ WCHAR* FileSizeText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutWChar == NULL) {
-		return FileSizeText2ToWChar(cdwlFileSize);
+	IF_UNLIKELY(pOutWChar == NULL)
+	{
+		pOutWChar = (WCHAR*)malloc(((size_t)100 + 1) * sizeof(WCHAR));
+		IF_UNLIKELY(pOutWChar == NULL) {
+			return NULL;
+		}
 	}
 
 	llFileSize = cdwlFileSize;
@@ -462,31 +376,7 @@ WCHAR* FileSizeText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 
 char* FileSizePerSecTextToChar(const __int64 cdwlFileSize)
 {
-	char* pOutChar;
-	char* pTemp;
-	char szNumber[33];
-	__int64 llFileSize;
-
-	pOutChar = (char*)malloc((size_t)100 + 1);
-	IF_UNLIKELY(pOutChar == NULL) {
-		return NULL;
-	}
-
-	llFileSize = cdwlFileSize;
-	pTemp = pOutChar;
-	IF_UNLIKELY(cdwlFileSize < 0)
-	{
-		*pTemp++ = '-';
-		llFileSize = -cdwlFileSize;
-	}
-	STRFORMATBYTESIZEA_MACRO(llFileSize, szNumber, sizeof(szNumber));
-
-	pTemp = qstrcpy(pTemp, szNumber);
-	*pTemp++ = '/';
-	*pTemp++ = (char)-107;//(char)0x95; MBS_HIWORD('•b');
-	*pTemp++ = (char)98;//0x62; MBS_LOWORD('•b');
-	*pTemp++ = '\0';
-	return pOutChar;
+	return FileSizePerSecTextToChar2(cdwlFileSize, NULL);
 }
 
 char* FileSizePerSecTextToChar2(const __int64 cdwlFileSize, char* pOutChar)
@@ -495,8 +385,12 @@ char* FileSizePerSecTextToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	char szNumber[33];
 	__int64 llFileSize;
 
-	IF_UNLIKELY(pOutChar == NULL) {
-		return FileSizePerSecTextToChar(cdwlFileSize);
+	IF_UNLIKELY(pOutChar == NULL)
+	{
+		pOutChar = (char*)malloc((size_t)100 + 1);
+		IF_UNLIKELY(pOutChar == NULL) {
+			return NULL;
+		}
 	}
 
 	llFileSize = cdwlFileSize;
@@ -519,30 +413,7 @@ char* FileSizePerSecTextToChar2(const __int64 cdwlFileSize, char* pOutChar)
 
 WCHAR* FileSizePerSecTextToWChar(const __int64 cdwlFileSize)
 {
-	WCHAR* pOutWChar;
-	WCHAR* pTemp;
-	WCHAR szNumber[33];
-	__int64 llFileSize;
-
-	pOutWChar = (WCHAR*)malloc(((size_t)100 + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(pOutWChar == NULL) {
-		return NULL;
-	}
-
-	llFileSize = cdwlFileSize;
-	pTemp = pOutWChar;
-	IF_UNLIKELY(llFileSize < 0)
-	{
-		*pTemp++ = '-';
-		llFileSize = -cdwlFileSize;
-	}
-	StrFormatByteSizeW(llFileSize, szNumber, SIZEOF_NUM(szNumber));
-
-	pTemp = qwcscpy(pTemp, szNumber);
-	*pTemp++ = '/';
-	*pTemp++ = 0x79d2;//L'•b';
-	*pTemp++ = '\0';
-	return pOutWChar;
+	return FileSizePerSecTextToWChar2(cdwlFileSize, NULL);
 }
 
 WCHAR* FileSizePerSecTextToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
@@ -551,8 +422,12 @@ WCHAR* FileSizePerSecTextToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	WCHAR szNumber[33];
 	__int64 llFileSize;
 
-	IF_UNLIKELY(pOutWChar == NULL) {
-		return FileSizePerSecTextToWChar(cdwlFileSize);
+	IF_UNLIKELY(pOutWChar == NULL)
+	{
+		pOutWChar = (WCHAR*)malloc(((size_t)100 + 1) * sizeof(WCHAR));
+		IF_UNLIKELY(pOutWChar == NULL) {
+			return NULL;
+		}
 	}
 
 	llFileSize = cdwlFileSize;
@@ -574,60 +449,7 @@ WCHAR* FileSizePerSecTextToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 
 char* FileSizePerSecText2ToChar(const __int64 cdwlFileSize)
 {
-	char* pOutChar;
-	char szDot[] = ".";
-	char szConma[] = ",";
-	char szNumber[33];
-	const NUMBERFMTA nfmt = { 0, 0, 3, szDot, szConma, 1 };
-	char* pTemp;
-	__int64 llFileSize;
-	int nRet;
-
-	pOutChar = (char*)malloc((101));
-	IF_UNLIKELY(pOutChar == NULL) {
-		return NULL;
-	}
-
-	llFileSize = cdwlFileSize;
-	pTemp = pOutChar;
-	IF_UNLIKELY(cdwlFileSize < 0)
-	{
-		*pTemp++ = '-';
-		llFileSize = -cdwlFileSize;
-	}
-	STRFORMATBYTESIZEA_MACRO(llFileSize, pTemp, sizeof(szNumber));
-
-	pTemp += strlen(pTemp);
-	*pTemp++ = '/';
-	*pTemp++ = (char)-107;//(char)0x95; MBS_HIWORD('•b');
-	*pTemp++ = (char)98;//0x62; MBS_LOWORD('•b');
-	*pTemp++ = ' ';
-	*pTemp++ = '(';
-
-#ifndef _NODLL
-	_i64toa_s(cdwlFileSize, szNumber, sizeof(szNumber), 10);
-#else
-	_i64toa(cdwlFileSize, szNumber, 10);
-#endif
-
-	nRet = GetNumberFormatA(LOCALE_SYSTEM_DEFAULT, 0, szNumber, &nfmt, pTemp, sizeof(szNumber));
-	pTemp += nRet;
-	pTemp--;
-
-	IF_UNLIKELY(*szByteChar == '\0')
-	{
-		char szBuf[sizeof(szByteChar)];
-		STRFORMATBYTESIZEA_MACRO(0, szBuf, sizeof(szByteChar));
-		qstrcpy(szByteChar, szBuf + 1);
-	}
-
-	pTemp = qstrcpy(pTemp, szByteChar);
-	*pTemp++ = '/';
-	*pTemp++ = (char)-107;//(char)0x95; MBS_HIWORD('•b');
-	*pTemp++ = (char)98;//0x62; MBS_LOWORD('•b');
-	*pTemp++ = ')';
-	*pTemp++ = '\0';
-	return pOutChar;
+	return FileSizePerSecText2ToChar2(cdwlFileSize, NULL);
 }
 
 char* FileSizePerSecText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
@@ -640,8 +462,12 @@ char* FileSizePerSecText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutChar == NULL) {
-		return FileSizePerSecText2ToChar(cdwlFileSize);
+	IF_UNLIKELY(pOutChar == NULL)
+	{
+		pOutChar = (char*)malloc((101));
+		IF_UNLIKELY(pOutChar == NULL) {
+			return NULL;
+		}
 	}
 
 	llFileSize = cdwlFileSize;
@@ -689,58 +515,7 @@ char* FileSizePerSecText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 
 WCHAR* FileSizePerSecText2ToWChar(const __int64 cdwlFileSize)
 {
-	WCHAR* pOutWChar;
-	WCHAR szDot[] = L".";
-	WCHAR szConma[] = L",";
-	WCHAR szNumber[33];
-	const NUMBERFMTW nfmt = { 0, 0, 3, szDot, szConma, 1 };
-	WCHAR* pTemp;
-	__int64 llFileSize;
-	int nRet;
-
-	pOutWChar = (WCHAR*)malloc((101) * sizeof(WCHAR));
-	IF_UNLIKELY(pOutWChar == NULL) {
-		return NULL;
-	}
-
-	llFileSize = cdwlFileSize;
-	pTemp = pOutWChar;
-	IF_UNLIKELY(llFileSize < 0)
-	{
-		*pTemp++ = '-';
-		llFileSize = -cdwlFileSize;
-	}
-	StrFormatByteSizeW(llFileSize, pTemp, SIZEOF_NUM(szNumber));
-
-	pTemp += wcslen(pTemp);
-	*pTemp++ = '/';
-	*pTemp++ = 0x79d2;//L'•b';
-	*pTemp++ = ' ';
-	*pTemp++ = '(';
-
-#ifndef _NODLL
-	_i64tow_s(cdwlFileSize, szNumber, SIZEOF_NUM(szNumber), 10);
-#else
-	_i64tow(cdwlFileSize, szNumber, 10);
-#endif
-
-	nRet = GetNumberFormatW(LOCALE_SYSTEM_DEFAULT, 0, szNumber, &nfmt, pTemp, SIZEOF_NUM(szNumber));
-	pTemp += nRet;
-	pTemp--;
-
-	IF_UNLIKELY(*szByteWChar == '\0')
-	{
-		WCHAR szBuf[SIZEOF_NUM(szByteWChar)];
-		StrFormatByteSizeW(0, szBuf, SIZEOF_NUM(szBuf));
-		qwcscpy(szByteWChar, szBuf + 1);
-	}
-
-	pTemp = qwcscpy(pTemp, szByteWChar);
-	*pTemp++ = '/';
-	*pTemp++ = 0x79d2;//L'•b';
-	*pTemp++ = ')';
-	*pTemp++ = '\0';
-	return pOutWChar;
+	return FileSizePerSecText2ToWChar2(cdwlFileSize, NULL);
 }
 
 WCHAR* FileSizePerSecText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
@@ -753,8 +528,12 @@ WCHAR* FileSizePerSecText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutWChar == NULL) {
-		return FileSizePerSecText2ToWChar(cdwlFileSize);
+	IF_UNLIKELY(pOutWChar == NULL)
+	{
+		pOutWChar = (WCHAR*)malloc((101) * sizeof(WCHAR));
+		IF_UNLIKELY(pOutWChar == NULL) {
+			return NULL;
+		}
 	}
 
 	llFileSize = cdwlFileSize;
