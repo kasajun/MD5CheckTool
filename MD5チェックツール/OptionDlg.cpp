@@ -681,7 +681,9 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 		else
 		{
 			dwAppFrag |= APP_NO_SETTING;
+
 			tagMainWindow1.tagHashThread1.dwHashType = 0;
+			WritePrivateProfileString(_T("Option"), _T("HashTypeString"), HashThread_GetHashName(tagMainWindow1.tagHashThread1.dwHashType), cpInIniFile);
 		}
 	}
 
