@@ -823,10 +823,6 @@ LRESULT DebugDlg_OnButton1(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	VariableView(szFuncBuf, tagMainWindow1.nCmpErrorCountSize, sizeof(tagMainWindow1.nCmpErrorCountSize), FALSE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
 
-	ptr = qtcscpy(ptr, _T("nIsSubFolder"));
-	VariableView(szFuncBuf, tagMainWindow1.nIsSubFolder, sizeof(tagMainWindow1.nIsSubFolder), FALSE);
-	ptr = IndentAddCopy(ptr, szFuncBuf, 1);
-
 	ptr = qtcscpy(ptr, _T("bIsNotFoundFile"));
 	VariableView(szFuncBuf, tagMainWindow1.bIsNotFoundFile, sizeof(tagMainWindow1.bIsNotFoundFile), FALSE);
 	ptr = IndentAddCopy(ptr, szFuncBuf, 1);

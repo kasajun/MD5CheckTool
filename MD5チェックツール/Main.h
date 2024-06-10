@@ -216,7 +216,7 @@ typedef struct tagMainWindow {
 	size_t			nCmpCount;
 	size_t			nCmpErrorCount;
 	size_t			nCmpErrorCountSize;
-	BOOL			nIsSubFolder;
+	//BOOL			nIsSubFolder;
 	BOOL			bIsNotFoundFile;
 	BOOL			bIsEmptyFolder;
 	BOOL			bIsHashNotFoundFile;

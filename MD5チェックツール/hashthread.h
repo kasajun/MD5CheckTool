@@ -544,8 +544,8 @@ tagHashThread_FileRecode* HashThread_GetFileCountFileRecode(const HashThread* cp
 
 BOOL HashThread_AddFileRecode(HashThread* ptagHashThread, const TCHAR* cpInFileName, WIN32_FIND_DATA* fdFind, DWORD dwHashLine);
 BOOL HashThread_ClearFileRecode(HashThread* ptagHashThread, BOOL nCurrentFolderClear = TRUE);
-DWORD HashThread_Folder_Init(HashThread* ptagHashThread, const TCHAR* cpInFileName, BOOL nIsAddFile, BOOL nIsSubFolder);
-DWORD HashThread_Folder_Open(HashThread* ptagHashThread, TCHAR* cpInFileName, size_t nInFileNameLen, BOOL nIsAddFile, BOOL nIsSubFolder);
+DWORD HashThread_Folder_Init(HashThread* ptagHashThread, const TCHAR* cpInFileName, BOOL nIsAddFile);
+DWORD HashThread_Folder_Open(HashThread* ptagHashThread, TCHAR* cpInFileName, size_t nInFileNameLen, BOOL nIsAddFile);
 DWORD HashThread_MultiFile_Init(HashThread* ptagHashThread, const TCHAR* cpInFileName, BOOL nIsAddFile);
 DWORD HashThread_HashFile_Init(HashThread* ptagHashThread, const TCHAR* cpInFileName, BOOL nIsAddFile, const TCHAR* cpInOption);
 DWORD HashThread_GetCharCode(const HashThread* cptagHashThread);

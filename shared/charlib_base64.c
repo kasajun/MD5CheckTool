@@ -285,10 +285,6 @@ size_t Base64FileNameEncode(char* pOutChar, const char* cpInChar, size_t nInSize
 	const char* pSrc = cpInChar;
 	char* pDst;
 
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
-
 	pDst = pOutChar;
 	for (i = 0; i < (nInSize - 2); i += 3, pSrc += 3)
 	{
@@ -320,10 +316,6 @@ size_t Base64FileNameEncodeToWChar(WCHAR* pOutChar, const char* cpInChar, size_t
 	size_t i;
 	const char* pSrc = cpInChar;
 	WCHAR* pDst;
-
-	if (nInSize == (size_t)-1) {
-		nInSize = strlen(cpInChar);
-	}
 
 	pDst = pOutChar;
 	for (i = 0; i < (nInSize - 2); i += 3, pSrc += 3)
@@ -472,17 +464,23 @@ WCHAR* WCharSizeToBase64ToWCharv2(const WCHAR* cpInWChar, size_t nInSize, WCHAR*
 }
 
 
-void* Base64ToBinary(const char* cpInBase64Char, void* pOut, size_t *pOutSize)
+void* Base64ToBinary(const char* cpInBase64Char, void* pOut, size_t *pnOutSize)
 {
-	*pOutSize = Base64DecodeLength((const unsigned char*)cpInBase64Char);
+	size_t nOutSize;
+
+	if (pnOutSize == NULL) {
+		return NULL;
+	}
+	nOutSize = Base64DecodeLength((const unsigned char*)cpInBase64Char);
+
 	IF_UNLIKELY(pOut == NULL)
 	{
-		pOut = (char*)malloc(*pOutSize);
+		pOut = malloc(nOutSize);
 		IF_UNLIKELY(pOut == NULL) {
 			return NULL;
 		}
 	}
-	*pOutSize = Base64Decode((unsigned char*)pOut, cpInBase64Char);
+	*pnOutSize = Base64Decode((unsigned char*)pOut, cpInBase64Char);
 	return pOut;
 }
 

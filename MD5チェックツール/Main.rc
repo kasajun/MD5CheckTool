@@ -11,7 +11,7 @@
 #endif
 #define APPCOMPANY		"かさJun"
 #define APPCOPYRIGHT	"Copyright (C) かさJun 2006-2024"
-#define APPVERSION		"2024.04.06"
+#define APPVERSION		"2024.06.10"
 #define TITLE			"MD5チェックツール"
 #define FILELIST		"ファイルリスト"
 #define APPURL1			"https://github.com/kasajun/MD5CheckTool"
@@ -45,8 +45,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
-	FILEVERSION 2024, 04, 06, 0
-	PRODUCTVERSION 2024, 04, 06, 0
+	FILEVERSION 2024, 06, 10, 0
+	PRODUCTVERSION 2024, 06, 10, 0
 	FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
 	FILEFLAGS 0x1L
@@ -538,7 +538,7 @@ BEGIN
 	IDS_HASHFILE_COMP2				"ハッシュ不一致のファイルが%1!u!個あります。%n今すぐ表示しますか？"
 	IDS_HASHFILE_COMP3				"これより先のファイルは非表示です。"
 	IDS_FOLDER_OPEN1				"計算するフォルダーを選んでください。"
-	IDS_FOLDER_OPEN2				"サブフォルダーが見つかりました。%n展開しますか？%n%n%1"
+	//IDS_FOLDER_OPEN2				"サブフォルダーが見つかりました。%n展開しますか？%n%n%1"
 	IDS_FOLDER_OPEN3				"空のフォルダーは計算できません。%n%n%1"
 	IDS_FILE_OPEN1					"計算できるファイルがありません。"
 	IDS_FILE_OPEN2					"ファイルまたは、フォルダーが見つかりません。%n%n%1"

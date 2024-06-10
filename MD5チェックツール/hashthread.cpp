@@ -1033,9 +1033,6 @@ BOOL HashThread_SetHashType(HashThread* ptagHashThread, DWORD dwHashType)
 
 BOOL HashThread_Startup(HashThread *ptagHashThread)
 {
-#if _MSC_VER < 1400
-	OSVERSIONINFOEX osVerInfo = { 0 };
-#endif
 	DWORD dwRet = HashThread_CreateBuffer(ptagHashThread, FILE_DEF_COUNTSIZE);
 
 	IF_UNLIKELY(dwRet == 0 || dwRet == (DWORD)-1) {
@@ -1057,14 +1054,14 @@ BOOL HashThread_Startup(HashThread *ptagHashThread)
 		ptagHashThread->dwFileBufferSize = FILE_BUFFER_SIZE;
 	}
 
-	byBuf = (BYTE*)_AlignedMalloc(0x201400, 64);
+	byBuf = (BYTE*)_AlignedMalloc(0x1101400, 64);
 	IF_UNLIKELY(byBuf == NULL) {
 		return -1;
 	}
 
 	ptagHashThread->mdCTX = byBuf + 0x1000;
 	ptagHashThread->pFileBuffer = byBuf + 0x1400;
-	szNoneBuf = byBuf + 0x101400;
+	szNoneBuf = byBuf + 0x1001400;
 	ptagHashThread->dwFileBufferAllocateSize = 0x100000;
 	return ptagHashThread->tagMultiFile != NULL ? FILE_DEF_COUNTSIZE : -1;
 }
@@ -1673,7 +1670,7 @@ unsigned __stdcall HashThread_MultiFile_Thread(void* lpThread)
 			FindClose(hFind);
 
 			if (fdFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-				HashThread_Folder_Init(ptagHashThread, ptagHashThread->pFilePath, FALSE, TRUE);
+				HashThread_Folder_Init(ptagHashThread, ptagHashThread->pFilePath, FALSE);
 			}
 			else {
 				HashThread_MultiFile_Init(ptagHashThread, ptagHashThread->pFilePath, FALSE);
@@ -2605,7 +2602,7 @@ FILECHK_END:
 
 	if (fdFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 	{
-		dwRet = HashThread_Folder_Init(ptagHashThread, szFile, IsAddFile, TRUE);
+		dwRet = HashThread_Folder_Init(ptagHashThread, szFile, IsAddFile);
 		FindClose(hFind);
 		return dwRet;
 	}
@@ -2635,7 +2632,7 @@ FILECHK_END:
 	return dwFileCount;
 }
 
-DWORD HashThread_Folder_Init(HashThread* ptagHashThread, const TCHAR* cpInFileName, BOOL nIsAddFile, BOOL nIsSubFolder)
+DWORD HashThread_Folder_Init(HashThread* ptagHashThread, const TCHAR* cpInFileName, BOOL nIsAddFile)
 {
 	TCHAR szFolder[MAX_PATH_SIZE];
 	TCHAR* pFolder = NULL;
@@ -2669,13 +2666,13 @@ DWORD HashThread_Folder_Init(HashThread* ptagHashThread, const TCHAR* cpInFileNa
 #endif
 
 	SendMessage(ptagHashThread->hWnd, ptagHashThread->nMessageID, APP_MESSAGE_FOLDER_INIT, 0);
-	dwRet = HashThread_Folder_Open(ptagHashThread, pFolder, nRet, nIsAddFile, nIsSubFolder);
+	dwRet = HashThread_Folder_Open(ptagHashThread, pFolder, nRet, nIsAddFile);
 	SendMessage(ptagHashThread->hWnd, ptagHashThread->nMessageID, APP_MESSAGE_FOLDER_INIT_EXIT, dwRet);
 
 	return dwRet;
 }
 
-DWORD HashThread_Folder_Open(HashThread* ptagHashThread, TCHAR* cpInFileName, size_t nInFileNameLen, BOOL nIsAddFile, BOOL nIsSubFolder)
+DWORD HashThread_Folder_Open(HashThread* ptagHashThread, TCHAR* cpInFileName, size_t nInFileNameLen, BOOL nIsAddFile)
 {
 	HANDLE hFind = NULL;
 	WIN32_FIND_DATA* fdFindData;
@@ -2715,10 +2712,6 @@ DWORD HashThread_Folder_Open(HashThread* ptagHashThread, TCHAR* cpInFileName, si
 	SetCurrentDirectory(cpInFileName);
 	qtcscpy(cpInFileName + nInFileNameLen, _T("\\*"));
 
-	if (nIsSubFolder == 0) {
-		goto FILE_FIND;
-	}
-
 	hFind = FindFirstFile(cpInFileName, fdFindData);
 	IF_UNLIKELY(hFind == INVALID_HANDLE_VALUE) {
 		goto FILE_FIND;
@@ -2738,7 +2731,7 @@ DWORD HashThread_Folder_Open(HashThread* ptagHashThread, TCHAR* cpInFileName, si
 #endif
 
 		nRet = qtcscpy(cpInFileName + nInFileNameLen + 1, fdFindData->cFileName) - cpInFileName;
-		dwRet = HashThread_Folder_Open(ptagHashThread, cpInFileName, nRet, TRUE, TRUE);
+		dwRet = HashThread_Folder_Open(ptagHashThread, cpInFileName, nRet, TRUE);
 		dwFileCount = ptagHashThread->tagMultiFile->dwFileCount;
 
 		IF_UNLIKELY(dwRet == (DWORD)-1)
@@ -3595,81 +3588,96 @@ DWORD HashThread_GetOldHashFile(const HashThread* cptagHashThread, const TCHAR* 
 
 DWORD HashThread_GetCharCode(const HashThread* cptagHashThread)
 {
-	DWORD dwCharCode = 0;
-	DWORD dwHitCharCode[3] = { 1, 0, 0 };
-	size_t dwSize = 0;
+	DWORD dwCharCode = HASHFILE_CHARCODE_UTF8;
+	size_t nReadSize = 0;
 	tagHashThread_MultiFile* ptagHashFile_MultiFile;
-
+	unsigned int nBom = 0;
+	const BYTE byUncodeBom[] = { 0xFF, 0xFE };
+	const BYTE byUtf8Bom[] = { 0xEF, 0xBB, 0xBF, 0 };
 
 	ptagHashFile_MultiFile = cptagHashThread->tagMultiFile;
-	dwCharCode = HASHFILE_CHARCODE_ANSI;
-
-	dwSize = fread(byBuf, 1, sizeof(byBuf), cptagHashThread->pInFilePointer);
-	byBuf[dwSize - 1] = '\0';
-
+	nReadSize = fread(byBuf, 1, 0x1000, cptagHashThread->pInFilePointer);
+	memcpy(&nBom, byBuf, sizeof(nBom));
+	nBom &= 0x00FFFFFF;
 
 	// 文字コードの検出
-	const BYTE byUncodeBom[] = { 0xFF, 0xFE };
-	const BYTE byUtf8Bom[] = { 0xEF, 0xBB, 0xBF };
-
-	if (memcmp(byBuf, byUncodeBom, sizeof(byUncodeBom)) == 0)
+	if (memcmp(&nBom, byUncodeBom, sizeof(byUncodeBom)) == 0)
 	{
 		// UTF-16 Little Endian
-		dwHitCharCode[1] += 2;
+		dwCharCode = HASHFILE_CHARCODE_UNICODE;
 		ptagHashFile_MultiFile->dwHashFileBom = 2;
 	}
-	else if (memcmp(byBuf, byUtf8Bom, sizeof(byUtf8Bom)) == 0)
+	else if (memcmp(&nBom, byUtf8Bom, sizeof(byUtf8Bom)) == 0)
 	{
 		// UTF-8 BOM
-		dwHitCharCode[2] += 2;
 		ptagHashFile_MultiFile->dwHashFileBom = 3;
 	}
 	else
 	{
 		unsigned char* b = byBuf;
-		ptagHashFile_MultiFile->dwHashFileBom = 0;
-		size_t ui = 0;
+		unsigned char* byBufEnd = (byBuf + nReadSize);
+		unsigned int* nSwap = (unsigned int*)(byBuf + 0x1000);
+		size_t nHitCharCode[] = { 0, 0 };
 
-		while (ui < dwSize)
+		ptagHashFile_MultiFile->dwHashFileBom = 0;
+		nBom = *nSwap;
+		*nSwap = 0;
+
+		while (b < byBufEnd)
 		{
+			// UTF-8 3byte
 			if (IS_UTF8_3(*b))
 			{
-				if (IS_UTF8_TAIL(*(b + 1)) && IS_UTF8_TAIL(*(b + 2))) {
-					dwHitCharCode[2]++;// UTF-8 3byte
+				if (IS_UTF8_TAIL(*(b + 1)) && IS_UTF8_TAIL(*(b + 2)))
+				{
+					if (nHitCharCode[1] > 10) {
+						break;
+					}
+					nHitCharCode[1]++;
 				}
-				ui += 3;
 				b += 3;
 			}
+
+			// UTF-8 2byte
 			else if (IS_UTF8_2(*b))
 			{
-				if (IS_UTF8_TAIL(*(b + 1))) {
-					dwHitCharCode[2]++;// UTF-8 2byte
+				if (IS_UTF8_TAIL(*(b + 1)))
+				{
+					if (nHitCharCode[1] > 10) {
+						break;
+					}
+					nHitCharCode[1]++;
 				}
-				ui += 2;
 				b += 2;
 			}
+
+			// Shift-JIS
 			else if (_ismbblead(*b))
 			{
-				dwHitCharCode[0]++;// Shift-JIS
-				ui += 2;
+				if (_ismbbtrail(*(b + 1)))
+				{
+					if (nHitCharCode[0] > 10) {
+						break;
+					}
+					nHitCharCode[0]++;
+				}
 				b += 2;
 			}
+
 			else
 			{
-				ui++;
 				b++;
 			}
 		}
+
+		*nSwap = nBom;
+
+		if (nHitCharCode[0] > nHitCharCode[1]) {
+			dwCharCode = HASHFILE_CHARCODE_ANSI;
+		}
 	}
+
 	fseek(cptagHashThread->pInFilePointer, cptagHashThread->tagMultiFile->dwHashFileBom, SEEK_SET);
-
-	if (dwHitCharCode[1] >= max(dwHitCharCode[0], dwHitCharCode[2])) {
-		dwCharCode = HASHFILE_CHARCODE_UNICODE;
-	}
-
-	if (dwHitCharCode[2] >= max(dwHitCharCode[0], dwHitCharCode[1])) {
-		dwCharCode = HASHFILE_CHARCODE_UTF8;
-	}
 	ptagHashFile_MultiFile->dwHashFileCharCode = dwCharCode;
 
 	return dwCharCode;

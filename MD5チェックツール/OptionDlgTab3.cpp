@@ -56,6 +56,7 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	unsigned int OPENSSL_ia32cap_P_Edit[4] = { 0 };
 	int nRet = 0;
 	int i = 0;
+	int y = 0;
 
 	memcpy(OPENSSL_ia32cap_P_Edit, OPENSSL_ia32cap_P1, sizeof(OPENSSL_ia32cap_P1));
 	SetEnableThemeDialogTexture(hWnd);
@@ -82,23 +83,33 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	}
 
 
+	// SSE4.2 crc32c
+	if (OPENSSL_ia32cap_P_Edit[1] & 0x00100000) {
+		i = TRUE;
+	}
+	else {
+		i = FALSE;
+	}
+	EnableWindow(tagOptionWindow1.hTab3Static1[0][4], i);
+
+
+	// SSE
+	if (OPENSSL_ia32cap_P_Edit[1] & 0x00000200) {
+		y = TRUE;
+	}
+	else {
+		y = FALSE;
+	}
+	EnableWindow(tagOptionWindow1.hTab3Checkbox[0], i || y);
+
+
 #if !defined(UNICODE) && _MSC_VER < 1400
 	if (IsWin95())
 	{
-		SendMessage(tagOptionWindow1.hTab3Checkbox[0], BM_SETCHECK, BST_CHECKED, 0);
-		EnableWindow(tagOptionWindow1.hTab3Checkbox[0], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][0], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][1], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][2], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][3], FALSE);
-
-		if (CPUID_IS_SSE4_2) {
-			i = TRUE;
-		}
-		else {
-			i = FALSE;
-		}
-		EnableWindow(tagOptionWindow1.hTab3Static1[0][4], i);
 
 		EnableWindow(tagOptionWindow1.hTab3Checkbox[1], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[1][0], FALSE);
@@ -106,6 +117,7 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		EnableWindow(tagOptionWindow1.hTab3Static1[1][2], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[1][3], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[1][4], FALSE);
+
 		EnableWindow(tagOptionWindow1.hTab3Checkbox[2], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[2][0], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[2][1], FALSE);
@@ -117,13 +129,6 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
 #endif
 
-		if (OPENSSL_ia32cap_P_Edit[1] & 0x00100000) {
-			i = TRUE;
-		}
-		else {
-			i = FALSE;
-		}
-		EnableWindow(tagOptionWindow1.hTab3Checkbox[0], i);
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][0], i);
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][1], i);
 
@@ -134,9 +139,6 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][2], i);
 		EnableWindow(tagOptionWindow1.hTab3Static1[0][3], i);
 #endif
-
-		EnableWindow(tagOptionWindow1.hTab3Static1[0][4], i);
-
 
 		if ((OPENSSL_ia32cap_P_Edit[1] & 0x50000000) == 0x50000000) {
 			i = TRUE;
@@ -171,21 +173,24 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		EnableWindow(tagOptionWindow1.hTab3Static1[2][3], FALSE);
 		EnableWindow(tagOptionWindow1.hTab3Static1[2][4], FALSE);
 
-
-		nRet = dwHashCpuMode & 0x00000001 ? BST_CHECKED : BST_UNCHECKED;
-		SendMessage(tagOptionWindow1.hTab3Checkbox[0], BM_SETCHECK, (WPARAM)nRet, 0);
-
-		nRet = dwHashCpuMode & 0x00000002 ? BST_CHECKED : BST_UNCHECKED;
-		SendMessage(tagOptionWindow1.hTab3Checkbox[1], BM_SETCHECK, (WPARAM)nRet, 0);
-
-		nRet = dwHashCpuMode & 0x00000004 ? BST_CHECKED : BST_UNCHECKED;
-		SendMessage(tagOptionWindow1.hTab3Checkbox[2], BM_SETCHECK, (WPARAM)nRet, 0);
-
-		tagOptionWindow1.dwRadioState[0] = dwHashCpuMode;
-
 #if !defined(UNICODE) && _MSC_VER < 1400
 	}
 #endif
+
+
+	// SSE
+	nRet = dwHashCpuMode & 0x00000001 ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab3Checkbox[0], BM_SETCHECK, (WPARAM)nRet, 0);
+
+	// AVX
+	nRet = dwHashCpuMode & 0x00000002 ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab3Checkbox[1], BM_SETCHECK, (WPARAM)nRet, 0);
+
+	// SHAEXT
+	nRet = dwHashCpuMode & 0x00000004 ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab3Checkbox[2], BM_SETCHECK, (WPARAM)nRet, 0);
+
+	tagOptionWindow1.dwRadioState[0] = dwHashCpuMode;
 
 	return TRUE;
 }

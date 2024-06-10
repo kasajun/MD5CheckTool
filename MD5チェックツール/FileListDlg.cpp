@@ -2530,7 +2530,7 @@ DWORD FileListDlg_AddFile(VOID)
 	{
 		LoadString(tagMainWindow1.hInst, IDS_FILE_OPEN2, tagFileListWindow1.pStBuf, MAX_STRINGTABLE);
 		MessageFormat(tagFileListWindow1.pBuf, 1024, tagFileListWindow1.pStBuf, tagMainWindow1.pFile);
-		tagMainWindow1.nIsSubFolder = FileListDlg_MessageBox(tagFileListWindow1.hWnd, tagFileListWindow1.pBuf, tagMainWindow1.pTitle, MB_ICONHAND);
+		FileListDlg_MessageBox(tagFileListWindow1.hWnd, tagFileListWindow1.pBuf, tagMainWindow1.pTitle, MB_ICONHAND);
 	}
 	else
 	{
@@ -2578,10 +2578,6 @@ DWORD FileListDlg_AddFolder(VOID)
 
 	dwAppFrag |= APP_FOLDEROPEN | APP_FOLDERINIT | APP_FILELISTBOX_EDIT;
 
-	if (tagFileListWindow1.dwNewFile == 0) {
-		tagMainWindow1.nIsSubFolder = -1;
-	}
-
 	EnableWindow(tagFileListWindow1.hButton[0], FALSE);
 	EnableWindow(tagFileListWindow1.hButton[1], FALSE);
 	EnableWindow(tagFileListWindow1.hButton[2], FALSE);
@@ -2590,14 +2586,7 @@ DWORD FileListDlg_AddFolder(VOID)
 	EnableWindow(tagFileListWindow1.hRadio[1], FALSE);
 	EnableWindow(tagFileListWindow1.hRadio[2], FALSE);
 
-	if (tagMainWindow1.nIsSubFolder == -1 && GetSubFolderCount(tagMainWindow1.pFile) > 0)
-	{
-		LoadString(tagMainWindow1.hInst, IDS_FOLDER_OPEN2, tagFileListWindow1.pStBuf, MAX_STRINGTABLE);
-		MessageFormat(tagFileListWindow1.pBuf, 1024, tagFileListWindow1.pStBuf, tagMainWindow1.pFile);
-		tagMainWindow1.nIsSubFolder = FileListDlg_MessageBox(tagFileListWindow1.hWnd, tagFileListWindow1.pBuf, tagMainWindow1.pTitle, MB_YESNO | MB_ICONQUESTION);
-	}
-	dwRet = HashThread_Folder_Init(&tagMainWindow1.tagHashThread1, tagMainWindow1.pFile, tagFileListWindow1.dwNewFile != 0, tagMainWindow1.nIsSubFolder == IDYES);
-
+	dwRet = HashThread_Folder_Init(&tagMainWindow1.tagHashThread1, tagMainWindow1.pFile, tagFileListWindow1.dwNewFile != 0);
 	if (dwRet == (DWORD)-1)
 	{
 		FileRecodeFail(tagFileListWindow1.hWnd);
@@ -2608,7 +2597,7 @@ DWORD FileListDlg_AddFolder(VOID)
 	{
 		LoadString(tagMainWindow1.hInst, IDS_FOLDER_OPEN3, tagFileListWindow1.pStBuf, MAX_STRINGTABLE);
 		MessageFormat(tagFileListWindow1.pBuf, 1024, tagFileListWindow1.pStBuf, tagMainWindow1.pFile);
-		tagMainWindow1.nIsSubFolder = FileListDlg_MessageBox(tagFileListWindow1.hWnd, tagFileListWindow1.pBuf, tagMainWindow1.pTitle, MB_ICONHAND);
+		FileListDlg_MessageBox(tagFileListWindow1.hWnd, tagFileListWindow1.pBuf, tagMainWindow1.pTitle, MB_ICONHAND);
 	}
 	return dwRet;
 }

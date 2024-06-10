@@ -1789,7 +1789,6 @@ LRESULT MainWindow_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	tagMainWindow1.tagHashThread1.nMessageID = RegisterWindowMessage(tagMainWindow1.pWindowClass);
 	tagMainWindow1.tagHashThread1.pFilePath = tagMainWindow1.pFile;
 	tagMainWindow1.dwOpenItem = 0;
-	tagMainWindow1.nIsSubFolder = -1;
 	tagMainWindow1.dwTimeViewFileCount = 0;
 	tagMainWindow1.dwAddFileModeFileCount = 0;
 
@@ -3656,7 +3655,6 @@ VOID Clear(BOOL nIsSendMessage)
 	tagMainWindow1.tagHashThread1.tagMultiFile->dwFileCount = 0;
 	tagMainWindow1.tagHashThread1.tagMultiFile->dwFileCurrentCount = 0;
 	*tagMainWindow1.tagHashThread1.tagMultiFile->szCurrentFolder = '\0';
-	tagMainWindow1.nIsSubFolder = -1;
 	tagMainWindow1.bIsNotFoundFile = 0;
 	*tagMainWindow1.pNotFoundFile = '\0';
 	tagMainWindow1.pNextNotFoundFile = tagMainWindow1.pNotFoundFile;
@@ -4201,24 +4199,7 @@ DWORD MainWindow_AddFile(size_t nCount)
 
 	if (dwAppFrag & APP_FOLDEROPEN)
 	{
-		IF_UNLIKELY(tagMainWindow1.nIsSubFolder == -1 && GetSubFolderCount(tagMainWindow1.pFile) > 0)
-		{
-			LoadString(tagMainWindow1.hInst, IDS_FOLDER_OPEN2, tagMainWindow1.pStBuf, MAX_STRINGTABLE - 1);
-			MessageFormat(tagMainWindow1.pBuf, 2048, tagMainWindow1.pStBuf, tagMainWindow1.pFile);
-			tagMainWindow1.nIsSubFolder = MainWindow_MessageBox(tagMainWindow1.hWnd, tagMainWindow1.pBuf, tagMainWindow1.pTitle, MB_YESNOCANCEL | MB_ICONQUESTION);
-			if (tagMainWindow1.nIsSubFolder == IDCANCEL)
-			{
-				tagMainWindow1.nIsSubFolder = FALSE;
-				Clear(TRUE);
-
-#ifdef _DEBUG
-				OutputDebugString(_T("MainWindow: MainWindow_AddFile(): サブフォルダの展開をキャンセルしました。\r\n"));
-#endif
-				return 0;
-			}
-		}
-		dwRet = HashThread_Folder_Init(&tagMainWindow1.tagHashThread1, tagMainWindow1.pFile, nCount != 0 ? TRUE : FALSE, tagMainWindow1.nIsSubFolder == IDYES ? TRUE : FALSE);
-
+		dwRet = HashThread_Folder_Init(&tagMainWindow1.tagHashThread1, tagMainWindow1.pFile, nCount != 0 ? TRUE : FALSE);
 		if (dwFileCount == dwRet)
 		{
 			if (tagMainWindow1.bIsEmptyFolder < 9)

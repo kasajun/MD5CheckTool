@@ -902,24 +902,15 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 		}
 	}
 
-#if !defined(UNICODE) && _MSC_VER < 1400
-	if (!IsWin95())
+	GetPrivateProfileString(_T("Option"), _T("HashCpuMode"), _T("0"), szBuf, NUMBER_LOADSTRING, cpInIniFile);
+	if (szBuf[0] != '0')
 	{
-#endif
-
-		GetPrivateProfileString(_T("Option"), _T("HashCpuMode"), _T("0"), szBuf, NUMBER_LOADSTRING, cpInIniFile);
-		if (szBuf[0] != '0')
-		{
-			dwHashCpuMode = _ttoi(szBuf);
-			if (dwHashCpuMode > 3) {
-				dwHashCpuMode = 0;
-			}
+		dwHashCpuMode = _ttoi(szBuf);
+		if (dwHashCpuMode > 3) {
+			dwHashCpuMode = 0;
 		}
-		OptionDlg_HashCpuMode(dwHashCpuMode);
-
-#if !defined(UNICODE) && _MSC_VER < 1400
 	}
-#endif
+	OptionDlg_HashCpuMode(dwHashCpuMode);
 
 	gLoad_dwAppFrag = dwAppFrag;
 	gLoad_dwAppFrag &= ~APP_NO_SETTING;
@@ -1000,17 +991,8 @@ VOID SetIniFileSetting(const TCHAR* cpInIniFile)
 	ITOT_FUNC(dwHashFileOutToCopyFolderMode, szBuf, SIZEOF_NUM(szBuf), 10);
 	WritePrivateProfileString(_T("Option"), _T("HashFileOutToCopyFolderMode"), szBuf, cpInIniFile);
 
-#if !defined(UNICODE) && _MSC_VER < 1400
-	if (!IsWin95())
-	{
-#endif
-
-		ITOT_FUNC(dwHashCpuMode, szBuf, SIZEOF_NUM(szBuf), 10);
-		WritePrivateProfileString(_T("Option"), _T("HashCpuMode"), szBuf, cpInIniFile);
-
-#if !defined(UNICODE) && _MSC_VER < 1400
-	}
-#endif
+	ITOT_FUNC(dwHashCpuMode, szBuf, SIZEOF_NUM(szBuf), 10);
+	WritePrivateProfileString(_T("Option"), _T("HashCpuMode"), szBuf, cpInIniFile);
 
 	if (tagFileListWindow1.clListTextColor[0] != 0x00FF0000)
 	{
