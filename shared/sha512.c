@@ -44,7 +44,6 @@
 #include <string.h>
 #include "sha512.h"
 #include "cpuid.h"
-#include "c20.h"
 
 
 #define SHA512_BLOCK_CAN_MANAGE_UNALIGNED_DATA
@@ -252,11 +251,9 @@ int SHA512_Update(SHA512_CTX* c, const void* _data, size_t len)
 	unsigned char* p = c->u.p;
 	const unsigned char* data = (const unsigned char*)_data;
 
-	/*
 	if (len == 0) {
 		return 1;
 	}
-	*/
 
 	l = (c->Nl + (((SHA_LONG64) len) << 3)) & U64(0xffffffffffffffff);
 	if (l < c->Nl) {
@@ -309,7 +306,7 @@ unsigned char* SHA384(const unsigned char* d, size_t n, unsigned char* md)
 	SHA512_CTX c;
 	static unsigned char m[SHA384_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA384_Init(&c);
@@ -324,7 +321,7 @@ unsigned char* SHA512(const unsigned char* d, size_t n, unsigned char* md)
 	SHA512_CTX c;
 	static unsigned char m[SHA512_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA512_Init(&c);
@@ -339,7 +336,7 @@ unsigned char* SHA512_224(const unsigned char* d, size_t n, unsigned char* md)
 	SHA512_CTX c;
 	static unsigned char m[SHA512_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA512_224_Init(&c);
@@ -354,7 +351,7 @@ unsigned char* SHA512_256(const unsigned char* d, size_t n, unsigned char* md)
 	SHA512_CTX c;
 	static unsigned char m[SHA512_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA512_256_Init(&c);

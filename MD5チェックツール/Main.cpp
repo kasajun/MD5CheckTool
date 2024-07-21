@@ -144,6 +144,7 @@ static struct option const long_options[] = {
 	{ _T("md5"), no_argument, NULL, 'm'},
 	{ _T("sha"), required_argument, NULL, 's'},
 	{ _T("hash"), required_argument, NULL, 'h'},
+	{ _T("dir"), required_argument, NULL, 'd'},
 	{ NULL, 0, NULL, 0 }
 };
 
@@ -538,7 +539,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	_tsetlocale(LC_ALL, _T("Japanese_Japan.932"));
 
 	// ƒIƒvƒVƒ‡ƒ“‰ðÍ
-	while ((opt = getopt_long(__argc, __targv, _T("afms:h:"), long_options, NULL)) != -1)
+	while ((opt = getopt_long(__argc, __targv, _T("afms:h:d:"), long_options, NULL)) != -1)
 	{
 		switch (opt)
 		{
@@ -576,6 +577,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			if (dwArgHashType > MAX_HASH_TYPE) {
 				dwArgHashType = (DWORD)-1;
 			}
+			break;
+		case 'd':
+			SetCurrentDirectory(optarg);
 			break;
 		}
 	}
@@ -2857,25 +2861,35 @@ LRESULT MainWindow_OnDropFiles(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	}
 
 	MainWindow_AddFile_Start();
-	dwCount = DragQueryFile((HDROP)wParam, (DWORD)-1, NULL, NULL);
-
-	for (i = 0; i < dwCount; i++)
+	dwCount = DragQueryFile((HDROP)wParam, 0xFFFFFFFF, NULL, NULL);
+	IF_LIKELY(dwCount)
 	{
-		DragQueryFile((HDROP)wParam, i, tagMainWindow1.pFile, MAX_PATH_SIZE - 1);
-		dwRet = MainWindow_AddFile(i);
-		IF_UNLIKELY(dwRet == (DWORD)-1 || dwRet >= FILE_MAX_COUNTSIZE) {
-			break;
+		for (i = 0; i < dwCount; i++)
+		{
+			dwRet = DragQueryFile((HDROP)wParam, i, tagMainWindow1.pFile, MAX_PATH_SIZE - 1);
+			IF_LIKELY(dwRet)
+			{
+				dwRet = MainWindow_AddFile(i);
+				IF_UNLIKELY(dwRet == (DWORD)-1 || dwRet >= FILE_MAX_COUNTSIZE) {
+					break;
+				}
+			}
 		}
+
+		IF_UNLIKELY(dwRet == (DWORD)-1)
+		{
+			FileRecodeFail(hWnd);
+			DragFinish((HDROP)wParam);
+			DestroyWindow(hWnd);
+			return FALSE;
+		}
+		MainWindow_AddFile_End();
+	}
+	else
+	{
+		MessageBeep(MB_ICONEXCLAMATION);
 	}
 
-	IF_UNLIKELY(dwRet == (DWORD)-1)
-	{
-		FileRecodeFail(hWnd);
-		DragFinish((HDROP)wParam);
-		DestroyWindow(hWnd);
-		return FALSE;
-	}
-	MainWindow_AddFile_End();
 	DragFinish((HDROP)wParam);
 	return TRUE;
 }

@@ -53,11 +53,13 @@ typedef struct _PROCESS_POWER_THROTTLING_STATE {
 
 int SetEcoQos(int nIsEcoQos)
 {
-	PROCESS_POWER_THROTTLING_STATE PowerThrottling = { 0 };
 	HANDLE hProcess = GetCurrentProcess();
+	PROCESS_POWER_THROTTLING_STATE PowerThrottling = { 0 };
+	MEMORY_PRIORITY_INFORMATION MemPrio = { 0 };
 #if _MSC_VER < 1700
 	HMODULE hDll = NULL;
 #endif
+	DWORD dwPriorityClass = 0;
 	int nRet = FALSE;
 
 #if _MSC_VER < 1700
@@ -72,23 +74,29 @@ int SetEcoQos(int nIsEcoQos)
 		{
 #endif
 			PowerThrottling.Version = PROCESS_POWER_THROTTLING_CURRENT_VERSION;
+
 			if (nIsEcoQos)
 			{
-				MEMORY_PRIORITY_INFORMATION MemPrio = { 0 };
-
-				SetPriorityClass(hProcess, IDLE_PRIORITY_CLASS);
-
+				dwPriorityClass = IDLE_PRIORITY_CLASS;
 				MemPrio.MemoryPriority = MEMORY_PRIORITY_LOW;
-				SetProcessInformation(hProcess, ProcessMemoryPriority, &MemPrio, sizeof(MemPrio));
-
 				PowerThrottling.ControlMask = PROCESS_POWER_THROTTLING_EXECUTION_SPEED;
 				PowerThrottling.StateMask = PROCESS_POWER_THROTTLING_EXECUTION_SPEED;
 			}
-			else {
-				SetPriorityClass(hProcess, NORMAL_PRIORITY_CLASS);
+			else
+			{
+				dwPriorityClass = NORMAL_PRIORITY_CLASS;
+				MemPrio.MemoryPriority = MEMORY_PRIORITY_NORMAL;
+				PowerThrottling.ControlMask = 0;
+				PowerThrottling.StateMask = 0;
 			}
 
-			nRet = SetProcessInformation(hProcess, ProcessPowerThrottling, &PowerThrottling, sizeof(PowerThrottling));
+			nRet = SetPriorityClass(hProcess, dwPriorityClass);
+			if (nRet)
+			{
+				SetProcessInformation(hProcess, ProcessMemoryPriority, &MemPrio, sizeof(MemPrio));
+				SetProcessInformation(hProcess, ProcessPowerThrottling, &PowerThrottling, sizeof(PowerThrottling));
+				nRet = TRUE;
+			}
 #if _MSC_VER < 1700
 		}
 		FreeLibrary(hDll);

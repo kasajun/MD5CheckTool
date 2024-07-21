@@ -1,8 +1,7 @@
-// WindowSize.cpp : アプリケーションのエントリ ポイントを定義します。
+// WindowSize.c : アプリケーションのエントリ ポイントを定義します。
 //
 
 #include "WindowSize.h"
-#include "c20.h"
 
 TCHAR szWindowSizeBuf[32];
 TCHAR szOldWindowSizeBuf[32];
@@ -20,7 +19,7 @@ int GetDpi(HWND hWnd)
 	int nRet = 96;
 
 	hDC = GetDC(hWnd);
-	IF_LIKELY(hDC)
+	if (hDC)
 	{
 		nRet = GetDeviceCaps(hDC, LOGPIXELSX);
 		ReleaseDC(hWnd, hDC);
@@ -53,7 +52,7 @@ BOOL WindowSize_SaveState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 	WindowSize_GetScreen(hWnd);
 	wndPlace.length = sizeof(WINDOWPLACEMENT);
 	nRet = GetWindowPlacement(hWnd, &wndPlace);
-	IF_UNLIKELY(nRet == FALSE) {
+	if (nRet == FALSE) {
 		return FALSE;
 	}
 
@@ -72,7 +71,7 @@ BOOL WindowSize_SaveState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 		break;
 	default:
 		nRet = GetWindowRect(hWnd, &rc);
-		IF_UNLIKELY(nRet == FALSE) {
+		if (nRet == FALSE) {
 			return FALSE;
 		}
 		else
@@ -108,7 +107,7 @@ BOOL WindowSize_SaveState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 					hMonitor1 = MonitorFromRect(&rc, MONITOR_DEFAULTTONEAREST);
 					mInfo.cbSize = sizeof(MONITORINFO);
 					nRet = GetMonitorInfo(hMonitor1, &mInfo);
-					IF_UNLIKELY(nRet == FALSE) {
+					if (nRet == FALSE) {
 						goto MONITOR_INFO_EXIT;
 					}
 
@@ -117,7 +116,7 @@ BOOL WindowSize_SaveState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 					ad.hWnd = NULL;
 					SHAppBarMessage(ABM_GETTASKBARPOS, &ad);
 					hMonitor2 = MonitorFromRect(&(ad.rc), MONITOR_DEFAULTTONEAREST);
-					IF_UNLIKELY(hMonitor2 == NULL) {
+					if (hMonitor2 == NULL) {
 						goto MONITOR_INFO_EXIT;
 					}
 
@@ -200,7 +199,7 @@ BOOL WindowSize_LoadState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 	WindowSize_GetScreen(hWnd);
 	wndPlace.length = sizeof(WINDOWPLACEMENT);
 	nRet = GetWindowPlacement(hWnd, &wndPlace);
-	IF_UNLIKELY(nRet == FALSE) {
+	if (nRet == FALSE) {
 		return FALSE;
 	}
 
@@ -219,7 +218,7 @@ BOOL WindowSize_LoadState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 		break;
 	default:
 		nRet = GetWindowRect(hWnd, &rcWnd);
-		IF_UNLIKELY(nRet == FALSE) {
+		if (nRet == FALSE) {
 			return FALSE;
 		}
 		else
@@ -255,7 +254,7 @@ BOOL WindowSize_LoadState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 					hMonitor1 = MonitorFromRect(&rc, MONITOR_DEFAULTTONEAREST);
 					mInfo.cbSize = sizeof(MONITORINFO);
 					nRet = GetMonitorInfo(hMonitor1, &mInfo);
-					IF_UNLIKELY(nRet == FALSE) {
+					if (nRet == FALSE) {
 						goto MONITOR_INFO_EXIT;
 					}
 
@@ -264,7 +263,7 @@ BOOL WindowSize_LoadState(HWND hWnd, LPCTSTR cpInWindowName, LPCTSTR cpInIniFile
 					ad.hWnd = NULL;
 					SHAppBarMessage(ABM_GETTASKBARPOS, &ad);
 					hMonitor2 = MonitorFromRect(&(ad.rc), MONITOR_DEFAULTTONEAREST);
-					IF_UNLIKELY(hMonitor2 == NULL) {
+					if (hMonitor2 == NULL) {
 						goto MONITOR_INFO_EXIT;
 					}
 
@@ -318,7 +317,7 @@ MONITOR_INFO_EXIT:
 
 	// デフォルトのウィンドウ位置取得
 	nRet = GetWindowRect(hWnd, &rc);//GetClientRect
-	IF_UNLIKELY(nRet == FALSE) {
+	if (nRet == FALSE) {
 		return FALSE;
 	}
 

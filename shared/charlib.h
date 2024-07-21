@@ -332,8 +332,17 @@ char* CharToCopy3ToPadding(const char* cpInChar, const char* cpCharArg1, const c
 WCHAR* WCharToCopy3ToPadding(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHAR* cpWCharArg2, size_t nPaddingSize);
 
 
-char* GetCharToRoot(char* pInFileName);
-WCHAR* GetWCharToRoot(WCHAR* pInFileName);
+char* GetCharToRoot(char* pInRootPathName);
+WCHAR* GetWCharToRoot(WCHAR* pInRootPathName);
+char* GetUtf8CharToRoot(char* pInRootPathName);
+
+char* GetCharToRootCopy(const char* cpInRootPathName, char* pOutRootPathName);
+WCHAR* GetWCharToRootCopy(const WCHAR* cpInRootPathName, WCHAR* pOutRootPathName);
+char* GetUtf8CharToRootCopy(const char* cpInRootPathName, char* pOutRootPathName);
+
+size_t GetCharToRootLen(const char* cpInRootPathName);
+size_t GetWCharToRootLen(const WCHAR* cpInRootPathName);
+size_t GetUtf8CharToRootLen(const char* cpInRootPathName);
 
 size_t GetCharToFileNameLen(const char* cpInFileName);
 size_t GetCharToFileNameNoExtensionLen(const char* cpInFileName);
@@ -356,7 +365,7 @@ WCHAR* GetWCharToExtension2(const WCHAR* cpInFileName, BOOL bIsNoExtensionReturn
 char* GetCharToFolderName(char* pInFileName);
 WCHAR* GetWCharToFolderName(WCHAR* pInFileName);
 
-char* GetUtf8CharToRoot(char* pInFileName);
+
 char* GetUtf8CharToFileName(const char* cpInFileName);
 char* GetUtf8CharToExtension(const char* cpInFileName);
 char* GetUtf8CharToExtension2(const char* cpInFileName, BOOL bIsNoExtensionReturnNullptr);
@@ -435,17 +444,6 @@ void WCharToFree(WCHAR* pInWChar);
 #define INT_CEIL(a, b) (((a) + (b) - 1) / b)
 #endif
 
-#ifndef Is_Kanji1st
-#define Is_Kanji1st(c) ((unsigned int)(((unsigned char)(c)) ^ 0x20) - 0xA1 < 0x3C)
-#endif
-
-#ifndef IsSjisLeadByteX
-#define IsSjisLeadByteX(c) ((((unsigned char)(c) ^ 0x20U) - 0xA1U) < (unsigned char)(120 / 2))
-#endif
-
-#ifndef IsSjisTrailByte
-#define IsSjisTrailByte(c) ((((unsigned char)(c) - 0x40U) < (unsigned char)(94 * 2 + 1)) && ((unsigned char)(c) != 0x7FU))
-#endif
 
 // UTF-8/CESU-8 ‚P•¶Žš‚ÌÅ‘åƒoƒCƒg”
 #define UTF8_RFC3629_MAXBYTES 4
@@ -522,6 +520,8 @@ BOOL split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** f
 #define WCharToTCharFile WCharToWCharFileW
 
 #define GetTCharToRoot GetWCharToRoot
+#define GetTCharToRootCopy GetWCharToRootCopy
+#define GetTCharToRootLen GetWCharToRootLen
 #define GetTCharToFileNameLen GetWCharToFileNameLen
 #define GetTCharToFileNameNoExtensionLen GetWCharToFileNameNoExtensionLen
 #define GetTCharToFileName GetWCharToFileName
@@ -627,6 +627,8 @@ BOOL split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** f
 #define WCharToTCharFile WCharToCharFileA
 
 #define GetTCharToRoot GetCharToRoot
+#define GetTCharToRootCopy GetCharToRootCopy
+#define GetTCharToRootLen GetCharToRootLen
 #define GetTCharToFileNameLen GetCharToFileNameLen
 #define GetTCharToFileNameNoExtensionLen GetCharToFileNameNoExtensionLen
 #define GetTCharToFileName GetCharToFileName

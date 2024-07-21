@@ -8,7 +8,6 @@
 #include <shlobj.h>
 #include "charlib.h"
 #include "charlib_sysdll.h"
-#include "c20.h"
 #if _MSC_VER < 1700
 #include "os.h"
 #endif
@@ -45,12 +44,12 @@ int GetIniFilePath(TCHAR* pInPath, const TCHAR* cpInINIFileName, const TCHAR* cp
 			}
 #endif /* _MSC_VER < 1500 */
 
-			IF_UNLIKELY(GetModuleFileName(NULL, pInPath, MAX_PATH_SIZE) == 0) {
+			if (GetModuleFileName(NULL, pInPath, MAX_PATH_SIZE) == 0) {
 				goto FUNC_END;
 			}
 
 			hRet = SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES, NULL, 0, szFilePath);
-			IF_LIKELY(SUCCEEDED(hRet) && szFilePath != NULL)
+			if (SUCCEEDED(hRet) && szFilePath != NULL)
 			{
 				//  Program File から実行されているか確認。
 				ptr = _tcsstr(pInPath, szFilePath);
@@ -61,7 +60,7 @@ int GetIniFilePath(TCHAR* pInPath, const TCHAR* cpInINIFileName, const TCHAR* cp
 				}
 
 				hRet = SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, szFilePath);
-				IF_LIKELY(SUCCEEDED(hRet) && szFilePath != NULL)
+				if (SUCCEEDED(hRet) && szFilePath != NULL)
 				{
 					// pInPath に Appdata のパスをコピーする。
 					ptr = qtcscpy(pInPath, szFilePath);

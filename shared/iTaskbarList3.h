@@ -28,7 +28,7 @@ enum TBPFLAG
 #endif
 #endif
 
-#if __cplusplus && _MSC_VER < 1500
+#if __cplusplus && _MSC_VER < 1600
 extern "C" {
 #endif
 
@@ -39,7 +39,7 @@ HRESULT WINAPI iTaskbarList3_SetProgressValue(ITASKBARLIST3* pTask3, HWND hWnd, 
 HRESULT WINAPI iTaskbarList3_SetOverlayIcon(ITASKBARLIST3* pTask3, HWND hWnd, HICON hIcon, LPCWSTR pszDescription);
 HRESULT WINAPI iTaskbarList3_DeleteOverlayIcon(ITASKBARLIST3* pTask3, HWND hWnd);
 
-#if __cplusplus && _MSC_VER < 1500
+#if __cplusplus && _MSC_VER < 1600
 }
 #endif
 #endif

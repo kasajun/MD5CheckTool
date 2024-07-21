@@ -1,5 +1,4 @@
 #include "charlib_url.h"
-#include "c20.h"
 
 
 static const char cpUrlSafeChar[] = {
@@ -57,7 +56,7 @@ char* CharToUrlEncode(const char* cpInChar)
 
 	iBufferSize = CharToUrlEncodeLength(cpInChar);
 	pBufChar = (char*)malloc(iBufferSize + 1);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pDst = pBufChar;
@@ -86,7 +85,7 @@ char* Utf8CharToUrlEncodeChar(const char* cpInChar)
 	char* pBufChar;
 
 	pBufUtf8Char = CharToUtf8CharConv(cpInChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return NULL;
 	}
 	pBufChar = CharToUrlEncode(pBufUtf8Char);
@@ -100,7 +99,7 @@ char* WCharToUrlEncodeChar(const WCHAR* cpInWChar)
 	char* pBufChar;
 
 	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return NULL;
 	}
 	pBufChar = CharToUrlEncode(pBufUtf8Char);
@@ -115,11 +114,11 @@ WCHAR* WCharToUrlEncodeWChar(const WCHAR* cpInWChar)
 	WCHAR* pBufWChar;
 
 	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return NULL;
 	}
 	pTmp = CharToUrlEncode(pBufUtf8Char);
-	IF_UNLIKELY(pTmp == NULL)
+	if (pTmp == NULL)
 	{
 		free(pBufUtf8Char);
 		return NULL;
@@ -136,7 +135,7 @@ WCHAR* CharToUrlEncodeWChar(const char* cpInChar)
 	WCHAR* pBufWChar;
 
 	pBufChar = CharToUrlEncode(cpInChar);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufWChar = CharToWCharConv(pBufChar);
@@ -151,11 +150,11 @@ WCHAR* Utf8CharToUrlEncodeWChar(const char* cpInChar)
 	WCHAR* pBufWChar;
 
 	pBufUtf8Char = CharToUtf8CharConv(cpInChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return NULL;
 	}
 	pBufChar = CharToUrlEncode(pBufUtf8Char);
-	IF_UNLIKELY(pBufChar == NULL)
+	if (pBufChar == NULL)
 	{
 		free(pBufUtf8Char);
 		return NULL;

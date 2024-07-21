@@ -10,7 +10,6 @@
 #include <string.h>
 #include "sha256.h"
 #include "cpuid.h"
-#include "c20.h"
 
 
 #define DATA_ORDER_IS_BIG_ENDIAN
@@ -125,7 +124,7 @@ unsigned char* SHA224(const unsigned char* d, size_t n, unsigned char* md)
 	SHA256_CTX c;
 	static unsigned char m[SHA224_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA224_Init(&c);
@@ -140,7 +139,7 @@ unsigned char* SHA256(const unsigned char* d, size_t n, unsigned char* md)
 	SHA256_CTX c;
 	static unsigned char m[SHA256_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA256_Init(&c);
@@ -155,7 +154,7 @@ unsigned char* SHA256_192(const unsigned char* d, size_t n, unsigned char* md)
 	SHA256_CTX c;
 	static unsigned char m[SHA256_192_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA256_192_Init(&c);

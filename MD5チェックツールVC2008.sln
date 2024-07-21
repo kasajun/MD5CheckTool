@@ -1,49 +1,33 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MD5チェックツールVC2005", "MD5チェックツール\MD5チェックツールVC2005.vcproj", "{8DA59541-E0DF-4564-B4E5-4813B29F69E9}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8DA59541-E0DF-4564-B4E5-4813B29F69E9}") = "MD5チェックツールVC2008", "MD5チェックツール\MD5チェックツールVC2008.vcproj", "{8DA59541-E0DF-4564-B4E5-4813B29F69E9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647} = {CB0195AC-C603-4408-9AEA-FDD7505B8647}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MD5チェックツールIconResVC2005", "MD5チェックツールIconRes\MD5チェックツールIconResVC2005.vcproj", "{CB0195AC-C603-4408-9AEA-FDD7505B8647}"
+Project("{8DA59541-E0DF-4564-B4E5-4813B29F69E9}") = "MD5チェックツールIconResVC2008", "MD5チェックツールIconRes\MD5チェックツールIconResVC2008.vcproj", "{CB0195AC-C603-4408-9AEA-FDD7505B8647}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug(ANSI)|Win32 = Debug(ANSI)|Win32
-		Debug(ANSI)|x64 = Debug(ANSI)|x64
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
-		Release(ANSI)|Win32 = Release(ANSI)|Win32
-		Release(ANSI)|x64 = Release(ANSI)|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug(ANSI)|Win32.ActiveCfg = Debug(ANSI)|Win32
-		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug(ANSI)|Win32.Build.0 = Debug(ANSI)|Win32
-		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug(ANSI)|x64.ActiveCfg = Debug(ANSI)|x64
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|Win32.ActiveCfg = Debug|Win32
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|Win32.Build.0 = Debug|Win32
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|x64.ActiveCfg = Debug|x64
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Debug|x64.Build.0 = Debug|x64
-		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release(ANSI)|Win32.ActiveCfg = Release(ANSI)|Win32
-		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release(ANSI)|Win32.Build.0 = Release(ANSI)|Win32
-		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release(ANSI)|x64.ActiveCfg = Release(ANSI)|x64
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|Win32.ActiveCfg = Release|Win32
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|Win32.Build.0 = Release|Win32
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|x64.ActiveCfg = Release|x64
 		{8DA59541-E0DF-4564-B4E5-4813B29F69E9}.Release|x64.Build.0 = Release|x64
-		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Debug(ANSI)|Win32.ActiveCfg = Debug(Ansi)|Win32
-		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Debug(ANSI)|Win32.Build.0 = Debug(Ansi)|Win32
-		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Debug(ANSI)|x64.ActiveCfg = Debug|x64
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Debug|Win32.Build.0 = Debug|Win32
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Debug|x64.ActiveCfg = Debug|x64
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Debug|x64.Build.0 = Debug|x64
-		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Release(ANSI)|Win32.ActiveCfg = Release(Ansi)|Win32
-		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Release(ANSI)|Win32.Build.0 = Release(Ansi)|Win32
-		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Release(ANSI)|x64.ActiveCfg = Release|x64
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Release|Win32.ActiveCfg = Release|Win32
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Release|Win32.Build.0 = Release|Win32
 		{CB0195AC-C603-4408-9AEA-FDD7505B8647}.Release|x64.ActiveCfg = Release|x64

@@ -2,7 +2,7 @@
 #include "c20.h"
 
 
-#if _MSC_VER > 1400
+#if _MSC_VER > 1500
 
 /*
 	pTask3->ActivateTab(hWnd);

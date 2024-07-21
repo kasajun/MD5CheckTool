@@ -1,5 +1,4 @@
 #include "charlib_time.h"
-#include "c20.h"
 
 
 #define CHAR_TIME_FORMAT	"%Y/%m/%d %H:%M:%S"
@@ -245,7 +244,7 @@ char* Time64ToChar(__time64_t inTime, const char* cpTimeFormat)
 
 	iBufferSize = 100;
 	cpBufChar = (char*)malloc(iBufferSize);
-	IF_UNLIKELY(cpBufChar == NULL) {
+	if (cpBufChar == NULL) {
 		return NULL;
 	}
 
@@ -256,7 +255,7 @@ char* Time64ToChar(__time64_t inTime, const char* cpTimeFormat)
 	errno_t err;
 
 	err = _localtime64_s(&tm, &tiTime);
-	IF_UNLIKELY(err)
+	if (err)
 	{
 		free(cpBufChar);
 		return 0;
@@ -311,7 +310,7 @@ WCHAR* Time64ToWChar(__time64_t inTime, const WCHAR* cpTimeFormat)
 
 	iBufferSize = 100;
 	cpBufWChar = (WCHAR*)malloc(iBufferSize * sizeof(WCHAR));
-	IF_UNLIKELY(cpBufWChar == NULL) {
+	if (cpBufWChar == NULL) {
 		return NULL;
 	}
 
@@ -322,7 +321,7 @@ WCHAR* Time64ToWChar(__time64_t inTime, const WCHAR* cpTimeFormat)
 	errno_t err;
 
 	err = _localtime64_s(&tm, &tiTime);
-	IF_UNLIKELY(err)
+	if (err)
 	{
 		free(cpBufWChar);
 		return 0;

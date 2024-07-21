@@ -86,21 +86,40 @@ LRESULT OptionDlgTab1_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-	SendMessage(tagOptionWindow1.hTab1Combo[0], CB_SETCURSEL, tagOptionWindow1.dwHashType, 0);
-	SendMessage(tagOptionWindow1.hTab1Checkbox[0], BM_SETCHECK, dwAppFrag & APP_HASHOUT_LOWER ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab1Checkbox[1], BM_SETCHECK, dwAppFrag & APP_ENABLE_MULTILINE ? BST_CHECKED : BST_UNCHECKED, 0);
-	if (IsWin10OrGreater()) {
-		SendMessage(tagOptionWindow1.hTab1Checkbox[2], BM_SETCHECK, dwAppFrag & APP_ECOQOS ? BST_CHECKED : BST_UNCHECKED, 0);
-	}
-	else {
-		EnableWindow(tagOptionWindow1.hTab1Checkbox[2], FALSE);
-	}
-	SendMessage(tagOptionWindow1.hTab1Checkbox[3], BM_SETCHECK, dwAppFrag & APP_WINDOWALPHA ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab1Checkbox[4], BM_SETCHECK, dwAppFrag & APP_ENABLE_TOPMOST ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab1Checkbox[5], BM_SETCHECK, dwAppFrag & APP_DISABLE_MULTIFILE_UPDATE_DRAW ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab1Checkbox[6], BM_SETCHECK, dwAppFrag & APP_ENABLE_FILELIST ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab1Checkbox[7], BM_SETCHECK, dwAppFrag & APP_ENABLE_DEBUG ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab1Checkbox[8], BM_SETCHECK, dwAppFrag & APP_ENABLE_MINIMAM_HANDLE ? BST_CHECKED : BST_UNCHECKED, 0);
+	SendMessage(tagOptionWindow1.hTab1Combo[0], CB_SETCURSEL, (WPARAM)tagOptionWindow1.dwHashType, 0);
+
+	dwRet = dwAppFrag & APP_HASHOUT_LOWER ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[0], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ENABLE_MULTILINE ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[1], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ECOQOS ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[2], BM_SETCHECK, (WPARAM)dwRet, 0);
+	i = IsWin10OrGreater() ? TRUE : FALSE;
+	EnableWindow(tagOptionWindow1.hTab1Checkbox[2], i);
+
+	dwRet = dwAppFrag & APP_WINDOWALPHA ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[3], BM_SETCHECK, (WPARAM)dwRet, 0);
+#if !defined(UNICODE) && _MSC_VER < 1500
+	i = IsWin2kOrGreater() ? TRUE : FALSE;
+	EnableWindow(tagOptionWindow1.hTab1Checkbox[3], i);
+#endif
+
+	dwRet = dwAppFrag & APP_ENABLE_TOPMOST ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[4], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_DISABLE_MULTIFILE_UPDATE_DRAW ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[5], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ENABLE_FILELIST ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[6], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ENABLE_DEBUG ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[7], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ENABLE_MINIMAM_HANDLE ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab1Checkbox[8], BM_SETCHECK, (WPARAM)dwRet, 0);
 	return TRUE;
 }
 

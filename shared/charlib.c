@@ -1,5 +1,4 @@
 #include "charlib.h"
-#include "c20.h"
 #include <mbstring.h>
 
 
@@ -298,7 +297,7 @@ unsigned __int64 __fastcall BSwap64(unsigned __int64 i)
 */
 #endif
 
-#if _MSC_VER < 1600 && defined(_M_IX86)
+#if _MSC_VER < 1500 && defined(_M_IX86)
 
 void __cpuidex(int* cpuInfo, int function_id, int subfunction_id)
 {
@@ -326,7 +325,7 @@ void* _AlignedMalloc(size_t s, size_t align)
 
    /* Overallocate to make room for manual realignment and an offset byte */
 	unsigned char* base = (unsigned char*)malloc(s + align);
-	IF_LIKELY(base != NULL)
+	if (base != NULL)
 	{
 		/*
 		 * Get the offset needed to align this pointer.
@@ -353,7 +352,7 @@ void* _AlignedMalloc(size_t s, size_t align)
  */
 void _AlignedFree(void* p)
 {
-	IF_LIKELY(p != NULL)
+	if (p != NULL)
 	{
 		unsigned char* ptr = (unsigned char*)p;
 		/* Get the offset byte we added in malloc. */
@@ -365,73 +364,162 @@ void _AlignedFree(void* p)
 }
 #endif
 
-char* GetCharToRoot(char* pInFileName)
+const char* GetCharToRoot_Core(const char* cpInRootPathName)
 {
-	char* pTmp = pInFileName;
+	const char* pTmp = cpInRootPathName;
 
-	if (*(pTmp + 1) == ':' && *(pTmp + 2) == '\\') {
+	if (isalpha(*pTmp) && *(pTmp + 1) == ':' && *(pTmp + 2) == '\\') {
 		pTmp += 3;
 	}
 	else
 	{
 		if (*(pTmp) == '\\' && *(pTmp + 1) == '\\')
 		{
-			pTmp = (char*)_mbsrchr((unsigned char*)pTmp + 3, '\\');
-			if (pTmp == NULL)
-			{
-				return pInFileName;
-			}
-			pTmp++;
-		}
-	}
-	*pTmp = '\0';
-	return pInFileName;
-}
-
-WCHAR* GetWCharToRoot(WCHAR* pInFileName)
-{
-	WCHAR* pTmp = pInFileName;
-
-	if (*(pTmp + 1) == ':' && *(pTmp + 2) == '\\') {
-		pTmp += 3;
-	}
-	else
-	{
-		if (*(pTmp) == '\\' && *(pTmp + 1) == '\\')
-		{
-			pTmp = wcsrchr(pTmp + 3, '\\');
-			if (pTmp == NULL)
-			{
-				return pInFileName;
-			}
-			pTmp++;
-		}
-	}
-	*pTmp = '\0';
-	return pInFileName;
-}
-
-char* GetUtf8CharToRoot(char* pInFileName)
-{
-	char* pTmp = pInFileName;
-
-	if (*(pTmp + 1) == ':' && *(pTmp + 2) == '\\') {
-		pTmp += 3;
-	}
-	else
-	{
-		if (*(pTmp) == '\\' && *(pTmp + 1) == '\\')
-		{
-			pTmp = (char*)strrchr(pTmp + 3, '\\');
+			pTmp = (const char*)_mbsrchr((unsigned char*)pTmp + 3, '\\');
 			if (pTmp == NULL) {
-				return pInFileName;
+				return cpInRootPathName;
 			}
 			pTmp++;
 		}
 	}
-	*pTmp = '\0';
-	return pInFileName;
+	return pTmp;
 }
+
+const WCHAR* GetWCharToRoot_Core(const WCHAR* cpInRootPathName)
+{
+	const WCHAR* pTmp = cpInRootPathName;
+
+	if (isalpha(*pTmp) && *(pTmp + 1) == ':' && *(pTmp + 2) == '\\') {
+		pTmp += 3;
+	}
+	else
+	{
+		if (*(pTmp) == '\\' && *(pTmp + 1) == '\\')
+		{
+			pTmp = (const WCHAR*)wcsrchr(pTmp + 3, '\\');
+			if (pTmp == NULL) {
+				return cpInRootPathName;
+			}
+			pTmp++;
+		}
+	}
+	return pTmp;
+}
+
+const char* GetUtf8CharToRoot_Core(const char* cpInRootPathName)
+{
+	const char* pTmp = cpInRootPathName;
+
+	if (isalpha(*pTmp) && *(pTmp + 1) == ':' && *(pTmp + 2) == '\\') {
+		pTmp += 3;
+	}
+	else
+	{
+		if (*(pTmp) == '\\' && *(pTmp + 1) == '\\')
+		{
+			pTmp = (const char*)strrchr(pTmp + 3, '\\');
+			if (pTmp == NULL) {
+				return cpInRootPathName;
+			}
+			pTmp++;
+		}
+	}
+	return pTmp;
+}
+
+
+char* GetCharToRoot(char* pInRootPathName)
+{
+	char* pTmp = (char*)GetCharToRoot_Core(pInRootPathName);
+	if (pTmp) {
+		*pTmp = '\0';
+	}
+	return pInRootPathName;
+}
+
+WCHAR* GetWCharToRoot(WCHAR* pInRootPathName)
+{
+	WCHAR* pTmp = (WCHAR*)GetWCharToRoot_Core(pInRootPathName);
+	if (pTmp) {
+		*pTmp = '\0';
+	}
+	return pInRootPathName;
+}
+
+char* GetUtf8CharToRoot(char* pInRootPathName)
+{
+	char* pTmp = (char*)GetUtf8CharToRoot_Core(pInRootPathName);
+	if (pTmp) {
+		*pTmp = '\0';
+	}
+	return pInRootPathName;
+}
+
+
+size_t GetCharToRootLen(const char* cpInRootPathName)
+{
+	char* pTmp = (char*)GetCharToRoot_Core(cpInRootPathName);
+	if (pTmp) {
+		return pTmp - cpInRootPathName;
+	}
+	return 0;
+}
+
+size_t GetWCharToRootLen(const WCHAR* cpInRootPathName)
+{
+	WCHAR* pTmp = (WCHAR*)GetWCharToRoot_Core(cpInRootPathName);
+	if (pTmp) {
+		return pTmp - cpInRootPathName;
+	}
+	return 0;
+}
+
+size_t GetUtf8CharToRootLen(const char* cpInRootPathName)
+{
+	char* pTmp = (char*)GetUtf8CharToRoot_Core(cpInRootPathName);
+	if (pTmp) {
+		return pTmp - cpInRootPathName;
+	}
+	return 0;
+}
+
+
+char* GetCharToRootCopy(const char* cpInRootPathName, char* pOutRootPathName)
+{
+	const size_t nSize = GetCharToRootLen(cpInRootPathName);
+	if (nSize)
+	{
+		memcpy(pOutRootPathName, cpInRootPathName, nSize);
+		pOutRootPathName[nSize] = '\0';
+		return pOutRootPathName;
+	}
+	return NULL;
+}
+
+WCHAR* GetWCharToRootCopy(const WCHAR* cpInRootPathName, WCHAR* pOutRootPathName)
+{
+	const size_t nSize = GetWCharToRootLen(cpInRootPathName);
+	if (nSize)
+	{
+		memcpy(pOutRootPathName, cpInRootPathName, nSize * sizeof(WCHAR));
+		pOutRootPathName[nSize] = '\0';
+		return pOutRootPathName;
+	}
+	return NULL;
+}
+
+char* GetUtf8CharToRootCopy(const char* cpInRootPathName, char* pOutRootPathName)
+{
+	const size_t nSize = GetUtf8CharToRootLen(cpInRootPathName);
+	if (nSize)
+	{
+		memcpy(pOutRootPathName, cpInRootPathName, nSize);
+		pOutRootPathName[nSize] = '\0';
+		return pOutRootPathName;
+	}
+	return NULL;
+}
+
 
 size_t GetCharToFileNameLen(const char* cpInFileName)
 {
@@ -689,11 +777,11 @@ char* GetUtf8CharToFolderName(char* cpInFileName)
 unsigned __int64 FileToFileSizeF(FILE* pInFilePointer)
 {
 #ifndef _NODLL
-	IF_LIKELY(pInFilePointer != NULL && _fseeki64(pInFilePointer, 0, SEEK_END) == 0) {
+	if (pInFilePointer != NULL && _fseeki64(pInFilePointer, 0, SEEK_END) == 0) {
 		return _ftelli64(pInFilePointer);
 	}
 #else
-	IF_LIKELY(pInFilePointer != NULL && fseek(pInFilePointer, 0, SEEK_END) == 0) {
+	if (pInFilePointer != NULL && fseek(pInFilePointer, 0, SEEK_END) == 0) {
 		return ftell(pInFilePointer);
 	}
 #endif
@@ -707,7 +795,7 @@ unsigned __int64 FileToFileSizeA(const char* cpInFileName)
 	unsigned __int64 nRet = 0;
 
 	hFind = FindFirstFileA(cpInFileName, &fdFindData);
-	IF_UNLIKELY(hFind == INVALID_HANDLE_VALUE) {
+	if (hFind == INVALID_HANDLE_VALUE) {
 		return 0;
 	}
 	FindClose(hFind);
@@ -723,7 +811,7 @@ unsigned __int64 FileToFileSizeW(const WCHAR* cpInFileName)
 	unsigned __int64 nRet = 0;
 
 	hFind = FindFirstFileW(cpInFileName, &fdFindData);
-	IF_UNLIKELY(hFind == INVALID_HANDLE_VALUE) {
+	if (hFind == INVALID_HANDLE_VALUE) {
 		return 0;
 	}
 	FindClose(hFind);
@@ -734,10 +822,10 @@ unsigned __int64 FileToFileSizeW(const WCHAR* cpInFileName)
 
 char* DecToChar(size_t inDec, char* pOutChar)
 {
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		pOutChar = (char*)malloc(33);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
@@ -753,10 +841,10 @@ char* DecToChar(size_t inDec, char* pOutChar)
 
 WCHAR* DecToWChar(size_t inDec, WCHAR* pOutWChar)
 {
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		pOutWChar = (WCHAR*)malloc(33 * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
@@ -772,10 +860,10 @@ WCHAR* DecToWChar(size_t inDec, WCHAR* pOutWChar)
 
 char* HexToChar(size_t inHex, char* pOutChar)
 {
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		pOutChar = (char*)malloc(35);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
@@ -793,10 +881,10 @@ char* HexToChar(size_t inHex, char* pOutChar)
 
 WCHAR* HexToWChar(size_t inHex, WCHAR* pOutWChar)
 {
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		pOutWChar = (WCHAR*)malloc(35 * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
@@ -825,16 +913,16 @@ char* CharFileToCharW(const WCHAR* cpInFileName)
 
 	iBufferSize = (size_t)FileToFileSizeW(cpInFileName);
 	pBufChar = (char*)malloc(iBufferSize + 4);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	*(pBufChar + iBufferSize) = '\0';
 
 #ifndef _NODLL
 	error = _wfopen_s(&pInFilePointer, cpInFileName, L"rb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = _wfopen(cpInFileName, L"rb")) == NULL)
+	if ((pInFilePointer = _wfopen(cpInFileName, L"rb")) == NULL)
 #endif
 	{
 		return NULL;
@@ -879,16 +967,16 @@ char* CharFileToCharA(const char* cpInFileName)
 
 	iBufferSize = (size_t)FileToFileSizeA(cpInFileName);
 	pBufChar = (char*)malloc(iBufferSize + 4);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	*(pBufChar + iBufferSize) = '\0';
 
 #ifndef _NODLL
 	error = fopen_s(&pInFilePointer, cpInFileName, "rb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = fopen(cpInFileName, "rb")) == NULL)
+	if ((pInFilePointer = fopen(cpInFileName, "rb")) == NULL)
 #endif
 	{
 		return NULL;
@@ -932,16 +1020,16 @@ char* FileToCharW(const WCHAR* cpInFileName, unsigned __int64* outFilesize)
 	iBufferSize = (size_t)FileToFileSizeW(cpInFileName);
 	*outFilesize = 0;
 	pBufChar = (char*)malloc(iBufferSize + 1);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	*(pBufChar + iBufferSize) = '\0';
 
 #ifndef _NODLL
 	error = _wfopen_s(&pInFilePointer, cpInFileName, L"rb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = _wfopen(cpInFileName, L"rb")) == NULL)
+	if ((pInFilePointer = _wfopen(cpInFileName, L"rb")) == NULL)
 #endif
 	{
 		return NULL;
@@ -965,16 +1053,16 @@ char* FileToCharA(const char* cpInFileName, unsigned __int64* outFilesize)
 	iBufferSize = (size_t)FileToFileSizeA(cpInFileName);
 	*outFilesize = 0;
 	pBufChar = (char*)malloc(iBufferSize + 1);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	*(pBufChar + iBufferSize) = '\0';
 
 #ifndef _NODLL
 	error = fopen_s(&pInFilePointer, cpInFileName, "rb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = fopen(cpInFileName, "rb")) == NULL)
+	if ((pInFilePointer = fopen(cpInFileName, "rb")) == NULL)
 #endif
 	{
 		return NULL;
@@ -992,7 +1080,7 @@ char* Utf8CharFileToCharA(const char* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = CharFileToCharA(cpInFileName);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufUtf8Char = Utf8CharToCharConv(pBufChar);
@@ -1006,7 +1094,7 @@ char* Utf8CharFileToCharW(const WCHAR* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = CharFileToCharW(cpInFileName);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufUtf8Char = Utf8CharToCharConv(pBufChar);
@@ -1020,7 +1108,7 @@ WCHAR* CharFileToWCharW(const WCHAR* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = CharFileToCharW(cpInFileName);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufWChar = CharToWCharConv(pBufChar);
@@ -1034,7 +1122,7 @@ WCHAR* CharFileToWCharA(const char* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = CharFileToCharA(cpInFileName);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufWChar = CharToWCharConv(pBufChar);
@@ -1048,7 +1136,7 @@ WCHAR* Utf8CharFileToWCharA(const char* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = CharFileToCharA(cpInFileName);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufWChar = Utf8CharToWCharConv(pBufChar);
@@ -1062,7 +1150,7 @@ WCHAR* Utf8CharFileToWCharW(const WCHAR* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = CharFileToCharW(cpInFileName);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufWChar = Utf8CharToWCharConv(pBufChar);
@@ -1082,20 +1170,20 @@ WCHAR* WCharFileToWCharW(const WCHAR* cpInFileName)
 #endif
 
 	iBufferSize = (size_t)FileToFileSizeW(cpInFileName);
-	IF_UNLIKELY(iBufferSize < 2) {
+	if (iBufferSize < 2) {
 		return NULL;
 	}
 
 	pBufWChar = (WCHAR*)malloc(iBufferSize + sizeof(WCHAR));
-	IF_UNLIKELY(pBufWChar == NULL) {
+	if (pBufWChar == NULL) {
 		return NULL;
 	}
 
 #ifndef _NODLL
 	error = _wfopen_s(&pInFilePointer, cpInFileName, L"rb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = _wfopen(cpInFileName, L"rb")) == NULL)
+	if ((pInFilePointer = _wfopen(cpInFileName, L"rb")) == NULL)
 #endif
 	{
 		free(pBufWChar);
@@ -1103,7 +1191,7 @@ WCHAR* WCharFileToWCharW(const WCHAR* cpInFileName)
 	}
 
 	nRet = fread(pBufWChar, 2, 1, pInFilePointer);
-	IF_UNLIKELY(!nRet)
+	if (!nRet)
 	{
 		free(pBufWChar);
 		fclose(pInFilePointer);
@@ -1118,7 +1206,7 @@ WCHAR* WCharFileToWCharW(const WCHAR* cpInFileName)
 
 	*(WCHAR*)((unsigned char*)pBufWChar + iBufferSize) = '\0';
 	nRet = fread(pBufWChar + nNotBom, (size_t)iBufferSize, 1, pInFilePointer);
-	IF_UNLIKELY(!nRet)
+	if (!nRet)
 	{
 		free(pBufWChar);
 		pBufWChar = NULL;
@@ -1139,20 +1227,20 @@ WCHAR* WCharFileToWCharA(const char* cpInFileName)
 #endif
 
 	iBufferSize = (size_t)FileToFileSizeA(cpInFileName);
-	IF_UNLIKELY(iBufferSize < 2) {
+	if (iBufferSize < 2) {
 		return NULL;
 	}
 
 	pBufWChar = (WCHAR*)malloc(iBufferSize + sizeof(WCHAR));
-	IF_UNLIKELY(pBufWChar == NULL) {
+	if (pBufWChar == NULL) {
 		return NULL;
 	}
 
 #ifndef _NODLL
 	error = fopen_s(&pInFilePointer, cpInFileName, "rb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = fopen(cpInFileName, "rb")) == NULL)
+	if ((pInFilePointer = fopen(cpInFileName, "rb")) == NULL)
 #endif
 	{
 		free(pBufWChar);
@@ -1160,7 +1248,7 @@ WCHAR* WCharFileToWCharA(const char* cpInFileName)
 	}
 
 	nRet = fread(pBufWChar, 2, 1, pInFilePointer);
-	IF_UNLIKELY(!nRet)
+	if (!nRet)
 	{
 		free(pBufWChar);
 		fclose(pInFilePointer);
@@ -1175,7 +1263,7 @@ WCHAR* WCharFileToWCharA(const char* cpInFileName)
 
 	*(WCHAR*)((unsigned char*)pBufWChar + iBufferSize) = '\0';
 	nRet = fread(pBufWChar + nNotBom, (size_t)iBufferSize, 1, pInFilePointer);
-	IF_UNLIKELY(!nRet)
+	if (!nRet)
 	{
 		free(pBufWChar);
 		pBufWChar = NULL;
@@ -1191,7 +1279,7 @@ char* WCharFileToCharW(const WCHAR* cpInFileName)
 	char* pBufChar;
 
 	pBufWChar = WCharFileToWCharW(cpInFileName);
-	IF_UNLIKELY(pBufWChar == NULL) {
+	if (pBufWChar == NULL) {
 		return NULL;
 	}
 	pBufChar = WCharToCharConv(pBufWChar);
@@ -1205,7 +1293,7 @@ char* WCharFileToCharA(const char* cpInFileName)
 	char* pBufChar;
 
 	pBufWCharFileName = CharToWCharConv(cpInFileName);
-	IF_UNLIKELY(pBufWCharFileName == NULL) {
+	if (pBufWCharFileName == NULL) {
 		return 0;
 	}
 	pBufChar = WCharFileToCharW(pBufWCharFileName);
@@ -1231,7 +1319,7 @@ size_t CharToWCharFileA(const char* cpInChar, const char* cpInFileName)
 	size_t nRet = FALSE;
 
 	pBufWChar = CharToWCharConv(cpInChar);
-	IF_UNLIKELY(pBufWChar == NULL) {
+	if (pBufWChar == NULL) {
 		return nRet;
 	}
 	nRet = WCharToWCharFileA(pBufWChar, cpInFileName);
@@ -1245,7 +1333,7 @@ size_t CharToWCharFileW(const char* cpInChar, const WCHAR* cpInFileName)
 	size_t nRet = FALSE;
 
 	pBufWChar = CharToWCharConv(cpInChar);
-	IF_UNLIKELY(pBufWChar == NULL) {
+	if (pBufWChar == NULL) {
 		return nRet;
 	}
 	nRet = WCharToWCharFileW(pBufWChar, cpInFileName);
@@ -1260,7 +1348,7 @@ size_t CharToUtf8CharFileA(const char* cpInChar, const char* cpInFileName)
 	char* pBufUtf8Char;
 
 	pBufUtf8Char = CharToUtf8CharConv(cpInChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
@@ -1276,7 +1364,7 @@ size_t CharToUtf8CharFileW(const char* cpInChar, const WCHAR* cpInFileName)
 	char* pBufUtf8Char;
 
 	pBufUtf8Char = CharToUtf8CharConv(cpInChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
@@ -1293,9 +1381,9 @@ size_t BinaryToFileA(const void* cpInBinary, const char* cpInFileName, size_t in
 	errno_t error;
 
 	error = fopen_s(&pInFilePointer, cpInFileName, "wb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = fopen(cpInFileName, "wb")) == NULL)
+	if ((pInFilePointer = fopen(cpInFileName, "wb")) == NULL)
 #endif
 	{
 		return nRet;
@@ -1324,9 +1412,9 @@ size_t BinaryToFileW(const void* cpInBinary, const WCHAR* cpInFileName, size_t i
 	errno_t error;
 
 	error = _wfopen_s(&pInFilePointer, cpInFileName, L"wb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = _wfopen(cpInFileName, L"wb")) == NULL)
+	if ((pInFilePointer = _wfopen(cpInFileName, L"wb")) == NULL)
 #endif
 	{
 		return nRet;
@@ -1354,7 +1442,7 @@ size_t WCharToCharFileW(const WCHAR* cpInWChar, const WCHAR* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = WCharToCharConv(cpInWChar);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufChar);
@@ -1370,7 +1458,7 @@ size_t WCharToCharFileA(const WCHAR* cpInWChar, const char* cpInFileName)
 	char* pBufChar;
 
 	pBufChar = WCharToCharConv(cpInWChar);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufChar);
@@ -1389,16 +1477,16 @@ size_t WCharToWCharFileW(const WCHAR* cpInWChar, const WCHAR* cpInFileName)
 	errno_t error;
 
 	error = _wfopen_s(&pInFilePointer, cpInFileName, L"wb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = _wfopen(cpInFileName, L"wb")) == NULL)
+	if ((pInFilePointer = _wfopen(cpInFileName, L"wb")) == NULL)
 #endif
 	{
 		return nRet;
 	}
 
 	nRet = fwrite(bBuf, sizeof(bBuf), 1, pInFilePointer);
-	IF_UNLIKELY(!nRet) {
+	if (!nRet) {
 		return nRet;
 	}
 	nRet = fwrite(cpInWChar, iBufferSize, 1, pInFilePointer);
@@ -1416,16 +1504,16 @@ size_t WCharToWCharFileA(const WCHAR* cpInWChar, const char* cpInFileName)
 	errno_t error;
 
 	error = fopen_s(&pInFilePointer, cpInFileName, "wb");
-	IF_UNLIKELY(pInFilePointer == NULL || error)
+	if (pInFilePointer == NULL || error)
 #else
-	IF_UNLIKELY((pInFilePointer = fopen(cpInFileName, "wb")) == NULL)
+	if ((pInFilePointer = fopen(cpInFileName, "wb")) == NULL)
 #endif
 	{
 		return nRet;
 	}
 
 	nRet = fwrite(bBuf, sizeof(bBuf), 1, pInFilePointer);
-	IF_UNLIKELY(!nRet) {
+	if (!nRet) {
 		return nRet;
 	}
 	nRet = fwrite(cpInWChar, iBufferSize, 1, pInFilePointer);
@@ -1440,7 +1528,7 @@ size_t WCharToUtf8CharFileW(const WCHAR* cpInWChar, const WCHAR* cpInFileName)
 	char* pBufUtf8Char;
 
 	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
@@ -1456,7 +1544,7 @@ size_t WCharToUtf8CharFileA(const WCHAR* cpInWChar, const char* cpInFileName)
 	char* pBufUtf8Char;
 
 	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
-	IF_UNLIKELY(pBufUtf8Char == NULL) {
+	if (pBufUtf8Char == NULL) {
 		return nRet;
 	}
 	iBufferSize = strlen(pBufUtf8Char);
@@ -1561,11 +1649,11 @@ char* CharToRtfEncodeChar(const char* cpInChar, char* pOutChar)
 	size_t iBufferSize = 0;
 	int nLang1041 = 0;
 
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		iBufferSize = CharToRtfEncodeCharLength(cpInChar);
 		pOutChar = (char*)malloc(iBufferSize + 1);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
@@ -1624,7 +1712,7 @@ char* CharToRtfEncodeChar(const char* cpInChar, char* pOutChar)
 char* WCharToRtfEncodeChar(const WCHAR* cpInWChar, char* pOutChar)
 {
 	char* pBufChar = WCharToCharConv(cpInWChar);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pOutChar = CharToRtfEncodeChar(pBufChar, pOutChar);
@@ -1638,7 +1726,7 @@ size_t qmbslen(const char* cpInChar)
 	size_t iBufferSize;
 
 	pBufWChar = CharToWCharConv(cpInChar);
-	IF_UNLIKELY(pBufWChar == NULL) {
+	if (pBufWChar == NULL) {
 		return 0;
 	}
 	iBufferSize = wcslen(pBufWChar);
@@ -1676,10 +1764,10 @@ char* BinaryToChar(char* pOutChar, const BYTE* cpInBinary, const DWORD dwLength,
 	BYTE* b;
 	size_t* aligned_b;
 
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		pOutChar = (char*)malloc(((size_t)dwLength + 1) * 2);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
@@ -1781,10 +1869,10 @@ WCHAR* BinaryToWChar(WCHAR* pOutWChar, const BYTE* cpInBinary, const DWORD dwLen
 	BYTE* b;
 	size_t* aligned_b;
 
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		pOutWChar = (WCHAR*)malloc(((size_t)dwLength + 1) * 2 * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
@@ -2100,10 +2188,10 @@ BYTE* CharToBinary(BYTE* pOutBinary, const char* cpInChar, size_t nInCharSize)
 		nInCharSize = strlen(cpInChar);
 	}
 
-	IF_UNLIKELY(pOutBinary == NULL)
+	if (pOutBinary == NULL)
 	{
 		pOutBinary = (BYTE*)malloc(((size_t)nInCharSize));
-		IF_UNLIKELY(pOutBinary == NULL) {
+		if (pOutBinary == NULL) {
 			return NULL;
 		}
 	}
@@ -2193,10 +2281,10 @@ BYTE* WCharToBinary(BYTE* pOutBinary, const WCHAR* cpInWChar, size_t nInWCharSiz
 		nInWCharSize = wcslen(cpInWChar);
 	}
 
-	IF_UNLIKELY(pOutBinary == NULL)
+	if (pOutBinary == NULL)
 	{
 		pOutBinary = (BYTE*)malloc(((size_t)nInWCharSize));
-		IF_UNLIKELY(pOutBinary == NULL) {
+		if (pOutBinary == NULL) {
 			return NULL;
 		}
 	}
@@ -2282,12 +2370,12 @@ char* CharToCopyToPadding(const char* cpInChar, size_t nPaddingSize)
 	char* cpBufChar;
 	size_t iBufferSize;
 
-	IF_UNLIKELY(cpInChar == NULL) {
+	if (cpInChar == NULL) {
 		return NULL;
 	}
 	iBufferSize = strlen(cpInChar);
 	cpBufChar = (char*)malloc((iBufferSize + nPaddingSize + 1));
-	IF_UNLIKELY(cpBufChar == NULL) {
+	if (cpBufChar == NULL) {
 		return NULL;
 	}
 	qstrcpy(cpBufChar, cpInChar);
@@ -2311,7 +2399,7 @@ char* CharToCopy2ToPadding(const char* cpInChar, const char* cpCharArg1, size_t 
 	}
 	iBufferSize += strlen(cpCharArg1);
 	cpBufChar = (char*)malloc((iBufferSize + nPaddingSize + 1));
-	IF_UNLIKELY(cpBufChar == NULL) {
+	if (cpBufChar == NULL) {
 		return NULL;
 	}
 	pTmp = qstrcpy(cpBufChar, cpInChar);
@@ -2340,7 +2428,7 @@ char* CharToCopy3ToPadding(const char* cpInChar, const char* cpCharArg1, const c
 	}
 	iBufferSize += strlen(cpCharArg2);
 	cpBufChar = (char*)malloc((iBufferSize + nPaddingSize + 1));
-	IF_UNLIKELY(cpBufChar == NULL) {
+	if (cpBufChar == NULL) {
 		return NULL;
 	}
 	pTmp = qstrcpy(cpBufChar, cpInChar);
@@ -2369,7 +2457,7 @@ char* CharToCopy4(const char* cpInChar, const char* cpCharArg1, const char* cpCh
 	}
 	iBufferSize += strlen(cpCharArg3);
 	cpBufChar = (char*)malloc((iBufferSize + 1));
-	IF_UNLIKELY(cpBufChar == NULL) {
+	if (cpBufChar == NULL) {
 		return NULL;
 	}
 	pTmp = qstrcpy(cpBufChar, cpInChar);
@@ -2403,7 +2491,7 @@ char* CharToCopy5(const char* cpInChar, const char* cpCharArg1, const char* cpCh
 	}
 	iBufferSize += strlen(cpCharArg4);
 	cpBufChar = (char*)malloc((iBufferSize + 1));
-	IF_UNLIKELY(cpBufChar == NULL) {
+	if (cpBufChar == NULL) {
 		return NULL;
 	}
 	pTmp = qstrcpy(cpBufChar, cpInChar);
@@ -2442,7 +2530,7 @@ char* CharToCopy6(const char* cpInChar, const char* cpCharArg1, const char* cpCh
 	}
 	iBufferSize += strlen(cpCharArg5);
 	cpBufChar = (char*)malloc((iBufferSize + 1));
-	IF_UNLIKELY(cpBufChar == NULL) {
+	if (cpBufChar == NULL) {
 		return NULL;
 	}
 	pTmp = qstrcpy(cpBufChar, cpInChar);
@@ -2467,7 +2555,7 @@ WCHAR* WCharToCopyToPadding(const WCHAR* cpInWChar, size_t nPaddingSize)
 
 	iBufferSize = wcslen(cpInWChar);
 	cpBufWChar = (WCHAR*)malloc((iBufferSize + nPaddingSize + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(cpBufWChar == NULL) {
+	if (cpBufWChar == NULL) {
 		return NULL;
 	}
 	qwcscpy(cpBufWChar, cpInWChar);
@@ -2491,7 +2579,7 @@ WCHAR* WCharToCopy2ToPadding(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, s
 	}
 	iBufferSize += wcslen(cpWCharArg1);
 	cpBufWChar = (WCHAR*)malloc((iBufferSize + nPaddingSize + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(cpBufWChar == NULL) {
+	if (cpBufWChar == NULL) {
 		return NULL;
 	}
 	pTmp = qwcscpy(cpBufWChar, cpInWChar);
@@ -2520,7 +2608,7 @@ WCHAR* WCharToCopy3ToPadding(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, c
 	}
 	iBufferSize += wcslen(cpWCharArg2);
 	cpBufWChar = (WCHAR*)malloc((iBufferSize + nPaddingSize + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(cpBufWChar == NULL) {
+	if (cpBufWChar == NULL) {
 		return NULL;
 	}
 	pTmp = qwcscpy(cpBufWChar, cpInWChar);
@@ -2549,7 +2637,7 @@ WCHAR* WCharToCopy4(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHA
 	}
 	iBufferSize += wcslen(cpWCharArg3);
 	cpBufWChar = (WCHAR*)malloc((iBufferSize + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(cpBufWChar == NULL) {
+	if (cpBufWChar == NULL) {
 		return NULL;
 	}
 	pTmp = qwcscpy(cpBufWChar, cpInWChar);
@@ -2583,7 +2671,7 @@ WCHAR* WCharToCopy5(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHA
 	}
 	iBufferSize += wcslen(cpWCharArg4);
 	cpBufWChar = (WCHAR*)malloc((iBufferSize + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(cpBufWChar == NULL) {
+	if (cpBufWChar == NULL) {
 		return NULL;
 	}
 	pTmp = qwcscpy(cpBufWChar, cpInWChar);
@@ -2622,7 +2710,7 @@ WCHAR* WCharToCopy6(const WCHAR* cpInWChar, const WCHAR* cpWCharArg1, const WCHA
 	}
 	iBufferSize += wcslen(cpWCharArg5);
 	cpBufWChar = (WCHAR*)malloc((iBufferSize + 1) * sizeof(WCHAR));
-	IF_UNLIKELY(cpBufWChar == NULL) {
+	if (cpBufWChar == NULL) {
 		return NULL;
 	}
 	pTmp = qwcscpy(cpBufWChar, cpInWChar);
@@ -2647,12 +2735,12 @@ char* CharToCharConv(const char* cpInChar)
 
 char* CharToCharConv2(const char* cpInChar, char* pOutChar)
 {
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		const size_t nCharSize = CharToCharLength(cpInChar);
 
 		pOutChar = (char*)malloc((nCharSize + 1));
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
@@ -2691,11 +2779,11 @@ WCHAR* CharToWCharConv2(const char* cpInChar, WCHAR* pOutWChar)
 	WCHAR* pDst;
 	unsigned char* pSrc;
 
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		const size_t nWCharSize = CharToWCharLength(cpInChar);
 		pOutWChar = (WCHAR*)malloc((nWCharSize + 1) * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
@@ -2718,7 +2806,7 @@ int qmbtowc(wchar_t* pDst, const char* pSrc)
 	wchar_t w;
 	const int nRet = mbtowc(&w, pSrc, MB_CUR_MAX);
 
-	IF_UNLIKELY(nRet > 0) {
+	if (nRet > 0) {
 		*pDst = w;
 	}
 	else
@@ -2738,7 +2826,7 @@ int qwctomb(char* pDst, const wchar_t* pSrc)
 #ifndef _NODLL
 	const errno_t err = wctomb_s(&nRet, c, MB_CUR_MAX, *pSrc);
 
-	IF_UNLIKELY(err) {
+	if (err) {
 		nRet = 0;
 	}
 #else
@@ -2749,16 +2837,12 @@ int qwctomb(char* pDst, const wchar_t* pSrc)
 	{
 	case 4:
 		*pDst++ = *ptr++;
-		SWITCH_FALLTHROUGH
 	case 3:
 		*pDst++ = *ptr++;
-		SWITCH_FALLTHROUGH
 	case 2:
 		*pDst++ = *ptr++;
-		SWITCH_FALLTHROUGH
 	case 1:
 		*pDst++ = *ptr++;
-		SWITCH_FALLTHROUGH
 	default:
 		nRet = 1;
 		*pDst = '_';
@@ -2795,11 +2879,11 @@ char* WCharToCharConv2(const WCHAR* cpInWChar, char* pOutChar)
 	unsigned char* pDst;
 	WCHAR* pSrc;
 
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		const size_t nCharSize = WCharToCharLength(cpInWChar);
 		pOutChar = (char*)malloc(nCharSize + 1);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
@@ -2840,11 +2924,11 @@ WCHAR* WCharToWCharConv(const WCHAR* cpInWChar)
 
 WCHAR* WCharToWCharConv2(const WCHAR* cpInWChar, WCHAR* pOutWChar)
 {
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		const size_t nCharSize = WCharToWCharLength(cpInWChar);
 		pOutWChar = (WCHAR*)malloc((nCharSize + 1) * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
@@ -2905,11 +2989,11 @@ char* CharToUtf8CharConv2(const char* cpInChar, char* pOutUtf8Char)
 	unsigned char* pDst;
 	unsigned char* pSrc;
 
-	IF_UNLIKELY(pOutUtf8Char == NULL)
+	if (pOutUtf8Char == NULL)
 	{
 		const size_t nUtf8CharSize = CharToUtf8CharLength(cpInChar);
 		pOutUtf8Char = (char*)malloc(nUtf8CharSize + 1);
-		IF_UNLIKELY(pOutUtf8Char == NULL) {
+		if (pOutUtf8Char == NULL) {
 			return NULL;
 		}
 	}
@@ -2924,7 +3008,7 @@ char* CharToUtf8CharConv2(const char* cpInChar, char* pOutUtf8Char)
 			WCHAR wc;
 			const int nRet = mbtowc(&wc, (char*)pSrc, MB_CUR_MAX);
 
-			IF_UNLIKELY(!nRet) {
+			if (!nRet) {
 				wc = '_';
 			}
 
@@ -3008,11 +3092,11 @@ char* Utf8CharToCharConv2(const char* cpInUtf8Char, char* pOutChar)
 	unsigned char* pDst;
 	unsigned char* pSrc;
 
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		const size_t nCharSize = Utf8CharToCharLength(cpInUtf8Char);
 		pOutChar = (char*)malloc(nCharSize + 1);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
@@ -3139,11 +3223,11 @@ WCHAR* Utf8CharToWCharConv2(const char* cpInUtf8Char, WCHAR* pOutWChar)
 	WCHAR* pDst;
 	unsigned char* pSrc;
 
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		const size_t nWCharSize = Utf8CharToWCharLength(cpInUtf8Char);
 		pOutWChar = (WCHAR*)malloc(nWCharSize + sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
@@ -3259,11 +3343,11 @@ char* WCharToUtf8CharConv2(const WCHAR* cpInWChar, char* pOutUtf8Char)
 	unsigned char* pDst;
 	WCHAR* pSrc;
 
-	IF_UNLIKELY(pOutUtf8Char == NULL)
+	if (pOutUtf8Char == NULL)
 	{
 		const size_t nOutUtf8CharSize = WCharToUtf8CharLength(cpInWChar);
 		pOutUtf8Char = (char*)malloc(nOutUtf8CharSize + 1);
-		IF_UNLIKELY(pOutUtf8Char == NULL) {
+		if (pOutUtf8Char == NULL) {
 			return NULL;
 		}
 	}
@@ -3328,16 +3412,16 @@ char* GetSystemDirectoryFileNameToCharA(const char* cpFileName)
 	char* pTmp;
 
 	nLen = GetSystemDirectoryA(NULL, 0);
-	IF_UNLIKELY(!nLen) {
+	if (!nLen) {
 		return FALSE;
 	}
 	nLen += (UINT)strlen(cpFileName) + 1;
 	pPath = (char*)malloc(nLen * sizeof(char));
-	IF_UNLIKELY(pPath == NULL) {
+	if (pPath == NULL) {
 		return FALSE;
 	}
 	nRet = GetSystemDirectoryA(pPath, nLen);
-	IF_UNLIKELY(!nRet)
+	if (!nRet)
 	{
 		free(pPath);
 		return NULL;
@@ -3356,16 +3440,16 @@ WCHAR* GetSystemDirectoryFileNameToWCharW(const WCHAR* cpFileName)
 	WCHAR* pTmp;
 
 	nLen = GetSystemDirectoryW(NULL, 0);
-	IF_UNLIKELY(!nLen) {
+	if (!nLen) {
 		return FALSE;
 	}
 	nLen += (UINT)wcslen(cpFileName) + 1;
 	pPath = (WCHAR*)malloc(nLen * sizeof(WCHAR));
-	IF_UNLIKELY(pPath == NULL) {
+	if (pPath == NULL) {
 		return FALSE;
 	}
 	nRet = GetSystemDirectoryW(pPath, nLen);
-	IF_UNLIKELY(!nRet)
+	if (!nRet)
 	{
 		free(pPath);
 		return NULL;
@@ -3382,7 +3466,7 @@ char* GetSystemDirectoryFileNameToCharW(const WCHAR* cpFileName)
 	char* pBufChar;
 
 	pBufFileName = WCharToCharConv(cpFileName);
-	IF_UNLIKELY(pBufFileName == NULL) {
+	if (pBufFileName == NULL) {
 		return NULL;
 	}
 	pBufChar = GetSystemDirectoryFileNameToCharA(pBufFileName);
@@ -3396,7 +3480,7 @@ WCHAR* GetSystemDirectoryFileNameToWCharA(const char* cpFileName)
 	WCHAR* pBufWChar;
 
 	pBufFileName = CharToWCharConv(cpFileName);
-	IF_UNLIKELY(pBufFileName == NULL) {
+	if (pBufFileName == NULL) {
 		return NULL;
 	}
 	pBufWChar = GetSystemDirectoryFileNameToWCharW(pBufFileName);
@@ -3422,7 +3506,7 @@ WCHAR* RemoveUnicodeChar(const WCHAR* cpInWChar)
 	char* pBufChar;
 
 	pBufChar = WCharToCharConv(cpInWChar);
-	IF_UNLIKELY(pBufChar == NULL) {
+	if (pBufChar == NULL) {
 		return NULL;
 	}
 	pBufWChar = CharToWCharConv(pBufChar);
@@ -3619,7 +3703,7 @@ size_t CharToWCharFWrite(FILE* fp, const char* cpInChar)
 	size_t nRet = 0;
 
 	pBufWChar = CharToWCharConv(cpInChar);
-	IF_LIKELY(pBufWChar != NULL)
+	if (pBufWChar != NULL)
 	{
 		const unsigned char nBom[] = { 0xff, 0xfe };
 		nRet = fwrite(nBom, sizeof(nBom), 1, fp);
@@ -3635,7 +3719,7 @@ size_t CharToUtf8CharFWrite(FILE* fp, const char* cpInChar)
 	size_t nRet = 0;
 
 	pBufUtf8Char = CharToUtf8CharConv(cpInChar);
-	IF_LIKELY(pBufUtf8Char != NULL)
+	if (pBufUtf8Char != NULL)
 	{
 		nRet = fwrite(pBufUtf8Char, strlen(pBufUtf8Char), 1, fp);
 		free(pBufUtf8Char);
@@ -3649,7 +3733,7 @@ size_t WCharToCharFWrite(FILE* fp, const WCHAR* cpInWChar)
 	size_t nRet = 0;
 
 	pBufChar = WCharToCharConv(cpInWChar);
-	IF_LIKELY(pBufChar != NULL)
+	if (pBufChar != NULL)
 	{
 		nRet = fwrite(pBufChar, strlen(pBufChar), 1, fp);
 		free(pBufChar);
@@ -3668,7 +3752,7 @@ size_t WCharToUtf8CharFWrite(FILE* fp, const WCHAR* cpInWChar)
 	size_t nRet = 0;
 
 	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
-	IF_LIKELY(pBufUtf8Char != NULL)
+	if (pBufUtf8Char != NULL)
 	{
 		nRet = fwrite(pBufUtf8Char, strlen(pBufUtf8Char), 1, fp);
 		free(pBufUtf8Char);
@@ -3682,7 +3766,7 @@ size_t Utf8CharToFWrite(FILE* fp, const char* cpInUtf8Char)
 	size_t nRet = 0;
 
 	pBufChar = Utf8CharToCharConv(cpInUtf8Char);
-	IF_LIKELY(pBufChar != NULL)
+	if (pBufChar != NULL)
 	{
 		nRet = fwrite(pBufChar, strlen(pBufChar), 1, fp);
 		free(pBufChar);
@@ -3696,7 +3780,7 @@ size_t Utf8CharToWCharFWrite(FILE* fp, const char* cpInUtf8Char)
 	size_t nRet = 0;
 
 	pBufWChar = Utf8CharToWCharConv(cpInUtf8Char);
-	IF_LIKELY(pBufWChar != NULL)
+	if (pBufWChar != NULL)
 	{
 		const unsigned char nBom[] = { 0xff, 0xfe };
 		nRet = fwrite(nBom, sizeof(nBom), 1, fp);
@@ -3730,7 +3814,7 @@ BOOL CharToUtf8CharWriteFile(HANDLE hFile, const char* cpInChar)
 	BOOL nRet = 0;
 
 	pBufUtf8Char = CharToUtf8CharConv(cpInChar);
-	IF_LIKELY(pBufUtf8Char != NULL)
+	if (pBufUtf8Char != NULL)
 	{
 		nRet = WriteFile(hFile, pBufUtf8Char, (DWORD)strlen(pBufUtf8Char), &dwWriteByte, NULL);
 		free(pBufUtf8Char);
@@ -3745,7 +3829,7 @@ BOOL WCharToCharWriteFile(HANDLE hFile, const WCHAR* cpInWChar)
 	BOOL nRet = 0;
 
 	pBufChar = WCharToCharConv(cpInWChar);
-	IF_LIKELY(pBufChar != NULL)
+	if (pBufChar != NULL)
 	{
 		nRet = WriteFile(hFile, pBufChar, (DWORD)strlen(pBufChar), &dwWriteByte, NULL);
 		free(pBufChar);
@@ -3766,7 +3850,7 @@ BOOL Utf8CharToCharWriteFile(HANDLE hFile, const char* cpInUtf8Char)
 	BOOL nRet = 0;
 
 	pBufChar = Utf8CharToCharConv(cpInUtf8Char);
-	IF_LIKELY(pBufChar != NULL)
+	if (pBufChar != NULL)
 	{
 		nRet = WriteFile(hFile, pBufChar, (DWORD)strlen(pBufChar), &dwWriteByte, NULL);
 		free(pBufChar);
@@ -3781,7 +3865,7 @@ BOOL Utf8CharToWCharWriteFile(HANDLE hFile, const char* cpInUrf8Char)
 	BOOL nRet = 0;
 
 	pBufWChar = Utf8CharToWCharConv(cpInUrf8Char);
-	IF_LIKELY(pBufWChar != NULL)
+	if (pBufWChar != NULL)
 	{
 		nRet = WriteFile(hFile, pBufWChar, (DWORD)wcslen(pBufWChar), &dwWriteByte, NULL);
 		free(pBufWChar);
@@ -3802,7 +3886,7 @@ BOOL CharToWCharWriteFile(HANDLE hFile, const char* cpInChar)
 	BOOL nRet = 0;
 
 	pBufWChar = CharToWCharConv(cpInChar);
-	IF_LIKELY(pBufWChar != NULL)
+	if (pBufWChar != NULL)
 	{
 		nRet = WriteFile(hFile, pBufWChar, (DWORD)wcslen(pBufWChar), &dwWriteByte, NULL);
 		free(pBufWChar);
@@ -3817,7 +3901,7 @@ BOOL WCharToUtf8CharWriteFile(HANDLE hFile, const WCHAR* cpInWChar)
 	BOOL nRet = 0;
 
 	pBufUtf8Char = WCharToUtf8CharConv(cpInWChar);
-	IF_LIKELY(pBufUtf8Char != NULL)
+	if (pBufUtf8Char != NULL)
 	{
 		nRet = WriteFile(hFile, pBufUtf8Char, (DWORD)strlen(pBufUtf8Char), &dwWriteByte, NULL);
 		free(pBufUtf8Char);

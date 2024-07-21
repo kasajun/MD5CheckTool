@@ -1,8 +1,7 @@
-// clipboard.cpp
+// clipboard.c
 
 #include "clipboard.h"
 #include "charlib.h"
-#include "c20.h"
 
 
 #define START_HTML 182
@@ -54,11 +53,11 @@ BOOL SetClipboardTextA(HWND hWnd, const char* pText)
 	int nRet = 0;
 
 	pWCharText = CharToWCharConv(pText);
-	IF_UNLIKELY(pWCharText == NULL) {
+	if (pWCharText == NULL) {
 		return FALSE;
 	}
 
-	IF_UNLIKELY(!OpenClipboard(hWnd))
+	if (!OpenClipboard(hWnd))
 	{
 		free(pWCharText);
 		return FALSE;
@@ -70,16 +69,16 @@ BOOL SetClipboardTextA(HWND hWnd, const char* pText)
 	hg2 = GlobalAlloc(GHND, (nRet + 1) * sizeof(WCHAR));
 
 	EmptyClipboard();
-	IF_LIKELY(hg1 != NULL)
+	if (hg1 != NULL)
 	{
 		char* pMem = (char*)GlobalLock(hg1);
 
-		IF_UNLIKELY(pMem == NULL) {
+		if (pMem == NULL) {
 			goto CF_TEXT_END;
 		}
 		qstrcpy(pMem, pText);
 		GlobalUnlock(hg1);
-		IF_UNLIKELY(SetClipboardData(CF_TEXT, hg1) == NULL) {
+		if (SetClipboardData(CF_TEXT, hg1) == NULL) {
 			GlobalFree(hg1);
 		}
 	}
@@ -98,11 +97,11 @@ BOOL SetClipboardText2A(HWND hWnd, const char* pText, const char* pRtfText, cons
 	int nRet = 0;
 
 	pWCharText = CharToWCharConv(pText);
-	IF_UNLIKELY(pWCharText == NULL) {
+	if (pWCharText == NULL) {
 		return FALSE;
 	}
 
-	IF_UNLIKELY(!OpenClipboard(hWnd))
+	if (!OpenClipboard(hWnd))
 	{
 		free(pWCharText);
 		return FALSE;
@@ -114,31 +113,31 @@ BOOL SetClipboardText2A(HWND hWnd, const char* pText, const char* pRtfText, cons
 	hg2 = GlobalAlloc(GHND, (nRet + 1) * sizeof(WCHAR));
 
 	EmptyClipboard();
-	IF_LIKELY(hg1 != NULL)
+	if (hg1 != NULL)
 	{
 		char* pMem = (char*)GlobalLock(hg1);
 
-		IF_UNLIKELY(pMem == NULL) {
+		if (pMem == NULL) {
 			goto CF_TEXT_END;
 		}
 		qstrcpy(pMem, pText);
 		GlobalUnlock(hg1);
-		IF_UNLIKELY(SetClipboardData(CF_TEXT, hg1) == NULL) {
+		if (SetClipboardData(CF_TEXT, hg1) == NULL) {
 			GlobalFree(hg1);
 		}
 	}
 CF_TEXT_END:
 
-	IF_LIKELY(hg2 != NULL)
+	if (hg2 != NULL)
 	{
 		WCHAR* pMem = (WCHAR*)GlobalLock(hg2);
 
-		IF_UNLIKELY(pMem == NULL) {
+		if (pMem == NULL) {
 			goto CF_UNICODETEXT_END;
 		}
 		qwcscpy(pMem, pWCharText);
 		GlobalUnlock(hg2);
-		IF_UNLIKELY(SetClipboardData(CF_UNICODETEXT, hg2) == NULL) {
+		if (SetClipboardData(CF_UNICODETEXT, hg2) == NULL) {
 			GlobalFree(hg2);
 		}
 	}
@@ -152,29 +151,29 @@ CF_UNICODETEXT_END:
 
 		nRet = (int)strlen(pRtfText);
 		hg3 = GlobalAlloc(GHND, (size_t)nRet + 1);
-		IF_UNLIKELY(hg3 == NULL) {
+		if (hg3 == NULL) {
 			goto CF_RTFTEXT_END;
 		}
 
 		pMem = (char*)GlobalLock(hg3);
-		IF_UNLIKELY(pMem == NULL) {
+		if (pMem == NULL) {
 			goto CF_RTFTEXT_END;
 		}
 		qstrcpy(pMem, pRtfText);
 		GlobalUnlock(hg3);
 		uFormat = RegisterClipboardFormatA("Rich Text Format");
-		IF_LIKELY(uFormat != 0)
+		if (uFormat != 0)
 		{
-			IF_UNLIKELY(SetClipboardData(uFormat, hg3) == NULL)
+			if (SetClipboardData(uFormat, hg3) == NULL)
 			{
 				GlobalFree(hg3);
 				goto CF_RTFTEXT_END;
 			}
 		}
 		uFormat = RegisterClipboardFormatA("RTF As Text");
-		IF_LIKELY(uFormat != 0)
+		if (uFormat != 0)
 		{
-			IF_UNLIKELY(SetClipboardData(uFormat, hg3) == NULL)
+			if (SetClipboardData(uFormat, hg3) == NULL)
 			{
 				GlobalFree(hg3);
 				goto CF_RTFTEXT_END;
@@ -190,12 +189,12 @@ CF_RTFTEXT_END:
 
 		nRet = (int)(strlen(pHtmlText) + START_HTML);
 		hg3 = GlobalAlloc(GHND, (size_t)nRet + 1);
-		IF_UNLIKELY(hg3 == NULL) {
+		if (hg3 == NULL) {
 			goto CF_HTMLTEXT_END;
 		}
 
 		pMem = (char*)GlobalLock(hg3);
-		IF_LIKELY(pMem != NULL)
+		if (pMem != NULL)
 		{
 			char szNum[12];
 
@@ -261,11 +260,11 @@ BOOL SetClipboardTextW(HWND hWnd, const WCHAR* pText)
 	int nRet = 0;
 
 	pCharText = WCharToCharConv(pText);
-	IF_UNLIKELY(pCharText == NULL) {
+	if (pCharText == NULL) {
 		return FALSE;
 	}
 
-	IF_UNLIKELY(!OpenClipboard(hWnd))
+	if (!OpenClipboard(hWnd))
 	{
 		free(pCharText);
 		return FALSE;
@@ -277,11 +276,11 @@ BOOL SetClipboardTextW(HWND hWnd, const WCHAR* pText)
 	hg2 = GlobalAlloc(GHND, (nRet + 1));
 
 	EmptyClipboard();
-	IF_LIKELY(hg2 != NULL)
+	if (hg2 != NULL)
 	{
 		char* pMem = (char*)GlobalLock(hg2);
 
-		IF_UNLIKELY(pMem == NULL) {
+		if (pMem == NULL) {
 			goto CF_TEXT_END;
 		}
 		qstrcpy(pMem, pCharText);
@@ -305,11 +304,11 @@ BOOL SetClipboardText2W(HWND hWnd, const WCHAR* pText, const char* pRtfText, con
 	int nRet = 0;
 
 	pCharText = WCharToCharConv(pText);
-	IF_UNLIKELY(pCharText == NULL) {
+	if (pCharText == NULL) {
 		return FALSE;
 	}
 
-	IF_UNLIKELY(!OpenClipboard(hWnd))
+	if (!OpenClipboard(hWnd))
 	{
 		free(pCharText);
 		return FALSE;
@@ -321,11 +320,11 @@ BOOL SetClipboardText2W(HWND hWnd, const WCHAR* pText, const char* pRtfText, con
 	hg2 = GlobalAlloc(GHND, (nRet + 1));
 
 	EmptyClipboard();
-	IF_LIKELY(hg2 != NULL)
+	if (hg2 != NULL)
 	{
 		char* pMem = (char*)GlobalLock(hg2);
 
-		IF_UNLIKELY(pMem == NULL){
+		if (pMem == NULL){
 			goto CF_TEXT_END;
 		}
 		qstrcpy(pMem, pCharText);
@@ -336,16 +335,16 @@ BOOL SetClipboardText2W(HWND hWnd, const WCHAR* pText, const char* pRtfText, con
 	}
 CF_TEXT_END:
 
-	IF_LIKELY(hg1 != NULL)
+	if (hg1 != NULL)
 	{
 		WCHAR* pMem = (WCHAR*)GlobalLock(hg1);
 
-		IF_UNLIKELY(pMem == NULL) {
+		if (pMem == NULL) {
 			goto CF_UNICODETEXT_END;
 		}
 		qwcscpy(pMem, pText);
 		GlobalUnlock(hg1);
-		IF_UNLIKELY(SetClipboardData(CF_UNICODETEXT, hg1) == NULL) {
+		if (SetClipboardData(CF_UNICODETEXT, hg1) == NULL) {
 			GlobalFree(hg1);
 		}
 	}
@@ -359,28 +358,28 @@ CF_UNICODETEXT_END:
 
 		nRet = (int)strlen(pRtfText);
 		hg3 = GlobalAlloc(GHND, (size_t)nRet + 1);
-		IF_UNLIKELY(hg3 == NULL) {
+		if (hg3 == NULL) {
 			goto CF_RTFTEXT_END;
 		}
 		pMem = (char*)GlobalLock(hg3);
-		IF_UNLIKELY(pMem == NULL) {
+		if (pMem == NULL) {
 			goto CF_RTFTEXT_END;
 		}
 		qstrcpy(pMem, pRtfText);
 		GlobalUnlock(hg3);
 		uFormat = RegisterClipboardFormatW(L"Rich Text Format");
-		IF_LIKELY(uFormat != 0)
+		if (uFormat != 0)
 		{
-			IF_UNLIKELY(SetClipboardData(uFormat, hg3) == NULL)
+			if (SetClipboardData(uFormat, hg3) == NULL)
 			{
 				GlobalFree(hg3);
 				goto CF_RTFTEXT_END;
 			}
 		}
 		uFormat = RegisterClipboardFormatW(L"RTF As Text");
-		IF_LIKELY(uFormat != 0)
+		if (uFormat != 0)
 		{
-			IF_UNLIKELY(SetClipboardData(uFormat, hg3) == NULL)
+			if (SetClipboardData(uFormat, hg3) == NULL)
 			{
 				GlobalFree(hg3);
 				goto CF_RTFTEXT_END;
@@ -396,12 +395,12 @@ CF_RTFTEXT_END:
 
 		nRet = (int)(strlen(pHtmlText) + START_HTML);
 		hg3 = GlobalAlloc(GHND, (size_t)nRet + 1);
-		IF_UNLIKELY(hg3 == NULL) {
+		if (hg3 == NULL) {
 			goto CF_HTMLTEXT_END;
 		}
 
 		pMem = (char*)GlobalLock(hg3);
-		IF_LIKELY(pMem != NULL)
+		if (pMem != NULL)
 		{
 			char szNum[12];
 
@@ -443,9 +442,9 @@ CF_RTFTEXT_END:
 			qstrcpy(pHtml, pHtmlText);
 			GlobalUnlock(hg3);
 			uFormat = RegisterClipboardFormatW(L"HTML Format");
-			IF_LIKELY(uFormat != 0)
+			if (uFormat != 0)
 			{
-				IF_UNLIKELY(SetClipboardData(uFormat, hg3) == NULL) {
+				if (SetClipboardData(uFormat, hg3) == NULL) {
 					GlobalFree(hg3);
 				}
 			}
@@ -473,14 +472,14 @@ DWORD GetClipboardTextA(HWND hWnd, char* lpText, size_t size)
 	}
 
 	hMem = GetClipboardData(CF_TEXT);
-	IF_UNLIKELY(hMem == NULL)
+	if (hMem == NULL)
 	{
 		CloseClipboard();
 		return FALSE;
 	}
 
 	pText = (char*)GlobalLock(hMem);
-	IF_UNLIKELY(pText == NULL)
+	if (pText == NULL)
 	{
 		GlobalUnlock(hMem);
 		CloseClipboard();
@@ -516,14 +515,14 @@ DWORD GetClipboardTextW(HWND hWnd, WCHAR* lpText, size_t size)
 	}
 
 	hMem = GetClipboardData(CF_UNICODETEXT);
-	IF_UNLIKELY(hMem == NULL)
+	if (hMem == NULL)
 	{
 		CloseClipboard();
 		return FALSE;
 	}
 
 	pText = (WCHAR*)GlobalLock(hMem);
-	IF_UNLIKELY(pText == NULL)
+	if (pText == NULL)
 	{
 		GlobalUnlock(hMem);
 		CloseClipboard();
@@ -560,14 +559,14 @@ char* GetClipboardMallocTextA(HWND hWnd)
 	}
 
 	hMem = GetClipboardData(CF_TEXT);
-	IF_UNLIKELY(hMem == NULL)
+	if (hMem == NULL)
 	{
 		CloseClipboard();
 		return NULL;
 	}
 
 	pText = (char*)GlobalLock(hMem);
-	IF_UNLIKELY(pText == NULL)
+	if (pText == NULL)
 	{
 		GlobalUnlock(hMem);
 		CloseClipboard();
@@ -576,7 +575,7 @@ char* GetClipboardMallocTextA(HWND hWnd)
 
 	nRet = (int)strlen(pText);
 	pBuf = (char*)malloc(((size_t)nRet + 1) * sizeof(char));
-	IF_LIKELY(pBuf != NULL)
+	if (pBuf != NULL)
 	{
 		qstrncpy(pBuf, pText, nRet);
 		*(pBuf + nRet) = '\0';
@@ -603,14 +602,14 @@ WCHAR* GetClipboardMallocTextW(HWND hWnd)
 	}
 
 	hMem = GetClipboardData(CF_UNICODETEXT);
-	IF_UNLIKELY(hMem == NULL)
+	if (hMem == NULL)
 	{
 		CloseClipboard();
 		return NULL;
 	}
 
 	pText = (WCHAR*)GlobalLock(hMem);
-	IF_UNLIKELY(pText == NULL)
+	if (pText == NULL)
 	{
 		GlobalUnlock(hMem);
 		CloseClipboard();
@@ -619,7 +618,7 @@ WCHAR* GetClipboardMallocTextW(HWND hWnd)
 
 	nRet = (int)wcslen(pText);
 	pBuf = (WCHAR*)malloc(((size_t)nRet + 1) * sizeof(WCHAR));
-	IF_LIKELY(pBuf != NULL)
+	if (pBuf != NULL)
 	{
 		qwcsncpy(pBuf, pText, nRet);
 		*(pBuf + nRet) = '\0';

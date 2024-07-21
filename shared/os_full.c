@@ -1,7 +1,6 @@
-// os_full.cpp
+// os_full.c
 
 #include "os_full.h"
-#include "c20.h"
 
 
 BOOL GetOSRegRead(TCHAR* pInString)
@@ -14,12 +13,12 @@ BOOL GetOSRegRead(TCHAR* pInString)
 	DWORD dwByte = _OS_FULL_SIZE;
 
 	lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\Microsoft\\Windows NT\\CurrentVersion"), 0, KEY_QUERY_VALUE, &hKey);
-	IF_UNLIKELY(lRet != ERROR_SUCCESS) {
+	if (lRet != ERROR_SUCCESS) {
 		return FALSE;
 	}
 
 	lRet = RegQueryValueEx(hKey, _T("ProductName"), 0, &dwType, (LPBYTE)szRegBuf, &dwByte);
-	IF_UNLIKELY(lRet != ERROR_SUCCESS)
+	if (lRet != ERROR_SUCCESS)
 	{
 		RegCloseKey(hKey);
 #if _MSC_VER < 1500
@@ -45,7 +44,7 @@ BOOL GetOSRegRead(TCHAR* pInString)
 	// サービスパックの取得
 	lRet = RegQueryValueEx(hKey, _T("CSDVersion"), 0, &dwType, (LPBYTE)&szRegBuf, &dwByte);
 	RegCloseKey(hKey);
-	IF_LIKELY(lRet == ERROR_SUCCESS)
+	if (lRet == ERROR_SUCCESS)
 	{
 		*ptr++ = ' ';
 		qtcscpy(ptr, szRegBuf);
@@ -75,12 +74,12 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 #define _OS_IS_GOKANMODE	0x00000004
 
 
-	IF_LIKELY(*szOSFullBuf != '\0') {
+	if (*szOSFullBuf != '\0') {
 		goto GETOSNAME_COPY;
 	}
 
 	nRet = GetOSVersion(&osVerInfo);
-	IF_UNLIKELY(nRet == FALSE) {
+	if (nRet == FALSE) {
 		return 0;
 	}
 
@@ -88,7 +87,7 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 		nRet = GetGokanMode(&osVerInfo);
 	}
 
-	IF_UNLIKELY(nRet == FALSE) {
+	if (nRet == FALSE) {
 		return FALSE;
 	}
 
@@ -623,14 +622,14 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 				}
 
 				nRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), 0, KEY_QUERY_VALUE, &hKey);
-				IF_LIKELY(nRet == ERROR_SUCCESS)
+				if (nRet == ERROR_SUCCESS)
 				{
 					TCHAR szRegBuf[_OS_FULL_SIZE] = _T("");
 					TCHAR* pSubPtr = pSub;
 					const size_t nVersionSize = sizeof(_T(" バージョン ")) - sizeof(TCHAR);
 
 					nRet = RegQueryValueEx(hKey, _T("DisplayVersion"), 0, &dwType, (LPBYTE)szRegBuf, &dwByte);
-					IF_LIKELY(nRet == ERROR_SUCCESS)
+					if (nRet == ERROR_SUCCESS)
 					{
 						memcpy(pSubPtr, _T(" バージョン "), nVersionSize);
 						pSubPtr += nVersionSize / sizeof(TCHAR);
@@ -788,7 +787,7 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 		break;
 	}
 
-	IF_LIKELY(*pOS != '\0') {
+	if (*pOS != '\0') {
 		ptr = qtcscpy(ptr, pOS);
 	}
 	else
@@ -816,7 +815,7 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 			ptr = qtcscpy(ptr, _T("R2"));
 		}
 
-		IF_LIKELY(*pEdition != '\0')
+		if (*pEdition != '\0')
 		{
 			*ptr++ = ' ';
 
@@ -861,7 +860,7 @@ UINT GetOSName(TCHAR* pInString, size_t nSize, BOOL nIsFullName, BOOL nIsVerifyV
 
 GETOSNAME_COPY:
 
-	IF_UNLIKELY(pInString != NULL)
+	if (pInString != NULL)
 	{
 		if (nSize > _OS_FULL_SIZE) {
 			nSize = _OS_FULL_SIZE;

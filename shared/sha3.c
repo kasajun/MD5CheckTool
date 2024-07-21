@@ -9,7 +9,6 @@
 
 #include <string.h>
 #include "sha3.h"
-#include "c20.h"
 
 
 size_t SHA3_absorb(unsigned __int64 A[5][5], const unsigned char* inp, size_t len, size_t r);
@@ -25,7 +24,7 @@ int SHA3_Init(KECCAK1600_CTX* ctx, unsigned char pad, size_t bitlen)
 {
 	size_t bsz = SHA3_BLOCKSIZE(bitlen);
 
-	IF_LIKELY(bsz <= sizeof(ctx->buf))
+	if (bsz <= sizeof(ctx->buf))
 	{
 		SHA3_Reset(ctx);
 		ctx->block_size = bsz;
@@ -40,7 +39,7 @@ int KECCAK_KMAC_Init(KECCAK1600_CTX* ctx, unsigned char pad, size_t bitlen)
 {
 	int ret = SHA3_Init(ctx, pad, bitlen);
 
-	IF_LIKELY(ret) {
+	if (ret) {
 		ctx->md_size *= 2;
 	}
 	return ret;
@@ -63,7 +62,7 @@ int SHA3_Update(KECCAK1600_CTX* ctx, const void* _inp, size_t len)
 	size_t bsz = ctx->block_size;
 	size_t num, rem;
 
-	IF_UNLIKELY(len == 0) {
+	if (len == 0) {
 		return 1;
 	}
 
@@ -110,7 +109,7 @@ int SHA3_Final(unsigned char* md, KECCAK1600_CTX* ctx)
 	size_t bsz = ctx->block_size;
 	size_t num = ctx->bufsz;
 
-	IF_UNLIKELY(ctx->md_size == 0) {
+	if (ctx->md_size == 0) {
 		return 1;
 	}
 

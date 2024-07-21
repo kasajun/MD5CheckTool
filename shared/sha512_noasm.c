@@ -44,7 +44,6 @@
 #include <string.h>
 #include "sha512_noasm.h"
 #include "cpuid.h"
-#include "c20.h"
 
 
 #if defined(SHA512_ASM)
@@ -159,11 +158,9 @@ int SHA512_NOASM_Final(unsigned char* md, SHA512_CTX* c)
 
 	sha512_noasm_block_data_order(c, p, 1);
 
-	/*
 	if (md == 0) {
 		return 0;
 	}
-	*/
 
 	switch (c->md_len)
 	{
@@ -254,11 +251,9 @@ int SHA512_NOASM_Update(SHA512_CTX* c, const void* _data, size_t len)
 	unsigned char* p = c->u.p;
 	const unsigned char* data = (const unsigned char*)_data;
 
-	/*
 	if (len == 0) {
 		return 1;
 	}
-	*/
 
 	l = (c->Nl + (((SHA_LONG64) len) << 3)) & U64(0xffffffffffffffff);
 	if (l < c->Nl) {
@@ -292,14 +287,20 @@ int SHA512_NOASM_Update(SHA512_CTX* c, const void* _data, size_t len)
 	{
 #ifndef SHA512_BLOCK_CAN_MANAGE_UNALIGNED_DATA
 		if ((size_t)data % sizeof(c->u.d[0]) != 0)
+		{
 			while (len >= sizeof(c->u))
-				memcpy(p, data, sizeof(c->u)),
-				sha512_noasm_block_data_order(c, p, 1),
+			{
+				memcpy(p, data, sizeof(c->u));
+				sha512_noasm_block_data_order(c, p, 1);
 				len -= sizeof(c->u), data += sizeof(c->u);
+			}
+		}
 		else
 #endif
-			sha512_noasm_block_data_order(c, data, len / sizeof(c->u)),
+		{
+			sha512_noasm_block_data_order(c, data, len / sizeof(c->u));
 			data += len, len %= sizeof(c->u), data -= len;
+		}
 	}
 
 	if (len != 0) {
@@ -326,7 +327,7 @@ unsigned char* SHA384_NOASM(const unsigned char* d, size_t n, unsigned char* md)
 	SHA512_CTX c;
 	static unsigned char m[SHA384_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA384_NOASM_Init(&c);
@@ -341,7 +342,7 @@ unsigned char* SHA512_NOASM(const unsigned char* d, size_t n, unsigned char* md)
 	SHA512_CTX c;
 	static unsigned char m[SHA512_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA512_NOASM_Init(&c);
@@ -356,7 +357,7 @@ unsigned char* SHA512_224_NOASM(const unsigned char* d, size_t n, unsigned char*
 	SHA512_CTX c;
 	static unsigned char m[SHA512_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA512_224_NOASM_Init(&c);
@@ -371,7 +372,7 @@ unsigned char* SHA512_256_NOASM(const unsigned char* d, size_t n, unsigned char*
 	SHA512_CTX c;
 	static unsigned char m[SHA512_DIGEST_LENGTH];
 
-	IF_UNLIKELY(md == NULL) {
+	if (md == NULL) {
 		md = m;
 	}
 	SHA512_256_NOASM_Init(&c);

@@ -2,8 +2,6 @@
 #pragma once
 #endif
 
-#include "c20.h"
-
 /*
  * Copyright 1999-2018 The OpenSSL Project Authors. All Rights Reserved.
  *
@@ -140,7 +138,7 @@ int HASH_UPDATE(HASH_CTX* c, const void* data_, size_t len)
 	HASH_LONG l;
 	size_t n;
 
-	IF_UNLIKELY(len == 0) {
+	if (len == 0) {
 		return 1;
 	}
 
@@ -153,7 +151,7 @@ int HASH_UPDATE(HASH_CTX* c, const void* data_, size_t len)
 	c->Nl = l;
 
 	n = c->num;
-	IF_LIKELY(n != 0)
+	if (n != 0)
 	{
 		p = (unsigned char*)c->data;
 

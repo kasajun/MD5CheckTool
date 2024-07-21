@@ -1963,7 +1963,7 @@ DWORD FileListDlg_DropFile(HDROP hdropFile)
 	unsigned int i = 0;
 
 	tagMainWindow1.bIsEmptyFolder = 0;
-	dwCount = DragQueryFile(hdropFile, (DWORD)-1, NULL, NULL);
+	dwCount = DragQueryFile(hdropFile, 0xFFFFFFFF, NULL, NULL);
 
 	for (i = 0; i < dwCount; i++)
 	{
@@ -1976,30 +1976,34 @@ DWORD FileListDlg_DropFile(HDROP hdropFile)
 			break;
 		}
 
-		DragQueryFile(hdropFile, i, tagMainWindow1.pFile, MAX_PATH_SIZE - 1);
-		tagMainWindow1.tagHashThread1.nIsFileNoCheck = 0;
-		nIsHashFileRet = GetHashFilePath();
+		dwRet = DragQueryFile(hdropFile, i, tagMainWindow1.pFile, MAX_PATH_SIZE - 1);
+		IF_LIKELY(dwRet)
+		{
+			tagMainWindow1.tagHashThread1.nIsFileNoCheck = 0;
+			nIsHashFileRet = GetHashFilePath();
 
-		if (dwAppFrag & APP_FOLDEROPEN) {
-			dwRet = FileListDlg_AddFolder();
-		}
-		else if (nIsHashFileRet != FALSE) {
-			dwRet = FileListDlg_AddHashFile();
-		}
-		else {
-			dwRet = FileListDlg_AddFile();
-		}
+			if (dwAppFrag & APP_FOLDEROPEN) {
+				dwRet = FileListDlg_AddFolder();
+			}
+			else if (nIsHashFileRet != FALSE) {
+				dwRet = FileListDlg_AddHashFile();
+			}
+			else {
+				dwRet = FileListDlg_AddFile();
+			}
 
-		IF_UNLIKELY(dwRet == (DWORD)-1) {
-			break;
+			IF_UNLIKELY(dwRet == (DWORD)-1) {
+				break;
+			}
+			dwFileCount = HashThread_GetCountItem_Core(&tagMainWindow1.tagHashThread1);
 		}
-		dwFileCount = HashThread_GetCountItem_Core(&tagMainWindow1.tagHashThread1);
 	}
 
 	if (dwFileCount > 0) {
 		qtcscpy(tagMainWindow1.pOfn1Buf, HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, dwFileCount - 1)->szFileName);
 	}
 
+	DragFinish(hdropFile);
 	return dwRet;
 }
 

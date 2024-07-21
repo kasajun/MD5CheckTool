@@ -52,6 +52,7 @@ LRESULT OptionDlgTab2_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 	int i = 0;
+	DWORD dwRet = 0;
 
 	SetEnableThemeDialogTexture(hWnd);
 
@@ -75,16 +76,27 @@ LRESULT OptionDlgTab2_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		tagOptionWindow1.hTab2Static[i] = GetDlgItem(hWnd, IDC_OPTIONTAB2_STATIC1 + i);
 	}
 
-	SendMessage(tagOptionWindow1.hTab2Checkbox[0], BM_SETCHECK, dwAppFrag & APP_DISABLE_HASH_NOASM ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab2Checkbox[1], BM_SETCHECK, dwAppFrag & APP_ENABLE_LARGE_BUFFERSIZE ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab2Checkbox[2], BM_SETCHECK, dwAppFrag & APP_FILE_NOCACHE ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab2Checkbox[3], BM_SETCHECK, dwAppFrag & APP_ENABLE_HIDDENFILE ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab2Checkbox[4], BM_SETCHECK, dwAppFrag & APP_ENABLE_HASHFILE_WRITETIME ? BST_CHECKED : BST_UNCHECKED, 0);
-	SendMessage(tagOptionWindow1.hTab2Checkbox[5], BM_SETCHECK, dwAppFrag & APP_HASHFILE_ENABLE_HASH ? BST_CHECKED : BST_UNCHECKED, 0);
+	dwRet = dwAppFrag & APP_DISABLE_HASH_NOASM ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab2Checkbox[0], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ENABLE_LARGE_BUFFERSIZE ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab2Checkbox[1], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_FILE_NOCACHE ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab2Checkbox[2], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ENABLE_HIDDENFILE ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab2Checkbox[3], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_ENABLE_HASHFILE_WRITETIME ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab2Checkbox[4], BM_SETCHECK, (WPARAM)dwRet, 0);
+
+	dwRet = dwAppFrag & APP_HASHFILE_ENABLE_HASH ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab2Checkbox[5], BM_SETCHECK, (WPARAM)dwRet, 0);
 
 	GetCheckSumFile(tagOptionWindow1.pCheckSumFile);
 	SetWindowText(tagOptionWindow1.hTab2Edit[0], tagOptionWindow1.pCheckSumFile);
-	SendMessage(tagOptionWindow1.hTab2Edit[0], EM_LIMITTEXT, MAX_LOADSTRING - 1, 0);
+	SendMessage(tagOptionWindow1.hTab2Edit[0], EM_LIMITTEXT, (WPARAM)(MAX_LOADSTRING - 1), 0);
 	return TRUE;
 }
 

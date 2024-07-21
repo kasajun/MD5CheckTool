@@ -1,5 +1,4 @@
 #include "charlib_sysdll.h"
-#include "c20.h"
 #include <Shlwapi.h>
 
 char szByteChar[16] = { 0 };
@@ -270,17 +269,17 @@ char* FileSizeText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		pOutChar = (char*)malloc((size_t)100 + 1);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
 
 	llFileSize = cdwlFileSize;
 	pTemp = pOutChar;
-	IF_UNLIKELY(cdwlFileSize < 0)
+	if (cdwlFileSize < 0)
 	{
 		*pTemp++ = '-';
 		llFileSize = -cdwlFileSize;
@@ -301,7 +300,7 @@ char* FileSizeText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	pTemp += nRet;
 	pTemp--;
 
-	IF_UNLIKELY(*szByteChar == '\0')
+	if (*szByteChar == '\0')
 	{
 		char szBuf[sizeof(szByteChar)];
 		STRFORMATBYTESIZEA_MACRO(0, szBuf, sizeof(szByteChar));
@@ -329,17 +328,17 @@ WCHAR* FileSizeText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		pOutWChar = (WCHAR*)malloc(((size_t)100 + 1) * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
 
 	llFileSize = cdwlFileSize;
 	pTemp = pOutWChar;
-	IF_UNLIKELY(llFileSize < 0)
+	if (llFileSize < 0)
 	{
 		*pTemp++ = '-';
 		llFileSize = -cdwlFileSize;
@@ -360,7 +359,7 @@ WCHAR* FileSizeText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	pTemp += nRet;
 	pTemp--;
 
-	IF_UNLIKELY(*szByteWChar == '\0')
+	if (*szByteWChar == '\0')
 	{
 		WCHAR szBuf[SIZEOF_NUM(szByteWChar)];
 		StrFormatByteSizeW(0, szBuf, SIZEOF_NUM(szBuf));
@@ -385,17 +384,17 @@ char* FileSizePerSecTextToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	char szNumber[33];
 	__int64 llFileSize;
 
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		pOutChar = (char*)malloc((size_t)100 + 1);
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
 
 	llFileSize = cdwlFileSize;
 	pTemp = pOutChar;
-	IF_UNLIKELY(cdwlFileSize < 0)
+	if (cdwlFileSize < 0)
 	{
 		*pTemp++ = '-';
 		llFileSize = -cdwlFileSize;
@@ -422,17 +421,17 @@ WCHAR* FileSizePerSecTextToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	WCHAR szNumber[33];
 	__int64 llFileSize;
 
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		pOutWChar = (WCHAR*)malloc(((size_t)100 + 1) * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
 
 	llFileSize = cdwlFileSize;
 	pTemp = pOutWChar;
-	IF_UNLIKELY(llFileSize < 0)
+	if (llFileSize < 0)
 	{
 		*pTemp++ = '-';
 		llFileSize = -cdwlFileSize;
@@ -462,17 +461,17 @@ char* FileSizePerSecText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutChar == NULL)
+	if (pOutChar == NULL)
 	{
 		pOutChar = (char*)malloc((101));
-		IF_UNLIKELY(pOutChar == NULL) {
+		if (pOutChar == NULL) {
 			return NULL;
 		}
 	}
 
 	llFileSize = cdwlFileSize;
 	pTemp = pOutChar;
-	IF_UNLIKELY(cdwlFileSize < 0)
+	if (cdwlFileSize < 0)
 	{
 		*pTemp++ = '-';
 		llFileSize = -cdwlFileSize;
@@ -496,7 +495,7 @@ char* FileSizePerSecText2ToChar2(const __int64 cdwlFileSize, char* pOutChar)
 	pTemp += nRet;
 	pTemp--;
 
-	IF_UNLIKELY(*szByteChar == '\0')
+	if (*szByteChar == '\0')
 	{
 		char szBuf[sizeof(szByteChar)];
 		STRFORMATBYTESIZEA_MACRO(0, szBuf, sizeof(szByteChar));
@@ -528,17 +527,17 @@ WCHAR* FileSizePerSecText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	__int64 llFileSize;
 	int nRet;
 
-	IF_UNLIKELY(pOutWChar == NULL)
+	if (pOutWChar == NULL)
 	{
 		pOutWChar = (WCHAR*)malloc((101) * sizeof(WCHAR));
-		IF_UNLIKELY(pOutWChar == NULL) {
+		if (pOutWChar == NULL) {
 			return NULL;
 		}
 	}
 
 	llFileSize = cdwlFileSize;
 	pTemp = pOutWChar;
-	IF_UNLIKELY(llFileSize < 0)
+	if (llFileSize < 0)
 	{
 		*pTemp++ = '-';
 		llFileSize = -cdwlFileSize;
@@ -561,7 +560,7 @@ WCHAR* FileSizePerSecText2ToWChar2(const __int64 cdwlFileSize, WCHAR* pOutWChar)
 	pTemp += nRet;
 	pTemp--;
 
-	IF_UNLIKELY(*szByteWChar == '\0')
+	if (*szByteWChar == '\0')
 	{
 		WCHAR szBuf[SIZEOF_NUM(szByteWChar)];
 		StrFormatByteSizeW(0, szBuf, SIZEOF_NUM(szBuf));
@@ -724,7 +723,7 @@ HMODULE LoadSystemLibraryToWCharSize(const WCHAR* cpInDllName, size_t nDllNameLe
 
 BOOL SetSystemDllToChar()
 {
-	IF_UNLIKELY(nSetSystemDll_Ret == -1)
+	if (nSetSystemDll_Ret == -1)
 	{
 #if _MSC_VER <= 1920
 		HMODULE hDll;
@@ -766,7 +765,7 @@ BOOL SetSystemDllToChar()
 
 BOOL SetSystemDllToWChar()
 {
-	IF_UNLIKELY(nSetSystemDll_Ret == -1)
+	if (nSetSystemDll_Ret == -1)
 	{
 #if _MSC_VER <= 1920
 		HMODULE hDll;

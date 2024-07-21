@@ -24,6 +24,7 @@ extern int nStringX[3];
 extern int nStringY[3];
 
 static DWORD gLoad_dwAppFrag = (DWORD)-1;
+static DWORD gLoad_dwHashType = (DWORD)-1;
 
 
 #define OPTIONDLG_X 230
@@ -674,6 +675,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 				nRet--;
 			}
 
+			gLoad_dwHashType = nRet;
 			tagMainWindow1.tagHashThread1.dwHashType = nRet;
 			WritePrivateProfileString(_T("Option"), _T("HashType"), _T(""), cpInIniFile);
 			WritePrivateProfileString(_T("Option"), _T("HashTypeString"), HashThread_GetHashName(nRet), cpInIniFile);
@@ -723,13 +725,22 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 		}
 	}
 
-	GetPrivateProfileString(_T("Option"), _T("EnableWindowAlpha"), _T("0"), szBuf, 2, cpInIniFile);
-	if (szBuf[0] != '0') {
-		dwAppFrag |= APP_WINDOWALPHA;
+
+#if !defined(UNICODE) && _MSC_VER < 1500
+	if (IsWin2kOrGreater())
+	{
+#endif
+		GetPrivateProfileString(_T("Option"), _T("EnableWindowAlpha"), _T("0"), szBuf, 2, cpInIniFile);
+		if (szBuf[0] != '0') {
+			dwAppFrag |= APP_WINDOWALPHA;
+		}
+		else {
+			dwAppFrag &= ~APP_WINDOWALPHA;
+		}
+#if !defined(UNICODE) && _MSC_VER < 1500
 	}
-	else {
-		dwAppFrag &= ~APP_WINDOWALPHA;
-	}
+#endif
+
 
 	GetPrivateProfileString(_T("Option"), _T("EnableTopMost"), _T("0"), szBuf, 2, cpInIniFile);
 	if (szBuf[0] != '0')
@@ -945,39 +956,81 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 VOID SetIniFileSetting(const TCHAR* cpInIniFile)
 {
 	TCHAR szBuf[MAX_STRINGTABLE] = _T("");
+	const TCHAR* cpRet = NULL;
 
-	if (gLoad_dwAppFrag == dwAppFrag) {
-		return;
-	}
 
 	if (!SetRemoveReadOnly(cpInIniFile)) {
 		return;
 	}
 
-	if (~dwAppFrag & APP_ARG_HASHTYPE) {
-		WritePrivateProfileString(_T("Option"), _T("HashTypeString"), HashThread_GetHashName(tagMainWindow1.tagHashThread1.dwHashType), cpInIniFile);
+	if (gLoad_dwHashType != tagMainWindow1.tagHashThread1.dwHashType)
+	{
+		if (~dwAppFrag & APP_ARG_HASHTYPE) {
+			WritePrivateProfileString(_T("Option"), _T("HashTypeString"), HashThread_GetHashName(tagMainWindow1.tagHashThread1.dwHashType), cpInIniFile);
+		}
 	}
 
-	WritePrivateProfileString(_T("Option"), _T("EnableHashLower"), dwAppFrag & APP_HASHOUT_LOWER ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableHashMultiLine"), dwAppFrag & APP_ENABLE_MULTILINE ? _T("1") : _T("0"), cpInIniFile);
-	if (IsWin10OrGreater()) {
-		WritePrivateProfileString(_T("Option"), _T("EnableEcoQos"), dwAppFrag & APP_ECOQOS ? _T("1") : _T("0"), cpInIniFile);
+	if (gLoad_dwAppFrag == dwAppFrag) {
+		return;
 	}
-	WritePrivateProfileString(_T("Option"), _T("EnableWindowAlpha"), dwAppFrag & APP_WINDOWALPHA ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableTopMost"), dwAppFrag & APP_ENABLE_TOPMOST ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("DisableMultiFileUpDateDraw"), dwAppFrag & APP_DISABLE_MULTIFILE_UPDATE_DRAW ? _T("0") : _T("1"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableFileList"), dwAppFrag & APP_ENABLE_FILELIST ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableDebug"), dwAppFrag & APP_ENABLE_DEBUG ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableMinimumHandle"), dwAppFrag & APP_ENABLE_MINIMAM_HANDLE ? _T("1") : _T("0"), cpInIniFile);
 
-	WritePrivateProfileString(_T("Option"), _T("DisableHashNoAsm"), dwAppFrag & APP_DISABLE_HASH_NOASM ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableLargeBufferSize"), dwAppFrag & APP_ENABLE_LARGE_BUFFERSIZE ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableFileNoCache"), dwAppFrag & APP_FILE_NOCACHE ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableHiddenFile"), dwAppFrag & APP_ENABLE_HIDDENFILE ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableHashFileWriteTime"), dwAppFrag & APP_ENABLE_HASHFILE_WRITETIME ? _T("1") : _T("0"), cpInIniFile);
-	WritePrivateProfileString(_T("Option"), _T("EnableHashFileHash"), dwAppFrag & APP_HASHFILE_ENABLE_HASH ? _T("1") : _T("0"), cpInIniFile);
+	cpRet = dwAppFrag & APP_HASHOUT_LOWER ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableHashLower"), cpRet, cpInIniFile);
 
-	WritePrivateProfileString(_T("Option"), _T("EnableOldSaveFile"), dwAppFrag & APP_OLDHASHFILE ? _T("1") : _T("0"), cpInIniFile);
+	cpRet = dwAppFrag & APP_ENABLE_MULTILINE ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableHashMultiLine"), cpRet, cpInIniFile);
+
+	if (IsWin10OrGreater())
+	{
+		cpRet = dwAppFrag & APP_ECOQOS ? _T("1") : _T("0");
+		WritePrivateProfileString(_T("Option"), _T("EnableEcoQos"), cpRet, cpInIniFile);
+	}
+
+#if !defined(UNICODE) && _MSC_VER < 1500
+	if (IsWin2kOrGreater())
+	{
+#endif
+		cpRet = dwAppFrag & APP_WINDOWALPHA ? _T("1") : _T("0");
+		WritePrivateProfileString(_T("Option"), _T("EnableWindowAlpha"), cpRet, cpInIniFile);
+#if !defined(UNICODE) && _MSC_VER < 1500
+	}
+#endif
+
+	cpRet = dwAppFrag & APP_ENABLE_TOPMOST ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableTopMost"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_DISABLE_MULTIFILE_UPDATE_DRAW ? _T("0") : _T("1");
+	WritePrivateProfileString(_T("Option"), _T("DisableMultiFileUpDateDraw"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_ENABLE_FILELIST ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableFileList"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_ENABLE_DEBUG ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableDebug"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_ENABLE_MINIMAM_HANDLE ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableMinimumHandle"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_DISABLE_HASH_NOASM ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("DisableHashNoAsm"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_ENABLE_LARGE_BUFFERSIZE ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableLargeBufferSize"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_FILE_NOCACHE ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableFileNoCache"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_ENABLE_HIDDENFILE ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableHiddenFile"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_ENABLE_HASHFILE_WRITETIME ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableHashFileWriteTime"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_HASHFILE_ENABLE_HASH ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableHashFileHash"), cpRet, cpInIniFile);
+
+	cpRet = dwAppFrag & APP_OLDHASHFILE ? _T("1") : _T("0");
+	WritePrivateProfileString(_T("Option"), _T("EnableOldSaveFile"), cpRet, cpInIniFile);
 
 	if (tagMainWindow1.dwSaveHashFileCharCode != 2)
 	{

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MD5チェックツール", "MD5チェックツール\MD5チェックツール.vcxproj", "{8DA59541-E0DF-4564-B4E5-4813B29F69E9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E58E5C2D-D8A5-4233-8BA8-6AE78534518F} = {E58E5C2D-D8A5-4233-8BA8-6AE78534518F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MD5チェックツールIconRes", "MD5チェックツールIconRes\MD5チェックツールIconRes.vcxproj", "{E58E5C2D-D8A5-4233-8BA8-6AE78534518F}"
 EndProject

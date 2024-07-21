@@ -1,7 +1,6 @@
-// os.cpp
+// os.c
 
 #include "os.h"
-#include "c20.h"
 
 
 HRESULT SetEnableThemeDialogTexture(HWND hWnd)
@@ -79,10 +78,16 @@ BOOL IsWindowsVersionOrGreater(const WORD wMajorVersion, const WORD wMinorVersio
 #define _WIN32_WINNT_WIN2K					0x0500
 #define _WIN32_WINNT_WINXP					0x0501
 #define _WIN32_WINNT_WS03					0x0502
+#endif
+
+#ifndef _WIN32_WINNT_VISTA
 #define _WIN32_WINNT_WIN6					0x0600
 #define _WIN32_WINNT_VISTA					0x0600
 #define _WIN32_WINNT_WS08					0x0600
 #define _WIN32_WINNT_LONGHORN				0x0600
+#endif
+
+#ifndef _WIN32_WINNT_WIN7
 #define _WIN32_WINNT_WIN7					0x0601
 #endif
 
@@ -244,10 +249,10 @@ BOOL IsWinXPOrGreater()
 #if _MSC_VER > 1500
 	return TRUE;
 #else
-	IF_UNLIKELY(nIsFuncFrag & _IS_WINXP)
+	if (nIsFuncFrag & _IS_WINXP)
 	{
 		const int nRet = IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WINXP), LOBYTE(_WIN32_WINNT_WINXP), 0);
-		IF_LIKELY(nRet != 0)
+		if (nRet != 0)
 		{
 			nIsFunc |= (_IS_WIN2K | _IS_WINXP);
 			nIsFuncFrag &= ~(_IS_WIN9X | _IS_WINNT | _IS_WIN2K | _IS_WINXP);
@@ -267,10 +272,10 @@ BOOL IsWS03OrGreater()
 #if _MSC_VER > 1500
 	return TRUE;
 #else
-	IF_UNLIKELY(nIsFuncFrag & _IS_WS03)
+	if (nIsFuncFrag & _IS_WS03)
 	{
 		const int nRet = IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WS03), LOBYTE(_WIN32_WINNT_WS03), 0);
-		IF_LIKELY(nRet != 0)
+		if (nRet != 0)
 		{
 			nIsFunc |= (_IS_WIN2K | _IS_WINXP | _IS_WS03);
 			nIsFuncFrag &= ~(_IS_WIN9X | _IS_WINNT | _IS_WIN2K | _IS_WINXP | _IS_WS03);
@@ -287,10 +292,10 @@ BOOL IsWS03OrGreater()
 
 BOOL IsWinVistaOrGreater()
 {
-	IF_UNLIKELY(nIsFuncFrag & _IS_VISTA)
+	if (nIsFuncFrag & _IS_VISTA)
 	{
 		const int nRet = IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_VISTA), LOBYTE(_WIN32_WINNT_VISTA), 0);
-		IF_LIKELY(nRet != 0)
+		if (nRet != 0)
 		{
 			nIsFunc |= (_IS_WIN2K | _IS_WINXP | _IS_WS03 | _IS_VISTA);
 			nIsFuncFrag &= ~(_IS_WIN9X | _IS_WINNT | _IS_WIN2K | _IS_WINXP | _IS_WS03 | _IS_VISTA);
@@ -306,7 +311,7 @@ BOOL IsWinVistaOrGreater()
 
 BOOL IsWin7OrGreater()
 {
-	IF_UNLIKELY(nIsFuncFrag & _IS_WIN7)
+	if (nIsFuncFrag & _IS_WIN7)
 	{
 		const int nRet = IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WIN7), LOBYTE(_WIN32_WINNT_WIN7), 0);
 		if (nRet != 0)
@@ -325,7 +330,7 @@ BOOL IsWin7OrGreater()
 
 BOOL IsWin8OrGreater()
 {
-	IF_UNLIKELY(nIsFuncFrag & _IS_WIN8)
+	if (nIsFuncFrag & _IS_WIN8)
 	{
 		const int nRet = IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WIN8), LOBYTE(_WIN32_WINNT_WIN8), 0);
 		if (nRet != 0)
@@ -344,7 +349,7 @@ BOOL IsWin8OrGreater()
 
 BOOL IsWin8Point1OrGreater()
 {
-	IF_UNLIKELY(nIsFuncFrag & _IS_WIN81)
+	if (nIsFuncFrag & _IS_WIN81)
 	{
 		const int nRet = IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WINBLUE), LOBYTE(_WIN32_WINNT_WINBLUE), 0);
 		if (nRet != 0)
@@ -363,7 +368,7 @@ BOOL IsWin8Point1OrGreater()
 
 BOOL IsWin10OrGreater()
 {
-	IF_UNLIKELY(nIsFuncFrag & _IS_WIN10)
+	if (nIsFuncFrag & _IS_WIN10)
 	{
 		const int nRet = IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WIN10), LOBYTE(_WIN32_WINNT_WIN10), 0);
 		if (nRet != 0)
@@ -389,7 +394,7 @@ UINT GetOSVersion(OSVERSIONINFOEX* osVerInfo)
 	osVerInfo->dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
 	hDll = LOADSYSLIB(_T("KERNEL32.DLL"));
-	IF_LIKELY(hDll != NULL)
+	if (hDll != NULL)
 	{
 		BOOL(WINAPI * GetVersionEx)(LPOSVERSIONINFO);
 #ifdef _UNICODE
@@ -399,7 +404,7 @@ UINT GetOSVersion(OSVERSIONINFOEX* osVerInfo)
 #endif
 
 		GetVersionEx = (BOOL(WINAPI*)(LPOSVERSIONINFO))(GetProcAddress(hDll, szFunc1));
-		IF_LIKELY(GetVersionEx != NULL)
+		if (GetVersionEx != NULL)
 		{
 			if ((GetVersionEx((LPOSVERSIONINFO)osVerInfo))) {
 				nRet = 2;
@@ -429,7 +434,7 @@ UINT RtlGetOSVersion(OSVERSIONINFOEX* osVerInfo)
 #endif
 
 	hDll = LOADSYSLIB(_T("NTDLL.DLL"));
-	IF_LIKELY(hDll != NULL)
+	if (hDll != NULL)
 	{
 		NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFO);
 		const char* szFunc = "RtlGetVersion";
@@ -439,11 +444,10 @@ UINT RtlGetOSVersion(OSVERSIONINFOEX* osVerInfo)
 
 #ifdef UNICODE
 		if (RtlGetVersion != NULL && RtlGetVersion((LPOSVERSIONINFO)(osVerInfo)) == 0)
+		{
 #else
 		if (RtlGetVersion != NULL && RtlGetVersion((LPOSVERSIONINFO)(osVerInfoW)) == 0)
-#endif
 		{
-#ifndef UNICODE
 			WCHAR* src;
 			unsigned char* dtc;
 			int i;
@@ -493,14 +497,12 @@ BOOL nUserAgentRet;
 
 BOOL GetUserAgentName(TCHAR* pInString, size_t nSize)
 {
-	IF_LIKELY(*szUserAgentBuf != '\0') {
+	if (*szUserAgentBuf != '\0') {
 		goto GETUSERAGENTNAME_COPY;
 	}
 
 #if _MSC_VER < 1600
 	if (IsWin2kOrGreater())
-#else
-	if (1)
 #endif
 	{
 		TCHAR szRegBuf[33] = _T("");
@@ -511,14 +513,14 @@ BOOL GetUserAgentName(TCHAR* pInString, size_t nSize)
 		TCHAR* ptr;
 
 		lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), 0, KEY_QUERY_VALUE, &hKey);
-		IF_UNLIKELY(lRet != ERROR_SUCCESS) {
+		if (lRet != ERROR_SUCCESS) {
 			return FALSE;
 		}
 
 		lRet = RegQueryValueEx(hKey, _T("CurrentVersion"), 0, &dwType, (LPBYTE)szRegBuf, &dwByte);
 		RegCloseKey(hKey);
 
-		IF_UNLIKELY(lRet != ERROR_SUCCESS) {
+		if (lRet != ERROR_SUCCESS) {
 			return FALSE;
 		}
 
@@ -555,7 +557,7 @@ BOOL GetUserAgentName(TCHAR* pInString, size_t nSize)
 
 GETUSERAGENTNAME_COPY:
 
-	IF_LIKELY(pInString != NULL)
+	if (pInString != NULL)
 	{
 		if (nSize > _OS_UA_SIZE) {
 			nSize = _OS_UA_SIZE;

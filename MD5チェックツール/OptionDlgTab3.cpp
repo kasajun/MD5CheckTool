@@ -54,7 +54,7 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
 	unsigned int OPENSSL_ia32cap_P_Edit[4] = { 0 };
-	int nRet = 0;
+	DWORD dwRet = 0;
 	int i = 0;
 	int y = 0;
 
@@ -179,16 +179,16 @@ LRESULT OptionDlgTab3_OnInitDialog(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 
 	// SSE
-	nRet = dwHashCpuMode & 0x00000001 ? BST_CHECKED : BST_UNCHECKED;
-	SendMessage(tagOptionWindow1.hTab3Checkbox[0], BM_SETCHECK, (WPARAM)nRet, 0);
+	dwRet = dwHashCpuMode & 0x00000001 ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab3Checkbox[0], BM_SETCHECK, (WPARAM)dwRet, 0);
 
 	// AVX
-	nRet = dwHashCpuMode & 0x00000002 ? BST_CHECKED : BST_UNCHECKED;
-	SendMessage(tagOptionWindow1.hTab3Checkbox[1], BM_SETCHECK, (WPARAM)nRet, 0);
+	dwRet = dwHashCpuMode & 0x00000002 ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab3Checkbox[1], BM_SETCHECK, (WPARAM)dwRet, 0);
 
 	// SHAEXT
-	nRet = dwHashCpuMode & 0x00000004 ? BST_CHECKED : BST_UNCHECKED;
-	SendMessage(tagOptionWindow1.hTab3Checkbox[2], BM_SETCHECK, (WPARAM)nRet, 0);
+	dwRet = dwHashCpuMode & 0x00000004 ? BST_CHECKED : BST_UNCHECKED;
+	SendMessage(tagOptionWindow1.hTab3Checkbox[2], BM_SETCHECK, (WPARAM)dwRet, 0);
 
 	tagOptionWindow1.dwRadioState[0] = dwHashCpuMode;
 
