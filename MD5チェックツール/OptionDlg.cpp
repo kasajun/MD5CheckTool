@@ -658,6 +658,7 @@ VOID GetIniFileSetting(const TCHAR* cpInIniFile)
 				nRet = (int)i;
 			}
 		}
+		gLoad_dwHashType = nRet;
 		tagMainWindow1.tagHashThread1.dwHashType = nRet;
 	}
 	else
