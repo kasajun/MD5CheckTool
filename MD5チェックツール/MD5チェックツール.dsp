@@ -380,7 +380,27 @@ SOURCE=..\shared\WindowSize.c
 # Begin Source File
 
 SOURCE=..\shared\xxhash.c
+
+!IF  "$(CFG)" == "MD5チェックツール - Win32 Release"
+
+# ADD CPP /Ob2
 # SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "MD5チェックツール - Win32 Debug"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "MD5チェックツール - Win32 ReleaseW"
+
+# ADD CPP /Ob2
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "MD5チェックツール - Win32 DebugW"
+
+# SUBTRACT CPP /YX
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -569,10 +589,6 @@ SOURCE=..\shared\ToolTip.h
 # Begin Source File
 
 SOURCE=..\shared\WindowSize.h
-# End Source File
-# Begin Source File
-
-SOURCE="..\shared\xxhash-0.8.3.h"
 # End Source File
 # Begin Source File
 

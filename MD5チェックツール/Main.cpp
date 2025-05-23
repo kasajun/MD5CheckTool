@@ -636,9 +636,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	OPENSSL_cpuid_setup1();
 
 #if !defined(UNICODE) && _MSC_VER < 1400
-	// Windows 95‚ÍSSE‚ðŽg‚í‚È‚¢‚æ‚¤‚É‚·‚é
-	if (IsWin95()) {
+	// Windows 95‚ÍSSEASHAEXT‚ðŽg‚í‚È‚¢‚æ‚¤‚É‚·‚é
+	if (IsWin95())
+	{
 		OPENSSL_ia32cap_P[1] &= ~(0x00000200);
+		OPENSSL_ia32cap_P[2] &= ~(0x20000000);
 	}
 #endif
 

@@ -36,48 +36,47 @@
   * xxhash.c instantiates functions defined in xxhash.h
   */
 
-#if _MSC_VER > 1600
+#if _MSC_VER > 1300
 
 #define XXH_STATIC_LINKING_ONLY		/* access advanced declarations */
 #define XXH_INLINE_ALL
-#define XXH_VECTOR					3
-#define XXH_DISPATCH_AVX512			1
+#define XXH_VECTOR					1
 
-#include "xxhash/xxhash-0.8.3-e626a72.h"
+#include "xxhash/xxhash-0.8.2-bbb27a5.h"
 
 
-int XXH3_AVX512_Init(XXH3_state_t* c)
+int XXH3_SSE2_Init(XXH3_state_t* c)
 {
 	memset(c, 0, sizeof(XXH3_state_t));
 	XXH3_64bits_reset((XXH3_state_t*)c);
 	return 1;
 }
 
-int XXH3_AVX512_Update(XXH3_state_t* c, const void* data, size_t len)
+int XXH3_SSE2_Update(XXH3_state_t* c, const void* data, size_t len)
 {
 	return XXH3_64bits_update((XXH3_state_t*)c, data, len);
 }
 
-int XXH3_AVX512_Final(unsigned char* md, XXH3_state_t* c)
+int XXH3_SSE2_Final(unsigned char* md, XXH3_state_t* c)
 {
 	*(XXH64_hash_t*)md = XXH3_64bits_digest((XXH3_state_t*)c);
 	return 1;
 }
 
 
-int XXH128_AVX512_Init(XXH3_state_t* c)
+int XXH128_SSE2_Init(XXH3_state_t* c)
 {
 	memset(c, 0, sizeof(XXH3_state_t));
 	XXH3_64bits_reset((XXH3_state_t*)c);
 	return 1;
 }
 
-int XXH128_AVX512_Update(XXH3_state_t* c, const void* data, size_t len)
+int XXH128_SSE2_Update(XXH3_state_t* c, const void* data, size_t len)
 {
 	return XXH3_128bits_update((XXH3_state_t*)c, data, len);
 }
 
-int XXH128_AVX512_Final(unsigned char* md, XXH3_state_t* c)
+int XXH128_SSE2_Final(unsigned char* md, XXH3_state_t* c)
 {
 	*(XXH128_hash_t*)md = XXH3_128bits_digest((XXH3_state_t*)c);
 	return 1;

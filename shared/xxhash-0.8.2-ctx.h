@@ -4,8 +4,7 @@
 
 /*
  * xxHash - Extremely Fast Hash algorithm
- * Header File
- * Copyright (C) 2012-2023 Yann Collet
+ * Copyright (C) 2012-2021 Yann Collet
  *
  * BSD 2-Clause License (https://www.opensource.org/licenses/bsd-license.php)
  *
@@ -43,34 +42,27 @@
 typedef unsigned long XXH32_hash_t;
 typedef unsigned __int64 XXH64_hash_t;
 
-/*
- * These definitions are only present to allow static allocation
- * of XXH states, on stack or in a struct, for example.
- * Never **ever** access their members directly.
- */
+ /*!
+  * @internal
+  * @brief Structure for XXH32 streaming API.
+  *
+  * @note This is only defined when @ref XXH_STATIC_LINKING_ONLY,
+  * @ref XXH_INLINE_ALL, or @ref XXH_IMPLEMENTATION is defined. Otherwise it is
+  * an opaque type. This allows fields to safely be changed.
+  *
+  * Typedef'd to @ref XXH32_state_t.
+  * Do not access the members of this struct directly.
+  * @see XXH64_state_s, XXH3_state_s
+  */
 
-/*!
- * @internal
- * @brief Structure for XXH32 streaming API.
- *
- * @note This is only defined when @ref XXH_STATIC_LINKING_ONLY,
- * @ref XXH_INLINE_ALL, or @ref XXH_IMPLEMENTATION is defined. Otherwise it is
- * an opaque type. This allows fields to safely be changed.
- *
- * Typedef'd to @ref XXH32_state_t.
- * Do not access the members of this struct directly.
- * @see XXH64_state_s, XXH3_state_s
- */
-struct XXH32_state_s {
+typedef struct XXH32_state_t {
 	XXH32_hash_t total_len_32; /*!< Total length hashed, modulo 2^32 */
 	XXH32_hash_t large_len;    /*!< Whether the hash is >= 16 (handles @ref total_len_32 overflow) */
-	XXH32_hash_t acc[4];       /*!< Accumulator lanes */
-	unsigned char buffer[16];  /*!< Internal buffer for partial reads. */
-	XXH32_hash_t bufferedSize; /*!< Amount of data in @ref buffer */
+	XXH32_hash_t v[4];         /*!< Accumulator lanes */
+	XXH32_hash_t mem32[4];     /*!< Internal buffer for partial reads. Treated as unsigned char[16]. */
+	XXH32_hash_t memsize;      /*!< Amount of data in @ref mem32 */
 	XXH32_hash_t reserved;     /*!< Reserved field. Do not read nor write to it. */
-};   /* typedef'd to XXH32_state_t */
-
-typedef struct XXH32_state_s XXH32_state_t;
+} XXH32_state_t;   /* typedef'd to XXH32_state_t */
 
 /*!
  * @internal
@@ -84,19 +76,18 @@ typedef struct XXH32_state_s XXH32_state_t;
  * Do not access the members of this struct directly.
  * @see XXH32_state_s, XXH3_state_s
  */
-struct XXH64_state_s {
+typedef struct XXH64_state_s {
 	XXH64_hash_t total_len;    /*!< Total length hashed. This is always 64-bit. */
-	XXH64_hash_t acc[4];       /*!< Accumulator lanes */
-	unsigned char buffer[32];  /*!< Internal buffer for partial reads.. */
-	XXH32_hash_t bufferedSize; /*!< Amount of data in @ref buffer */
+	XXH64_hash_t v[4];         /*!< Accumulator lanes */
+	XXH64_hash_t mem64[4];     /*!< Internal buffer for partial reads. Treated as unsigned char[32]. */
+	XXH32_hash_t memsize;      /*!< Amount of data in @ref mem64 */
 	XXH32_hash_t reserved32;   /*!< Reserved field, needed for padding anyways*/
 	XXH64_hash_t reserved64;   /*!< Reserved field. Do not read or write to it. */
-};   /* typedef'd to XXH64_state_t */
-
-typedef struct XXH64_state_s XXH64_state_t;
+} XXH64_state_t;   /* typedef'd to XXH64_state_t */
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) /* >= C11 */
-#  define XXH_ALIGN(n)      _Alignas(n)
+#  include <stdalign.h>
+#  define XXH_ALIGN(n)      alignas(n)
 #elif defined(__cplusplus) && (__cplusplus >= 201103L) /* >= C++11 */
 /* In C++ alignas() is a keyword */
 #  define XXH_ALIGN(n)      alignas(n)
@@ -110,8 +101,8 @@ typedef struct XXH64_state_s XXH64_state_t;
 
 /* Old GCC versions only accept the attribute after the type in structures. */
 #if !(defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L))   /* C11+ */ \
-    && ! (defined(__cplusplus) && (__cplusplus >= 201103L)) /* >= C++11 */ \
-    && defined(__GNUC__)
+	&& ! (defined(__cplusplus) && (__cplusplus >= 201103L)) /* >= C++11 */ \
+	&& defined(__GNUC__)
 #   define XXH_ALIGN_MEMBER(align, type) type XXH_ALIGN(align)
 #else
 #   define XXH_ALIGN_MEMBER(align, type) XXH_ALIGN(align) type
@@ -158,35 +149,33 @@ typedef struct XXH64_state_s XXH64_state_t;
    * @see XXH3_createState(), XXH3_freeState().
    * @see XXH32_state_s, XXH64_state_s
    */
-struct XXH3_state_s {
-    XXH_ALIGN_MEMBER(64, XXH64_hash_t acc[8]);
-    /*!< The 8 accumulators. See @ref XXH32_state_s::v and @ref XXH64_state_s::v */
-    XXH_ALIGN_MEMBER(64, unsigned char customSecret[XXH3_SECRET_DEFAULT_SIZE]);
-    /*!< Used to store a custom secret generated from a seed. */
-    XXH_ALIGN_MEMBER(64, unsigned char buffer[XXH3_INTERNALBUFFER_SIZE]);
-    /*!< The internal buffer. @see XXH32_state_s::mem32 */
-    XXH32_hash_t bufferedSize;
-    /*!< The amount of memory in @ref buffer, @see XXH32_state_s::memsize */
-    XXH32_hash_t useSeed;
-    /*!< Reserved field. Needed for padding on 64-bit. */
-    size_t nbStripesSoFar;
-    /*!< Number or stripes processed. */
-    XXH64_hash_t totalLen;
-    /*!< Total length hashed. 64-bit even on 32-bit targets. */
-    size_t nbStripesPerBlock;
-    /*!< Number of stripes per block. */
-    size_t secretLimit;
-    /*!< Size of @ref customSecret or @ref extSecret */
-    XXH64_hash_t seed;
-    /*!< Seed for _withSeed variants. Must be zero otherwise, @see XXH3_INITSTATE() */
-    XXH64_hash_t reserved64;
-    /*!< Reserved field. */
-    const unsigned char* extSecret;
-    /*!< Reference to an external secret for the _withSecret variants, NULL
-     *   for other variants. */
-     /* note: there may be some padding at the end due to alignment on 64 bytes */
-}; /* typedef'd to XXH3_state_t */
-
-typedef struct XXH3_state_s XXH3_state_t;
+typedef struct XXH3_state_s {
+	XXH_ALIGN_MEMBER(64, XXH64_hash_t acc[8]);
+	/*!< The 8 accumulators. See @ref XXH32_state_s::v and @ref XXH64_state_s::v */
+	XXH_ALIGN_MEMBER(64, unsigned char customSecret[XXH3_SECRET_DEFAULT_SIZE]);
+	/*!< Used to store a custom secret generated from a seed. */
+	XXH_ALIGN_MEMBER(64, unsigned char buffer[XXH3_INTERNALBUFFER_SIZE]);
+	/*!< The internal buffer. @see XXH32_state_s::mem32 */
+	XXH32_hash_t bufferedSize;
+	/*!< The amount of memory in @ref buffer, @see XXH32_state_s::memsize */
+	XXH32_hash_t useSeed;
+	/*!< Reserved field. Needed for padding on 64-bit. */
+	size_t nbStripesSoFar;
+	/*!< Number or stripes processed. */
+	XXH64_hash_t totalLen;
+	/*!< Total length hashed. 64-bit even on 32-bit targets. */
+	size_t nbStripesPerBlock;
+	/*!< Number of stripes per block. */
+	size_t secretLimit;
+	/*!< Size of @ref customSecret or @ref extSecret */
+	XXH64_hash_t seed;
+	/*!< Seed for _withSeed variants. Must be zero otherwise, @see XXH3_INITSTATE() */
+	XXH64_hash_t reserved64;
+	/*!< Reserved field. */
+	const unsigned char* extSecret;
+	/*!< Reference to an external secret for the _withSecret variants, NULL
+	 *   for other variants. */
+	 /* note: there may be some padding at the end due to alignment on 64 bytes */
+} XXH3_state_t; /* typedef'd to XXH3_state_t */
 
 #endif

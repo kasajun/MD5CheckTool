@@ -78,13 +78,13 @@ BOOL IsWindowsVersionOrGreater(const WORD wMajorVersion, const WORD wMinorVersio
 #define _WIN32_WINNT_WIN2K					0x0500
 #define _WIN32_WINNT_WINXP					0x0501
 #define _WIN32_WINNT_WS03					0x0502
+#define _WIN32_WINNT_LONGHORN				0x0600
 #endif
 
 #ifndef _WIN32_WINNT_VISTA
 #define _WIN32_WINNT_WIN6					0x0600
 #define _WIN32_WINNT_VISTA					0x0600
 #define _WIN32_WINNT_WS08					0x0600
-#define _WIN32_WINNT_LONGHORN				0x0600
 #endif
 
 #ifndef _WIN32_WINNT_WIN7
@@ -99,12 +99,9 @@ BOOL IsWindowsVersionOrGreater(const WORD wMajorVersion, const WORD wMinorVersio
 #define _WIN32_WINNT_WINBLUE				0x0603
 #endif
 
-#ifndef _WIN32_WINNT_WINTHRESHOLD
-#define _WIN32_WINNT_WINTHRESHOLD			0x0A00
-#endif
-
 #ifndef _WIN32_WINNT_WIN10
 #define _WIN32_WINNT_WIN10					0x0A00
+#define _WIN32_WINNT_WINTHRESHOLD			0x0A00
 #endif
 
 static int nIsFuncFrag = -1;

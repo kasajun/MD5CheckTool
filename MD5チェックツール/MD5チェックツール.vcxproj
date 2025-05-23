@@ -525,7 +525,6 @@
     <ClInclude Include="..\shared\iTaskbarList3.h" />
     <ClInclude Include="..\shared\ToolTip.h" />
     <ClInclude Include="..\shared\WindowSize.h" />
-    <ClInclude Include="..\shared\xxhash-0.8.3.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

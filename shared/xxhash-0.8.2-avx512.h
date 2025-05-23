@@ -1,5 +1,9 @@
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 /*
- * XXH - Extremely Fast XXH algorithm
+ * xxHash - Extremely Fast Hash algorithm
  * Copyright (C) 2012-2021 Yann Collet
  *
  * BSD 2-Clause License (https://www.opensource.org/licenses/bsd-license.php)
@@ -28,59 +32,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * You can contact the author at:
- *   - XXH homepage: https://www.xxhash.com
- *   - XXH source repository: https://github.com/Cyan4973/XXH
+ *   - xxHash homepage: https://www.xxhash.com
+ *   - xxHash source repository: https://github.com/Cyan4973/xxHash
  */
 
- /*
-  * xxhash.c instantiates functions defined in xxhash.h
-  */
+#ifndef __XXHASH_AVX512_H_36A2C202_4161_4B21_B2F7_0C0C68B4D73F__
+#define __XXHASH_AVX512_H_36A2C202_4161_4B21_B2F7_0C0C68B4D73F__
 
 #if _MSC_VER > 1600
+#include "xxhash-0.8.2-ctx.h"
 
-#define XXH_STATIC_LINKING_ONLY		/* access advanced declarations */
-#define XXH_INLINE_ALL
-#define XXH_VECTOR					3
-#define XXH_DISPATCH_AVX512			1
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "xxhash/xxhash-0.8.3-e626a72.h"
+	int XXH3_AVX512_Init(XXH3_state_t* c);
+	int XXH3_AVX512_Update(XXH3_state_t* c, const void* data, size_t len);
+	int XXH3_AVX512_Final(unsigned char* md, XXH3_state_t* c);
 
+	int XXH128_AVX512_Init(XXH3_state_t* c);
+	int XXH128_AVX512_Update(XXH3_state_t* c, const void* data, size_t len);
+	int XXH128_AVX512_Final(unsigned char* md, XXH3_state_t* c);
 
-int XXH3_AVX512_Init(XXH3_state_t* c)
-{
-	memset(c, 0, sizeof(XXH3_state_t));
-	XXH3_64bits_reset((XXH3_state_t*)c);
-	return 1;
+#ifdef __cplusplus
 }
-
-int XXH3_AVX512_Update(XXH3_state_t* c, const void* data, size_t len)
-{
-	return XXH3_64bits_update((XXH3_state_t*)c, data, len);
-}
-
-int XXH3_AVX512_Final(unsigned char* md, XXH3_state_t* c)
-{
-	*(XXH64_hash_t*)md = XXH3_64bits_digest((XXH3_state_t*)c);
-	return 1;
-}
-
-
-int XXH128_AVX512_Init(XXH3_state_t* c)
-{
-	memset(c, 0, sizeof(XXH3_state_t));
-	XXH3_64bits_reset((XXH3_state_t*)c);
-	return 1;
-}
-
-int XXH128_AVX512_Update(XXH3_state_t* c, const void* data, size_t len)
-{
-	return XXH3_128bits_update((XXH3_state_t*)c, data, len);
-}
-
-int XXH128_AVX512_Final(unsigned char* md, XXH3_state_t* c)
-{
-	*(XXH128_hash_t*)md = XXH3_128bits_digest((XXH3_state_t*)c);
-	return 1;
-}
-
+#endif
+#endif
 #endif

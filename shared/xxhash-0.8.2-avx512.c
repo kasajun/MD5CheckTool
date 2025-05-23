@@ -43,7 +43,7 @@
 #define XXH_VECTOR					3
 #define XXH_DISPATCH_AVX512			1
 
-#include "xxhash/xxhash-0.8.3-e626a72.h"
+#include "xxhash/xxhash-0.8.2-bbb27a5.h"
 
 
 int XXH3_AVX512_Init(XXH3_state_t* c)

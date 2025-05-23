@@ -10,8 +10,8 @@
 #define APPTITLE		"MD5チェックツール"
 #endif
 #define APPCOMPANY		"かさJun"
-#define APPCOPYRIGHT	"Copyright (C) かさJun 2006-2024"
-#define APPVERSION		"2024.07.22.1"
+#define APPCOPYRIGHT	"Copyright (C) かさJun 2006-2025"
+#define APPVERSION		"2025.05.22"
 #define TITLE			"MD5チェックツール"
 #define FILELIST		"ファイルリスト"
 #define APPURL1			"https://github.com/kasajun/MD5CheckTool"
@@ -45,8 +45,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
-	FILEVERSION 2024, 07, 22, 1
-	PRODUCTVERSION 2024, 07, 22, 0
+	FILEVERSION 2025, 05, 22, 0
+	PRODUCTVERSION 2025, 05, 22, 0
 	FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
 	FILEFLAGS 0x1L
@@ -224,8 +224,8 @@ BEGIN
 	LTEXT			"", IDC_ABOUT_STATIC5, 18, 66, 122, 24, SS_WORDELLIPSIS
 	LTEXT			"", IDC_ABOUT_STATIC6, 18, 78, 122, 18, SS_WORDELLIPSIS
 	GROUPBOX		"Library (Special Thanks)", IDC_ABOUT_GROUP1, 6, 90, 208, 80, WS_TABSTOP
-	LTEXT			"OpenSSL: Copyright (C) 1998-2022 The OpenSSL Project", IDC_ABOUT_STATIC7, 12, 104, 196, 12
-	LTEXT			"xxHash: Copyright (C) 2012-2021 Yann Collet", IDC_ABOUT_STATIC8, 12, 116, 196, 12
+	LTEXT			"OpenSSL v3.5.0: Copyright (C) 1998-2024 The OpenSSL Project", IDC_ABOUT_STATIC7, 12, 104, 196, 12
+	LTEXT			"xxHash v0.8.3: Copyright (C) 2012-2023 Yann Collet", IDC_ABOUT_STATIC8, 12, 116, 196, 12
 	LTEXT			"zlib: Copyright (C) 1995-2022 Jean-loup Gailly, Mark Adler", IDC_ABOUT_STATIC9, 12, 128, 196, 12
 	LTEXT			"crc32c: Copyright (C) 2013-2014, 2016 Mark Adler,", IDC_ABOUT_STATIC10, 12, 140, 196, 12
 	LTEXT			" Robert Vazan, Max Vysokikh", IDC_ABOUT_STATIC11, 12, 152, 196, 12

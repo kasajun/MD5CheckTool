@@ -10,7 +10,7 @@
 #define APPTITLE		"MD5チェックツールIconRes"
 #endif
 #define APPCOMPANY		"かさJun"
-#define APPCOPYRIGHT	"Copyright (C) かさJun 2006 - 2023"
+#define APPCOPYRIGHT	"Copyright (C) かさJun 2006 - 2025"
 #define APPVERSION		"2023.08.18"
 #define TITLE			"MD5チェックツールIconRes"
 

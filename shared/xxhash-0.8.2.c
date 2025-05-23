@@ -41,7 +41,7 @@
 #define XXH_INLINE_ALL
 #define XXH_VECTOR					0
 
-#include "xxhash/xxhash-0.8.3-e626a72.h"
+#include "xxhash/xxhash-0.8.2-bbb27a5.h"
 
 
 int XXH32_Init(XXH32_state_t* c)

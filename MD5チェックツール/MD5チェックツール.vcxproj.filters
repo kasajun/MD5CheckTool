@@ -257,9 +257,6 @@
     <ClInclude Include="..\shared\WindowSize.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\shared\xxhash-0.8.3.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\sha3_noasm.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

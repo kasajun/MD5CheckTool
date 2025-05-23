@@ -42,7 +42,7 @@
 #define XXH_INLINE_ALL
 #define XXH_VECTOR					1
 
-#include "xxhash-0.8.3.h"
+#include "xxhash/xxhash-0.8.3-e626a72.h"
 
 
 int XXH3_SSE2_Init(XXH3_state_t* c)

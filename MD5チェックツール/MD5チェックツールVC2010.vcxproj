@@ -166,7 +166,6 @@
     <ClInclude Include="..\shared\sha3_noasm.h" />
     <ClInclude Include="..\shared\sha512_noasm.h" />
     <ClInclude Include="..\shared\sha_ctx.h" />
-    <ClInclude Include="..\shared\xxhash-ctx.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="..\shared\charlib.h" />
     <ClInclude Include="..\shared\charlib_base64.h" />
@@ -199,6 +198,8 @@
     <ClInclude Include="..\shared\targetver.h" />
     <ClInclude Include="..\shared\ToolTip.h" />
     <ClInclude Include="..\shared\WindowSize.h" />
+    <ClInclude Include="..\shared\xxhash-ctx.h" />
+    <ClInclude Include="..\shared\xxhash-sse2.h" />
     <ClInclude Include="..\shared\xxhash.h" />
   </ItemGroup>
   <ItemGroup>
