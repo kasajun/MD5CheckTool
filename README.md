@@ -57,7 +57,7 @@
   </ul>
   <li><strong>Windows 11</strong>
   <ul>
-    <li>バージョン 22H2～23H2で動作確認
+    <li>バージョン 22H2～25H2で動作確認
     <li class="warning">上記より前のバージョンでも動作可能ですが不具合の対応はできません。
   </ul>
 </ul>
