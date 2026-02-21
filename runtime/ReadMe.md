@@ -32,10 +32,10 @@
 <ol>
   <li>64ビット版のWindows 以外はインストールできないので注意してください。
 </ol>
-<h3><a name="VC2022X64RUNTIME" id="VC2022X64RUNTIME">Visual C++ 2022 ランタイム 64ビット版</a></h3>
-<p><a href="vc/vc2015-2022_redist_x64.exe">vc2015-2022_redist_x64.exe</a></p>
+<h3><a name="VC2026X64RUNTIME" id="VC2026X64RUNTIME">Visual C++ 2026 ランタイム 64ビット版</a></h3>
+<p><a href="vc/vc2015-2026_redist.x64.exe">vc2015-2026_redist.x64.exe</a></p>
 <p><span class="x64">64ビット版</span></p>
-<p class="hash"><code><span class="sha256">SHA-256</span>: 917c37d816488545b70affd77d6e486e4dd27e2ece63f6bbaaf486b178b2b888</code></p>
+<p class="hash"><code><span class="sha256">SHA-256</span>: 8995548dfffcde7c49987029c764355612ba6850ee09a7b6f0fddc85bdc5c280</code></p>
 <p>VCRUNTIME140.dllのエラーが出てきたら入れてください。</p>
 <ol>
   <li>64ビット版のWindows 以外はインストールできないので注意してください。
