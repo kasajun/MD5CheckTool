@@ -1554,8 +1554,8 @@ size_t WCharToUtf8CharFileA(const WCHAR* cpInWChar, const char* cpInFileName)
 }
 
 
-#define HEXCHAR_UPPER const char cpHexCharUpper[] = "0123456789ABCDEF"
-#define HEXCHAR_LOWER const char cpHexCharLower[] = "0123456789abcdef"
+#define HEXCHAR_UPPER const char cpHexCharUpper[16] = "0123456789ABCDEF"
+#define HEXCHAR_LOWER const char cpHexCharLower[16] = "0123456789abcdef"
 
 char* SetCharToHexChar(const char cpInChar, char* outBuf)
 {
@@ -2843,6 +2843,7 @@ int qwctomb(char* pDst, const wchar_t* pSrc)
 		*pDst++ = *ptr++;
 	case 1:
 		*pDst++ = *ptr++;
+		break;
 	default:
 		nRet = 1;
 		*pDst = '_';

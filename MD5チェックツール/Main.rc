@@ -10,8 +10,8 @@
 #define APPTITLE		"MD5チェックツール"
 #endif
 #define APPCOMPANY		"かさJun"
-#define APPCOPYRIGHT	"Copyright (C) かさJun 2006-2025"
-#define APPVERSION		"2025.05.22"
+#define APPCOPYRIGHT	"Copyright (C) かさJun 2006-2026"
+#define APPVERSION		"2026.01.25"
 #define TITLE			"MD5チェックツール"
 #define FILELIST		"ファイルリスト"
 #define APPURL1			"https://github.com/kasajun/MD5CheckTool"
@@ -45,8 +45,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
-	FILEVERSION 2025, 05, 22, 0
-	PRODUCTVERSION 2025, 05, 22, 0
+	FILEVERSION 2026, 01, 25, 0
+	PRODUCTVERSION 2026, 01, 25, 0
 	FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
 	FILEFLAGS 0x1L

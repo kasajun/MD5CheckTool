@@ -1,4 +1,4 @@
-.Set CabinetNameTemplate=..\..\html\MD5checktool_mbcs.cab
+.Set CabinetNameTemplate=..\..\html\MD5CheckTool_mbcs.cab
 .Set DiskDirectoryTemplate=
 .Set RptFileName=NUL
 .Set InfFileName=NUL

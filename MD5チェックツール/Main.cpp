@@ -635,14 +635,57 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	// グローバル文字列を初期化しています。
 	OPENSSL_cpuid_setup1();
 
+
 #if !defined(UNICODE) && _MSC_VER < 1400
+
 	// Windows 95はSSE、SHAEXTを使わないようにする
+
+	/*
+	* 
+	* Intel Core i3 12100
+	* 
+
+	* Windows 95 on VirtualBox 7.2.0
+	OPENSSL_ia32cap_P[] = {
+		0x478BFFBF, //[0]
+		0x66DA200B, //[1]
+		0x008C2549, //[2]
+		0x00000000, //[3]
+	};
+
+	* Windows 98 on VirtualBox 7.2.0
+	OPENSSL_ia32cap_P[] = {
+		0x478BFDFF, //[0]
+		0x66DA222B, //[1]
+		0x208C2549, //[2]
+		0x00000000, //[3]
+	};
+
+	* Windows 2000 on VirtualBox 7.2.0
+	OPENSSL_ia32cap_P[] = {
+		0x478BFFFF, //[0]
+		0x66DA2203, //[1]
+		0x208C2549, //[2]
+		0x00000000, //[3]
+	};
+
+	* Windows 11 (HostPC)
+	OPENSSL_ia32cap_P[] = {
+		0xFFEBFFFF, //[0]
+		0x7FFAF3BF, //[1]
+		0x239C27EB, //[2]
+		0x98C007AC, //[3]
+	};
+	*/
+
 	if (IsWin95())
 	{
 		OPENSSL_ia32cap_P[1] &= ~(0x00000200);
 		OPENSSL_ia32cap_P[2] &= ~(0x20000000);
 	}
+
 #endif
+
 
 	memcpy(OPENSSL_ia32cap_P1, OPENSSL_ia32cap_P, sizeof(OPENSSL_ia32cap_P1));
 	tagMainWindow1.hInst = hInstance;// グローバル変数にインスタンス処理を格納します。

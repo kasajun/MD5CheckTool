@@ -10,8 +10,8 @@
 #define APPTITLE		"MD5チェックツールIconRes"
 #endif
 #define APPCOMPANY		"かさJun"
-#define APPCOPYRIGHT	"Copyright (C) かさJun 2006 - 2025"
-#define APPVERSION		"2023.08.18"
+#define APPCOPYRIGHT	"Copyright (C) かさJun 2006 - 2026"
+#define APPVERSION		"2026.01.25"
 #define TITLE			"MD5チェックツールIconRes"
 
 
@@ -20,7 +20,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "windows.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -40,8 +40,8 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
-	FILEVERSION 2023, 8, 18, 0
-	PRODUCTVERSION 2023, 8, 18, 0
+	FILEVERSION 2026, 1, 25, 0
+	PRODUCTVERSION 2026, 1, 25, 0
 	FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
 	FILEFLAGS 0x1L

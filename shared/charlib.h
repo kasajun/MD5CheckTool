@@ -503,6 +503,10 @@ BOOL split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** f
 
 #ifdef _UNICODE
 #define IsUnicode 1
+
+#define bsd_split_3 bsd_split_3W
+#define split_3 split_3W
+
 #define TCharToFileSize WCharToFileSize
 #define BinaryToFile BinaryToFileW
 #define FileToFileSize FileToFileSizeW
@@ -608,8 +612,14 @@ BOOL split_3W(WCHAR* s, size_t s_len, WCHAR** hex_digest, int* binary, WCHAR** f
 #define DecToTChar DecToWChar
 #define IntToTChar DecToWChar
 #define FileToChar FileToCharW
+
 #else
+
 #define IsUnicode 0
+
+#define bsd_split_3 bsd_split_3A
+#define split_3 split_3A
+
 #define TCharToFileSize CharToFileSize
 #define BinaryToFile BinaryToFileA
 #define FileToFileSize FileToFileSizeA
