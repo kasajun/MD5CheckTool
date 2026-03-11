@@ -291,6 +291,21 @@ BOOL SetClipboardTextW(HWND hWnd, const WCHAR* pText)
 	}
 CF_TEXT_END:
 
+	if (hg1 != NULL)
+	{
+		WCHAR* pMem = (WCHAR*)GlobalLock(hg1);
+
+		if (pMem == NULL) {
+			goto CF_UNICODETEXT_END;
+		}
+		qwcscpy(pMem, pText);
+		GlobalUnlock(hg1);
+		if (SetClipboardData(CF_UNICODETEXT, hg1) == NULL) {
+			GlobalFree(hg1);
+		}
+	}
+CF_UNICODETEXT_END:
+
 	CloseClipboard();
 	free(pCharText);
 	return nRet;

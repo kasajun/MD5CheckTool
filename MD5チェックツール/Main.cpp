@@ -642,6 +642,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	/*
 	* 
+	* Intel Core Ultra 7 265K
+	* 
+
+	* Windows 10 (HostPC)
+	OPENSSL_ia32cap_P[] = {
+		0xEFEBFFFF, //[0]
+		0x7FFAF3FF, //[1]
+		0x239CA7EB, //[2]
+		0x994027AC, //[3]
+	};
+	*/
+
+	/*
+	* 
 	* Intel Core i3 12100
 	* 
 
