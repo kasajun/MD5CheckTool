@@ -325,7 +325,7 @@
 #define HASH_TEXT_SPACE					"  "
 #define HASH_TEXT_RETURNCODE			"\r\n"
 
-#define HASH_RTF_HEADER1				"{\\rtf1\\ansi\\ansicpg932\\deff0\\nouicompat\\deflang1033\\deflangfe1041{\\fonttbl{\\f0\\fnil\\fcharset128 \\\'82\\\'6c\\\'82\\\'72 \\\'82\\\'6f\\\'83\\\'53\\\'83\\\'56\\\'83\\\'62\\\'83\\\'4e;}}\r\n{\\colortbl ;"
+#define HASH_RTF_HEADER1				"{\\rtf1\\ansi\\ansicpg932\\deff0\\nouicompat\\deflang1033\\deflangfe1041{\\fonttbl{\\f0\\fnil\\fcharset128 \\\'82\\\'6c\\\'82\\\'72 \\\'82\\\'6f\\\'83\\\'53\\\'83\\\'56\\\'83\\\'62\\\'83\\\'4e;}{\\f10\\fnil\\fcharset1 Segoe UI Symbol;}}\r\n{\\colortbl ;"
 #define HASH_RTF_HEADER2				"}\r\n\\uc1 \r\n\\pard\\sa200\\sl276\\slmult1\\b0\\f0\\fs22\\lang17 "
 #define HASH_RTF_COLOR_TAG0				"\\cf0 "
 #define HASH_RTF_COLOR_TAG1				"\\cf1 "

@@ -1454,6 +1454,7 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 	TCHAR szHashBuf[HASH_LOADSTRING] = _T("");
 	DWORD dwHashType = tagMainWindow1.tagHashThread1.dwHashType;
 	char szHashName[HASH_LOADSTRING] = "";
+	char szRtfHashName[HASH_LOADSTRING] = "";
 	char szHashString[HASH_LOADSTRING] = "";
 	char* pRtfBuf = NULL;
 	char* pRtf = NULL;
@@ -1545,10 +1546,9 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 	{
 		const tagHashThread_FileRecode* cptagHashFile_Recode = HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, nItem);
 		const TCHAR* pFileName = cptagHashFile_Recode->szFileName;
-		const char* pBufChar = TCharToCharConv2(pFileName, (char*)szBuf);
 
 		nFileNameLength[0] += cptagHashFile_Recode->nFileNameLength;
-		nFileNameLength[1] += CharToRtfEncodeCharLength(pBufChar);
+		nFileNameLength[1] += TCharToRtfEncodeCharLength(pFileName);
 		nFileNameLength[2] += TCharToUtf8CharLength(pFileName);
 		nCount++;
 	}
@@ -1593,6 +1593,7 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 	{
 	case ID_FILELIST_LISTMENU1_3:
 		TCharToCharConv2(tagMainWindow1.tagHashThread1.cpHashName, szHashName);
+		TCharToRtfEncodeChar(tagMainWindow1.tagHashThread1.cpHashName, szRtfHashName);
 
 		while ((nItem = ListView_GetNextItem(tagFileListWindow1.hList, nItem, LVNI_SELECTED)) != -1)
 		{
@@ -1610,7 +1611,7 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 
 				// RTF Text
 				pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG1);
-				pRtf = qstrcpy(pRtf, szHashName);
+				pRtf = qstrcpy(pRtf, szRtfHashName);
 				pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 				pRtf = qstrcpy(pRtf, HASH_NAME_SPACE);
 				pRtf = qstrcpy(pRtf, szHashString);
@@ -1630,7 +1631,8 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 		break;
 	case IDM_NCOPY:
 	case ID_FILELIST_LISTMENU1_7:
-		TCharToCharConv2(tagMainWindow1.tagHashThread1.cpHashName, szHashName);
+		//TCharToCharConv2(tagMainWindow1.tagHashThread1.cpHashName, szHashName);
+		//TCharToRtfEncodeChar(tagMainWindow1.tagHashThread1.cpHashName, szRtfHashName);
 
 		while ((nItem = ListView_GetNextItem(tagFileListWindow1.hList, nItem, LVNI_SELECTED)) != -1)
 		{
@@ -1658,6 +1660,7 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 		break;
 	case ID_FILELIST_LISTMENU1_EXTCOPY5:
 		TCharToCharConv2(tagMainWindow1.tagHashThread1.cpHashName, szHashName);
+		TCharToRtfEncodeChar(tagMainWindow1.tagHashThread1.cpHashName, szRtfHashName);
 
 		while ((nItem = ListView_GetNextItem(tagFileListWindow1.hList, nItem, LVNI_SELECTED)) != -1)
 		{
@@ -1676,7 +1679,7 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 
 				// RTF Text
 				pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG1);
-				pRtf = qstrcpy(pRtf, szHashName);
+				pRtf = qstrcpy(pRtf, szRtfHashName);
 				pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 				pRtf = qstrcpy(pRtf, HASH_NAME_SPACE);
 				pRtf = qstrcpy(pRtf, szHashString);
@@ -1698,14 +1701,12 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 		while ((nItem = ListView_GetNextItem(tagFileListWindow1.hList, nItem, LVNI_SELECTED)) != -1)
 		{
 			char* pBuf1 = (char*)szBuf;
-			char* pBuf2 = (char*)szBuf + 4096;
 			const tagHashThread_FileRecode* cptagHashFile_Recode = HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, nItem);
 			pDst = qtcscpy(pDst, cptagHashFile_Recode->szFileName);
 			pDst = qtcscpy(pDst, _T(HASH_TEXT_RETURNCODE));
 
 			// RTF Text
-			TCharToCharConv2(cptagHashFile_Recode->szFileName, pBuf1);
-			CharToRtfEncodeChar(pBuf1, pBuf2);
+			TCharToRtfEncodeChar(cptagHashFile_Recode->szFileName, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 			pRtf = qstrcpy(pRtf, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
@@ -1720,7 +1721,6 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 		while ((nItem = ListView_GetNextItem(tagFileListWindow1.hList, nItem, LVNI_SELECTED)) != -1)
 		{
 			char* pBuf1 = (char*)szBuf;
-			char* pBuf2 = (char*)szBuf + 4096;
 			const tagHashThread_FileRecode* cptagHashFile_Recode = HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, nItem);
 			const TCHAR* pFileName = GetTCharToFileName(cptagHashFile_Recode->szFileName);
 
@@ -1728,8 +1728,7 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 			pDst = qtcscpy(pDst, _T(HASH_TEXT_RETURNCODE));
 
 			// RTF Text
-			TCharToCharConv2(pFileName, pBuf1);
-			CharToRtfEncodeChar(pBuf1, pBuf2);
+			TCharToRtfEncodeChar(pFileName, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 			pRtf = qstrcpy(pRtf, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
@@ -1744,7 +1743,6 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 		while ((nItem = ListView_GetNextItem(tagFileListWindow1.hList, nItem, LVNI_SELECTED)) != -1)
 		{
 			char* pBuf1 = (char*)szBuf;
-			char* pBuf2 = (char*)szBuf + 4096;
 			const tagHashThread_FileRecode* cptagHashFile_Recode = HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, nItem);
 			qtcscpy(tagFileListWindow1.pStBuf, cptagHashFile_Recode->szFileName);
 			PathRemoveFileSpec(tagFileListWindow1.pStBuf);
@@ -1752,10 +1750,8 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 			pDst = qtcscpy(pDst, tagFileListWindow1.pStBuf);
 			pDst = qtcscpy(pDst, _T(HASH_TEXT_RETURNCODE));
 
-			TCharToCharConv2(tagFileListWindow1.pStBuf, pBuf1);
-
 			// RTF Text
-			CharToRtfEncodeChar(pBuf1, pBuf2);
+			TCharToRtfEncodeChar(tagFileListWindow1.pStBuf, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 			pRtf = qstrcpy(pRtf, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
@@ -1770,7 +1766,6 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 		while ((nItem = ListView_GetNextItem(tagFileListWindow1.hList, nItem, LVNI_SELECTED)) != -1)
 		{
 			char* pBuf1 = (char*)szBuf;
-			char* pBuf2 = (char*)szBuf + 4096;
 			const tagHashThread_FileRecode* cptagHashFile_Recode = HashThread_GetFileRecode_Core(&tagMainWindow1.tagHashThread1, nItem);
 			FileSizeText2ToTChar2(cptagHashFile_Recode->llFileSize, szHashBuf);
 
@@ -1778,10 +1773,9 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 			pDst = qtcscpy(pDst, _T(HASH_TEXT_RETURNCODE));
 
 			// RTF Text
-			TCharToCharConv2(szHashBuf, pBuf1);
-			CharToRtfEncodeChar(pBuf1, pBuf2);
+			TCharToRtfEncodeChar(szHashBuf, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
-			pRtf = qstrcpy(pRtf, pBuf2);
+			pRtf = qstrcpy(pRtf, pBuf1);
 			pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
 
 			// HTML Text
@@ -1798,7 +1792,6 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 			if (cptagHashFile_Recode->dwFileLastError == 0)
 			{
 				char* pBuf1 = (char*)szBuf;
-				char* pBuf2 = (char*)szBuf + 4096;
 				TCHAR* pFileName;
 
 				if (dwHashFileOutToCopyFolderMode == 0) {
@@ -1821,12 +1814,11 @@ LRESULT FileListDlg_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPar
 				TCharToCharConv2(szHashBuf, szHashString);
 
 				// RTF Text
-				TCharToCharConv2(pFileName, pBuf1);
-				CharToRtfEncodeChar(pBuf1, pBuf2);
+				TCharToRtfEncodeChar(pFileName, pBuf1);
 				pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 				pRtf = qstrcpy(pRtf, szHashString);
 				pRtf = qstrcpy(pRtf, HASH_TEXT_SPACE);
-				pRtf = qstrcpy(pRtf, pBuf2);
+				pRtf = qstrcpy(pRtf, pBuf1);
 				pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
 
 				// HTML Text

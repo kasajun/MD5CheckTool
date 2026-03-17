@@ -441,6 +441,42 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\shared\charlib_rtf.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\shared\charlib_sysdll.c"
 				>
 				<FileConfiguration
@@ -1618,6 +1654,10 @@
 			</File>
 			<File
 				RelativePath="..\shared\charlib_openssl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\shared\charlib_rtf.h"
 				>
 			</File>
 			<File

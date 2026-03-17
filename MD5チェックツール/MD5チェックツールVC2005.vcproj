@@ -866,6 +866,74 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\shared\charlib_rtf.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release(ANSI)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release(ANSI)|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug(ANSI)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug(ANSI)|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\shared\charlib_sysdll.c"
 				>
 				<FileConfiguration
@@ -3069,6 +3137,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\shared\charlib_rtf.h"
+				>
+			</File>
+			<File
 				RelativePath="..\shared\charlib_sysdll.h"
 				>
 			</File>
@@ -3130,10 +3202,6 @@
 			</File>
 			<File
 				RelativePath="..\shared\md2.h"
-				>
-			</File>
-			<File
-				RelativePath="..\shared\md32_common.h"
 				>
 			</File>
 			<File

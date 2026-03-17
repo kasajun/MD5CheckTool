@@ -2280,7 +2280,8 @@ LRESULT MainWindow_OnMessageClipboardCopy(HWND hWnd, WPARAM wParam, LPARAM lPara
 
 		// RTF Text
 		pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG1);
-		pRtf = qstrcpy(pRtf, szHashName);
+		TCharToRtfEncodeChar(tagMainWindow1.tagHashThread1.cpHashName, szRtfBuf);
+		pRtf = qstrcpy(pRtf, szRtfBuf);
 		pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 		pRtf = qstrcpy(pRtf, HASH_NAME_SPACE);
 
@@ -2305,7 +2306,8 @@ COPY_JUMP0:
 		pDst = qtcscpy(pDst, _T(HASH_TEXT_RETURNCODE));
 
 		// RTF Text
-		pRtf = qstrcpy(pRtf, szHashString);
+		TCharToRtfEncodeChar(pHashString, szRtfBuf);
+		pRtf = qstrcpy(pRtf, szRtfBuf);
 		pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
 
 		// HTML Text
@@ -2321,8 +2323,7 @@ COPY_JUMP0:
 			pDst = qtcscpy(pDst, _T(HASH_NAME_SPACE));
 
 			// RTF Text
-			TCharToCharConv2(pName, szTextBuf);
-			CharToRtfEncodeChar(szTextBuf, szRtfBuf);
+			TCharToRtfEncodeChar(pName, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 			pRtf = qstrcpy(pRtf, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_NAME_SPACE);
@@ -2360,8 +2361,7 @@ EXTCOPY4_JUMP1:
 			pDst = qtcscpy(pDst, _T(HASH_TEXT_RETURNCODE));
 
 			// RTF Text
-			TCharToCharConv2(pFileName, szTextBuf);
-			CharToRtfEncodeChar(szTextBuf, szRtfBuf);
+			TCharToRtfEncodeChar(pFileName, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 			pRtf = qstrcpy(pRtf, szRtfBuf);
 			pRtf = qstrcpy(pRtf, HASH_RTF_RETURNCODE);
@@ -2380,8 +2380,7 @@ EXTCOPY4_JUMP1:
 				pDst = qtcscpy(pDst, _T(HASH_NAME_SPACE));
 
 				// RTF Text
-				TCharToCharConv2(pName, szTextBuf);
-				CharToRtfEncodeChar(szTextBuf, szRtfBuf);
+				TCharToRtfEncodeChar(pName, szRtfBuf);
 				pRtf = qstrcpy(pRtf, HASH_RTF_COLOR_TAG0);
 				pRtf = qstrcpy(pRtf, szRtfBuf);
 				pRtf = qstrcpy(pRtf, HASH_NAME_SPACE);

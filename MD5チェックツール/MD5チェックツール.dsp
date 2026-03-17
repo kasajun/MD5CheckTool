@@ -194,6 +194,11 @@ SOURCE=..\shared\charlib_base64.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\shared\charlib_rtf.c
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
 SOURCE=..\shared\charlib_sysdll.c
 # SUBTRACT CPP /YX
 # End Source File
@@ -421,6 +426,10 @@ SOURCE=..\shared\charlib.h
 # Begin Source File
 
 SOURCE=..\shared\charlib_base64.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\shared\charlib_rtf.h
 # End Source File
 # Begin Source File
 

@@ -54,6 +54,7 @@
 #include "..\shared\c20.h"
 #include "..\shared\charlib.h"
 #include "..\shared\charlib_base64.h"
+#include "..\shared\charlib_rtf.h"
 #include "..\shared\charlib_url.h"
 #include "..\shared\charlib_sysdll.h"
 #include "..\shared\ToolTip.h"

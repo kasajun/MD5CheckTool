@@ -395,9 +395,6 @@ char* Utf8CharFileToCharW(const WCHAR* cpInFileName);
 WCHAR* Utf8CharFileToWCharA(const char* cpInFileName);
 WCHAR* Utf8CharFileToWCharW(const WCHAR* cpInFileName);
 
-size_t CharToRtfEncodeCharLength(const char* cpInChar);
-char* CharToRtfEncodeChar(const char* cpInChar, char* pOutChar);
-
 char* SetCharToHexChar(const char cpInChar, char* outBuf);
 WCHAR* SetCharToHexWChar(const char cpInChar, WCHAR* outBuf);
 
